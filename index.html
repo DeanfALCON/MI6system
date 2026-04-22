@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MI6 六分交易评分器 v1</title>
+  <style>
+    :root {
+      --bg: #0a0d14;
+      --panel: #121826;
+      --panel-2: #1a2235;
+      --line: #2a3550;
+      --text: #eef3ff;
+      --muted: #9fb0d1;
+      --accent: #7c9cff;
+      --good: #19c37d;
+      --warn: #f5b942;
+      --bad: #ef4444;
+      --shadow: 0 18px 50px rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(124,156,255,0.14), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(25,195,125,0.08), transparent 22%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-main::after {
+      content: "MI6";
+      position: absolute;
+      right: 20px;
+      top: 12px;
+      font-size: 110px;
+      line-height: 1;
+      font-weight: 900;
+      color: rgba(124,156,255,0.08);
+      pointer-events: none;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1.1;
+    }
+
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 760px;
+    }
+
+    .hero-side {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(124,156,255,0.12);
+      border: 1px solid rgba(124,156,255,0.25);
+      color: #dfe8ff;
+      font-size: 13px;
+      width: fit-content;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label, .field-title {
+      font-size: 14px;
+      color: #dce6ff;
+      font-weight: 600;
+    }
+
+    select, input[type="text"], textarea {
+      width: 100%;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    textarea {
+      min-height: 108px;
+      resize: vertical;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .score-item {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .score-item h3 {
+      margin: 0 0 6px;
+      font-size: 16px;
+    }
+
+    .score-item p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      min-height: 38px;
+    }
+
+    .toggle-group {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.18s ease;
+    }
+
+    .toggle-btn.active.yes {
+      background: rgba(25,195,125,0.16);
+      border-color: rgba(25,195,125,0.55);
+      color: #dff8ee;
+    }
+
+    .toggle-btn.active.no {
+      background: rgba(239,68,68,0.16);
+      border-color: rgba(239,68,68,0.5);
+      color: #ffe7e7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    button.primary, button.secondary {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .primary {
+      background: linear-gradient(135deg, #7c9cff, #5d78ff);
+      color: white;
+    }
+
+    .secondary {
+      background: #242d42;
+      color: #dce6ff;
+      border: 1px solid var(--line);
+    }
+
+    .result-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .score-box {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(124,156,255,0.08), rgba(255,255,255,0.02));
+      margin-bottom: 16px;
+    }
+
+    .score-number {
+      font-size: 54px;
+      line-height: 1;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .score-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 12px;
+      min-width: 118px;
+      border-radius: 999px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      font-size: 13px;
+      border: 1px solid transparent;
+    }
+
+    .badge.strong { background: rgba(25,195,125,0.16); color: #dff8ee; border-color: rgba(25,195,125,0.5); }
+    .badge.trade { background: rgba(61,174,255,0.15); color: #e2f3ff; border-color: rgba(61,174,255,0.45); }
+    .badge.watch { background: rgba(245,185,66,0.16); color: #fff3d6; border-color: rgba(245,185,66,0.45); }
+    .badge.no { background: rgba(239,68,68,0.16); color: #ffe7e7; border-color: rgba(239,68,68,0.45); }
+
+    .summary-list, .mini-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    .mini-row span:last-child {
+      font-weight: 800;
+    }
+
+    .ok { color: var(--good); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+
+    .block {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .block h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .block p, .block li {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .block ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 980px) {
+      .hero, .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .grid-2, .score-grid { grid-template-columns: 1fr; }
+      .score-number { font-size: 44px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card hero-main">
+        <div class="status-chip">MI6 六分交易评分器 v1</div>
+        <h1>把复杂判断，压缩成 6 分执行系统</h1>
+        <p class="sub">
+          用户先选择交易方向与市场趋势，再对 6 个关键技术条件进行打分：Candlestick、Chart Pattern、Wave、MA、Bollinger Band、Fibo。
+          系统自动计算总分，并输出 TRADE / WATCH / NO TRADE 结果与原因说明。
+        </p>
+      </div>
+      <div class="card hero-side">
+        <div class="status-chip">评分阈值：6 强 / 5 可做 / 4 观察 / 0-3 不做</div>
+        <div class="status-chip">盘整市场：自动偏保守</div>
+        <div class="status-chip">方向与趋势冲突：自动警告</div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="card panel">
+        <div class="section-title">
+          <h2>输入区</h2>
+          <div class="hint">先选方向和趋势，再完成 6 项评分</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="direction">交易方向</label>
+            <select id="direction">
+              <option value="BUY">BUY</option>
+              <option value="SELL">SELL</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="trend">市场趋势</label>
+            <select id="trend">
+              <option value="up">上升趋势</option>
+              <option value="down">下跌趋势</option>
+              <option value="sideways">盘整</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:14px;">
+          <label for="symbol">标的 / 时间框架（可选）</label>
+          <input id="symbol" type="text" placeholder="例如：XAUUSD H1" />
+        </div>
+
+        <div class="score-grid">
+          <div class="score-item" data-key="candlestick">
+            <h3>1. Candlestick Pattern</h3>
+            <p>是否出现明确的蜡烛触发，例如强阳、强阴、锤头、吞没或拒绝信号。</p>
+            <div class="toggle-group">
+              <button class="toggle-btn yes" data-key="candlestick" data-value="1">符合 +1</button>
+              <button class="toggle-btn no active no" data-key="candlestick" data-value="0">不符合 0</button>
+            </div>
+          </div>
+
+          <div class="score-item" data-key="chartpattern">
+            <h3>2. Chart Pattern</h3>
+            <p>是否存在清晰结构，例如通道、三角、双顶双底、长方形、突破或回踩。</p>
+            <div class="toggle-group">
+              <button class="toggle-btn yes" data-key="chartpattern" data-value="1">符合 +1</button>
+              <button class="toggle-btn no active no" data-key="chartpattern" data-value="0">不符合 0</button>
+            </div>
+          </div>
+
+          <div class="score-item" data-key="wave">
+            <h3>3. Wave</h3>
+            <p>波浪阶段是否清晰，方向是否与当前想做的交易一致。</p>
+            <div class="toggle-group">
+              <button class="toggle-btn yes" data-key="wave" data-value="1">符合 +1</button>
+              <button class="toggle-btn no active no" data-key="wave" data-value="0">不符合 0</button>
+            </div>
+          </div>
+
+          <div class="score-item" data-key="ma">
+            <h3>4. MA</h3>
+            <p>均线是否支持当前方向，例如价位站上均线做多，或跌破均线做空。</p>
+            <div class="toggle-group">
+              <button class="toggle-btn yes" data-key="ma" data-value="1">符合 +1</button>
+              <button class="toggle-btn no active no" data-key="ma" data-value="0">不符合 0</button>
+            </div>
+          </div>
+
+          <div class="score-item" data-key="bb">
+            <h3>5. Bollinger Band</h3>
+            <p>布林带位置是否合理，例如上轨做空、下轨做多、中轨确认或带宽配合。</p>
+            <div class="toggle-group">
+              <button class="toggle-btn yes" data-key="bb" data-value="1">符合 +1</button>
+              <button class="toggle-btn no active no" data-key="bb" data-value="0">不符合 0</button>
+            </div>
+          </div>
+
+          <div class="score-item" data-key="fibo">
+            <h3>6. Fibo</h3>
+            <p>是否位于关键 Fibo 区，例如 38.2 / 50 / 61.8 / 76.4 等有效位置。</p>
+            <div class="toggle-group">
+              <button class="toggle-btn yes" data-key="fibo" data-value="1">符合 +1</button>
+              <button class="toggle-btn no active no" data-key="fibo" data-value="0">不符合 0</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:18px;">
+          <label for="notes">备注（可选）</label>
+          <textarea id="notes" placeholder="例如：接近 61.8，下降通道内，等待强阴确认"></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="calculateBtn">计算评分</button>
+          <button class="secondary" id="resetBtn">重置</button>
+        </div>
+      </div>
+
+      <aside class="card panel">
+        <div class="result-top">
+          <h2>结果区</h2>
+          <div id="resultBadge" class="badge no">NO TRADE</div>
+        </div>
+
+        <div class="score-box">
+          <div id="scoreNumber" class="score-number">0/6</div>
+          <div id="scoreLabel" class="score-label">等待输入条件后自动评分</div>
+        </div>
+
+        <div class="mini-list" id="checks"></div>
+
+        <div class="block">
+          <h3>系统分析</h3>
+          <p id="analysisText">请先完成左侧输入，再点击“计算评分”。</p>
+        </div>
+
+        <div class="block">
+          <h3>执行建议</h3>
+          <p id="adviceText">暂无建议。</p>
+        </div>
+
+        <div class="block">
+          <h3>风险提醒</h3>
+          <ul id="riskList">
+            <li>没有触发，不要提前进场。</li>
+            <li>盘整市场默认偏保守。</li>
+            <li>方向与趋势冲突时，需要额外谨慎。</li>
+          </ul>
+        </div>
+
+        <div class="footer-note">
+          说明：此版本为手动评分 MVP，适合先验证规则与流程。后续可扩展为截图上传、自动识图、历史记录、会员系统与移动端 App。
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      candlestick: 0,
+      chartpattern: 0,
+      wave: 0,
+      ma: 0,
+      bb: 0,
+      fibo: 0,
+    };
+
+    const labels = {
+      candlestick: 'Candlestick',
+      chartpattern: 'Chart Pattern',
+      wave: 'Wave',
+      ma: 'MA',
+      bb: 'Bollinger Band',
+      fibo: 'Fibo',
+    };
+
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.key;
+        const value = Number(btn.dataset.value);
+        state[key] = value;
+
+        const parent = btn.closest('.toggle-group');
+        parent.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active', 'yes', 'no'));
+        btn.classList.add('active');
+        btn.classList.add(value === 1 ? 'yes' : 'no');
+      });
+    });
+
+    function getTrendText(value) {
+      if (value === 'up') return '上升趋势';
+      if (value === 'down') return '下跌趋势';
+      return '盘整';
+    }
+
+    function getDirectionWarning(direction, trend) {
+      if (trend === 'up' && direction === 'SELL') return '当前为上升趋势，但你选择 SELL，方向与趋势冲突。';
+      if (trend === 'down' && direction === 'BUY') return '当前为下跌趋势，但你选择 BUY，方向与趋势冲突。';
+      return '';
+    }
+
+    function buildChecks(score) {
+      const checks = document.getElementById('checks');
+      checks.innerHTML = '';
+      Object.keys(state).forEach(key => {
+        const row = document.createElement('div');
+        row.className = 'mini-row';
+        row.innerHTML = `<span>${labels[key]}</span><span class="${state[key] === 1 ? 'ok' : 'bad'}">${state[key] === 1 ? '符合 +1' : '不符合 0'}</span>`;
+        checks.appendChild(row);
+      });
+
+      const total = document.createElement('div');
+      total.className = 'mini-row';
+      total.innerHTML = `<span>总分</span><span class="${score >= 5 ? 'ok' : score === 4 ? 'warn' : 'bad'}">${score} / 6</span>`;
+      checks.appendChild(total);
+    }
+
+    function calculateResult() {
+      const direction = document.getElementById('direction').value;
+      const trend = document.getElementById('trend').value;
+      const symbol = document.getElementById('symbol').value.trim();
+      const notes = document.getElementById('notes').value.trim();
+      let score = Object.values(state).reduce((a, b) => a + b, 0);
+
+      const warnings = [];
+      const directionWarning = getDirectionWarning(direction, trend);
+      if (directionWarning) warnings.push(directionWarning);
+
+      let result = 'NO TRADE';
+      let badgeClass = 'no';
+
+      if (score === 6) {
+        result = 'STRONG TRADE';
+        badgeClass = 'strong';
+      } else if (score === 5) {
+        result = 'TRADE';
+        badgeClass = 'trade';
+      } else if (score === 4) {
+        result = 'WATCH';
+        badgeClass = 'watch';
+      }
+
+      if (trend === 'sideways') {
+        if (result === 'STRONG TRADE') result = 'TRADE';
+        else if (result === 'TRADE') result = 'WATCH';
+        else if (result === 'WATCH') result = 'NO TRADE';
+        warnings.push('当前属于盘整市场，系统自动偏保守处理。');
+      }
+
+      if (directionWarning && (result === 'STRONG TRADE' || result === 'TRADE')) {
+        result = 'WATCH';
+        badgeClass = 'watch';
+        warnings.push('因为方向与趋势冲突，结果已自动降级为 WATCH。');
+      }
+
+      if (result === 'STRONG TRADE') badgeClass = 'strong';
+      if (result === 'TRADE') badgeClass = 'trade';
+      if (result === 'WATCH') badgeClass = 'watch';
+      if (result === 'NO TRADE') badgeClass = 'no';
+
+      document.getElementById('scoreNumber').textContent = `${score}/6`;
+      document.getElementById('scoreLabel').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)}`;
+
+      const badge = document.getElementById('resultBadge');
+      badge.textContent = result;
+      badge.className = `badge ${badgeClass}`;
+
+      buildChecks(score);
+
+      const positives = [];
+      const missing = [];
+      Object.keys(state).forEach(key => {
+        if (state[key] === 1) positives.push(labels[key]);
+        else missing.push(labels[key]);
+      });
+
+      let analysis = `当前选择为 ${direction}，市场状态为 ${getTrendText(trend)}。`;
+      if (positives.length) analysis += ` 已满足条件：${positives.join('、')}。`;
+      if (missing.length) analysis += ` 仍缺少条件：${missing.join('、')}。`;
+      if (warnings.length) analysis += ` ${warnings.join(' ')}`;
+      if (notes) analysis += ` 备注：${notes}`;
+      document.getElementById('analysisText').textContent = analysis;
+
+      let advice = '';
+      if (result === 'STRONG TRADE') {
+        advice = '六项条件全部满足，可进入执行阶段，但仍应自行设定 Entry、SL 与 TP。';
+      } else if (result === 'TRADE') {
+        advice = '条件整体成熟，可以准备执行，但建议再次确认风险报酬比与触发有效性。';
+      } else if (result === 'WATCH') {
+        advice = '暂时不急着进场。建议继续等待更清晰的蜡烛确认、结构突破或更好位置。';
+      } else {
+        advice = '当前不建议交易。先保护资金，等待更高质量的 setup。';
+      }
+      document.getElementById('adviceText').textContent = advice;
+
+      const riskList = document.getElementById('riskList');
+      riskList.innerHTML = '';
+      const risks = [
+        '没有触发，不要提前进场。',
+        '请自行搭配止损与仓位管理。',
+        '分数高不等于必胜，系统只是过滤工具。'
+      ];
+      if (trend === 'sideways') risks.unshift('盘整市场容易来回打脸，优先保守。');
+      if (directionWarning) risks.unshift('方向与趋势冲突，逆势单风险更高。');
+      if (state.candlestick === 0) risks.unshift('当前没有明确 Candlestick 触发。');
+      risks.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        riskList.appendChild(li);
+      });
+    }
+
+    function resetForm() {
+      document.getElementById('direction').value = 'BUY';
+      document.getElementById('trend').value = 'up';
+      document.getElementById('symbol').value = '';
+      document.getElementById('notes').value = '';
+
+      Object.keys(state).forEach(key => state[key] = 0);
+      document.querySelectorAll('.toggle-group').forEach(group => {
+        group.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active', 'yes', 'no'));
+        const noBtn = group.querySelector('.toggle-btn[data-value="0"]');
+        noBtn.classList.add('active', 'no');
+      });
+
+      document.getElementById('scoreNumber').textContent = '0/6';
+      document.getElementById('scoreLabel').textContent = '等待输入条件后自动评分';
+      const badge = document.getElementById('resultBadge');
+      badge.textContent = 'NO TRADE';
+      badge.className = 'badge no';
+      document.getElementById('checks').innerHTML = '';
+      document.getElementById('analysisText').textContent = '请先完成左侧输入，再点击“计算评分”。';
+      document.getElementById('adviceText').textContent = '暂无建议。';
+      document.getElementById('riskList').innerHTML = `
+        <li>没有触发，不要提前进场。</li>
+        <li>盘整市场默认偏保守。</li>
+        <li>方向与趋势冲突时，需要额外谨慎。</li>
+      `;
+    }
+
+    document.getElementById('calculateBtn').addEventListener('click', calculateResult);
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+  </script>
+</body>
+</html>
