@@ -639,15 +639,180 @@
       line-height: 1.8;
     }
 
+    .terminal-panel {
+      background:
+        linear-gradient(180deg, rgba(8, 13, 23, 0.96), rgba(6, 10, 18, 0.98));
+      border-color: rgba(92, 114, 255, 0.22);
+    }
+
+    .terminal-shell {
+      border: 1px solid rgba(86, 107, 255, 0.18);
+      background:
+        radial-gradient(circle at top right, rgba(64, 110, 255, 0.08), transparent 32%),
+        linear-gradient(180deg, rgba(6, 11, 20, 0.96), rgba(9, 14, 24, 0.98));
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .terminal-shell-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .terminal-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .terminal-dots span:nth-child(1) { background: #ff5f57; }
+    .terminal-dots span:nth-child(2) { background: #febc2e; }
+    .terminal-dots span:nth-child(3) { background: #28c840; }
+
+    .terminal-name {
+      color: #b9c7ea;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .terminal-status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .terminal-stat {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      border-radius: 16px;
+    }
+
+    .terminal-stat small,
+    .terminal-kpi-card small {
+      display: block;
+      color: #7f93bf;
+      font-size: 10px;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .terminal-stat strong,
+    .terminal-kpi-card strong {
+      display: block;
+      font-size: 13px;
+      color: #eff4ff;
+      line-height: 1.4;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .terminal-score-box {
+      margin-bottom: 14px;
+      background:
+        radial-gradient(circle at top right, rgba(71, 120, 255, 0.18), transparent 30%),
+        linear-gradient(180deg, rgba(12, 20, 38, 0.96), rgba(10, 16, 30, 0.96));
+      border-color: rgba(96, 122, 255, 0.24);
+    }
+
+    .score-box-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+      color: #98aae0;
+      font-size: 11px;
+      letter-spacing: 1px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .score-progress-track {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .score-progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ef4444 0%, #f5b942 50%, #19c37d 100%);
+      box-shadow: 0 0 20px rgba(141, 167, 255, 0.2);
+      transition: width 0.28s ease;
+    }
+
+    .terminal-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .terminal-kpi-card {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .terminal-block {
+      margin-bottom: 14px;
+    }
+
+    .terminal-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .terminal-block-title {
+      margin-bottom: 8px;
+      color: #8da7ff;
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .terminal-inner-block {
+      margin-top: 0;
+      background: rgba(255,255,255,0.02);
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    .risk-block {
+      border-color: rgba(239, 68, 68, 0.18);
+      background: rgba(239, 68, 68, 0.04);
+    }
+
     @media (max-width: 1120px) {
       .hero, .layout { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
-      .grid-2, .score-grid, .hero-side-grid, .kpi-strip { grid-template-columns: 1fr; }
+      .grid-2, .score-grid, .hero-side-grid, .kpi-strip, .terminal-status-grid, .terminal-kpi-grid { grid-template-columns: 1fr; }
       .score-number { font-size: 46px; }
       .topbar { flex-direction: column; align-items: flex-start; }
       .top-metrics { justify-content: flex-start; }
+      .terminal-shell-top { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -827,56 +992,99 @@
         </div>
       </div>
 
-      <aside class="card panel">
+      <aside class="card panel terminal-panel">
         <div class="result-top">
-          <h2>决策结果面板</h2>
+          <h2>MI6 决策终端</h2>
           <div id="resultBadge" class="badge no">NO TRADE</div>
         </div>
-        <div class="result-sub">把评分、过滤、审计整合成一个最终判断，而不是只看分数高低。</div>
+        <div class="result-sub">实时整合评分、过滤、审计与执行建议，模拟终端式决策输出。</div>
 
-        <div class="kpi-strip">
-          <div class="kpi-card">
-            <small>系统模式</small>
-            <strong>MI6 v2</strong>
+        <div class="terminal-shell">
+          <div class="terminal-shell-top">
+            <div class="terminal-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="terminal-name">MI6 v2 Decision Terminal</div>
           </div>
-          <div class="kpi-card">
-            <small>分析结构</small>
-            <strong>Score + Filter + Audit</strong>
+
+          <div class="terminal-status-grid">
+            <div class="terminal-stat">
+              <small>SYSTEM</small>
+              <strong>ONLINE</strong>
+            </div>
+            <div class="terminal-stat">
+              <small>STATUS</small>
+              <strong id="terminalStatus">AWAITING INPUT</strong>
+            </div>
+            <div class="terminal-stat">
+              <small>MODE</small>
+              <strong>SCORE → FILTER → AUDIT</strong>
+            </div>
           </div>
-          <div class="kpi-card">
-            <small>目标</small>
-            <strong>减少垃圾单</strong>
+
+          <div class="score-box terminal-score-box">
+            <div class="score-box-head">
+              <span>SIGNAL STRENGTH</span>
+              <span id="scoreSignalText">IDLE</span>
+            </div>
+            <div id="scoreNumber" class="score-number">0/6</div>
+            <div class="score-progress-track">
+              <div id="scoreProgressBar" class="score-progress-bar"></div>
+            </div>
+            <div id="scoreLabel" class="score-label">等待输入条件后自动评分</div>
           </div>
-        </div>
 
-        <div class="score-box">
-          <div id="scoreNumber" class="score-number">0/6</div>
-          <div id="scoreLabel" class="score-label">等待输入条件后自动评分</div>
-        </div>
+          <div class="terminal-kpi-grid">
+            <div class="terminal-kpi-card">
+              <small>ENGINE</small>
+              <strong>6-POINT CORE</strong>
+            </div>
+            <div class="terminal-kpi-card">
+              <small>FILTER</small>
+              <strong>ACTIVE</strong>
+            </div>
+            <div class="terminal-kpi-card">
+              <small>AUDIT</small>
+              <strong>LIVE</strong>
+            </div>
+          </div>
 
-        <div class="mini-list" id="checks"></div>
+          <div class="terminal-block">
+            <div class="terminal-block-title">SYSTEM CHECKS</div>
+            <div class="mini-list" id="checks"></div>
+          </div>
 
-        <div class="block">
-          <h3>系统分析</h3>
-          <p id="analysisText">请先完成左侧输入，再点击“计算评分”。</p>
-        </div>
+          <div class="terminal-block">
+            <div class="terminal-block-title">ANALYSIS LOG</div>
+            <div class="block terminal-inner-block">
+              <h3>系统分析</h3>
+              <p id="analysisText">请先完成左侧输入，再点击“计算评分”。</p>
+            </div>
+          </div>
 
-        <div class="block">
-          <h3>执行建议</h3>
-          <p id="adviceText">暂无建议。</p>
-        </div>
+          <div class="terminal-block">
+            <div class="terminal-block-title">EXECUTION OUTPUT</div>
+            <div class="block terminal-inner-block">
+              <h3>执行建议</h3>
+              <p id="adviceText">暂无建议。</p>
+            </div>
+          </div>
 
-        <div class="block">
-          <h3>风险提醒</h3>
-          <ul id="riskList">
-            <li>没有触发，不要提前进场。</li>
-            <li>盘整市场默认偏保守。</li>
-            <li>方向与趋势冲突时，需要额外谨慎。</li>
-          </ul>
+          <div class="terminal-block">
+            <div class="terminal-block-title">RISK CONTROL</div>
+            <div class="block terminal-inner-block risk-block">
+              <h3>风险提醒</h3>
+              <ul id="riskList">
+                <li>没有触发，不要提前进场。</li>
+                <li>盘整市场默认偏保守。</li>
+                <li>方向与趋势冲突时，需要额外谨慎。</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div class="footer-note">
-          说明：此版本为手动评分 MVP，适合先验证规则与流程。后续可扩展为截图上传、自动识图、历史记录、会员系统与移动端 App。
+          说明：当前为终端化展示版本，适合继续扩展历史记录、截图上传、策略模板与会员分析模块。
         </div>
       </aside>
     </section>
@@ -986,6 +1194,9 @@
       if (result === 'NO TRADE') badgeClass = 'no';
 
       document.getElementById('scoreNumber').textContent = `${score}/6`;
+      document.getElementById('terminalStatus').textContent = result;
+      document.getElementById('scoreSignalText').textContent = score >= 5 ? 'HIGH' : score === 4 ? 'MEDIUM' : score >= 2 ? 'LOW' : 'IDLE';
+      document.getElementById('scoreProgressBar').style.width = `${(score / 6) * 100}%`;
       document.getElementById('scoreLabel').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)}`;
 
       const badge = document.getElementById('resultBadge');
@@ -1051,6 +1262,9 @@
       });
 
       document.getElementById('scoreNumber').textContent = '0/6';
+      document.getElementById('terminalStatus').textContent = 'AWAITING INPUT';
+      document.getElementById('scoreSignalText').textContent = 'IDLE';
+      document.getElementById('scoreProgressBar').style.width = '0%';
       document.getElementById('scoreLabel').textContent = '等待输入条件后自动评分';
       const badge = document.getElementById('resultBadge');
       badge.textContent = 'NO TRADE';
