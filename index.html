@@ -6,41 +6,142 @@
   <title>MI6 六分交易评分器 v1</title>
   <style>
     :root {
-      --bg: #0a0d14;
-      --panel: #121826;
-      --panel-2: #1a2235;
-      --line: #2a3550;
+      --bg: #070b13;
+      --panel: rgba(14, 20, 34, 0.92);
+      --panel-2: rgba(20, 28, 46, 0.92);
+      --panel-3: rgba(11, 16, 28, 0.9);
+      --line: rgba(138, 160, 255, 0.16);
+      --line-strong: rgba(138, 160, 255, 0.28);
       --text: #eef3ff;
       --muted: #9fb0d1;
-      --accent: #7c9cff;
+      --accent: #8da7ff;
+      --accent-2: #b27dff;
+      --glow: rgba(141, 167, 255, 0.32);
       --good: #19c37d;
       --warn: #f5b942;
       --bad: #ef4444;
-      --shadow: 0 18px 50px rgba(0,0,0,0.35);
-      --radius: 18px;
+      --shadow: 0 24px 60px rgba(0,0,0,0.42);
+      --radius: 24px;
+      --radius-sm: 16px;
     }
 
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: Inter, "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
       background:
-        radial-gradient(circle at top right, rgba(124,156,255,0.14), transparent 28%),
-        radial-gradient(circle at bottom left, rgba(25,195,125,0.08), transparent 22%),
-        var(--bg);
+        radial-gradient(circle at 15% 15%, rgba(141,167,255,0.15), transparent 24%),
+        radial-gradient(circle at 85% 12%, rgba(178,125,255,0.12), transparent 20%),
+        radial-gradient(circle at 50% 100%, rgba(25,195,125,0.08), transparent 22%),
+        linear-gradient(180deg, #060913 0%, #090e1a 45%, #070b13 100%);
       color: var(--text);
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 999px;
+      filter: blur(70px);
+      opacity: 0.45;
+    }
+
+    body::before {
+      width: 320px;
+      height: 320px;
+      top: -70px;
+      right: -60px;
+      background: rgba(141, 167, 255, 0.22);
+    }
+
+    body::after {
+      width: 260px;
+      height: 260px;
+      bottom: -80px;
+      left: -60px;
+      background: rgba(178, 125, 255, 0.18);
     }
 
     .wrap {
-      max-width: 1200px;
+      position: relative;
+      z-index: 1;
+      max-width: 1320px;
       margin: 0 auto;
-      padding: 28px 20px 40px;
+      padding: 28px 20px 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(9, 14, 26, 0.72);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 26px rgba(125, 120, 255, 0.32);
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .brand-text span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .top-metrics {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .metric-pill {
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: #dfe8ff;
+      font-size: 12px;
+      white-space: nowrap;
     }
 
     .hero {
       display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
+      grid-template-columns: 1.15fr 0.85fr;
       gap: 18px;
       margin-bottom: 18px;
     }
@@ -50,74 +151,139 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
     }
 
     .hero-main {
-      padding: 24px;
+      padding: 28px;
       position: relative;
       overflow: hidden;
+      min-height: 240px;
+      background:
+        linear-gradient(135deg, rgba(141,167,255,0.16), rgba(178,125,255,0.08)),
+        rgba(10, 16, 28, 0.82);
     }
 
-    .hero-main::after {
-      content: "MI6";
+    .hero-main::before {
+      content: "MI6 v2";
       position: absolute;
-      right: 20px;
-      top: 12px;
-      font-size: 110px;
-      line-height: 1;
+      right: 22px;
+      top: 18px;
+      font-size: 86px;
+      line-height: 0.9;
       font-weight: 900;
-      color: rgba(124,156,255,0.08);
+      color: rgba(255,255,255,0.05);
       pointer-events: none;
+      letter-spacing: -2px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #e8eeff;
+      font-size: 12px;
+      margin-bottom: 14px;
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: clamp(28px, 4vw, 40px);
-      line-height: 1.1;
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.04;
+      letter-spacing: -1px;
+      max-width: 720px;
     }
 
     .sub {
       margin: 0;
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.7;
+      line-height: 1.8;
       max-width: 760px;
     }
 
+    .hero-points {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .hero-point {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      color: #e5edff;
+    }
+
     .hero-side {
-      padding: 20px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      justify-content: center;
+      justify-content: space-between;
+      background:
+        linear-gradient(180deg, rgba(17,24,40,0.9), rgba(10,14,24,0.92));
     }
 
-    .status-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(124,156,255,0.12);
-      border: 1px solid rgba(124,156,255,0.25);
-      color: #dfe8ff;
+    .hero-side-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .info-box {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .info-box small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .info-box strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .hero-side-note {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(245,185,66,0.18);
+      background: rgba(245,185,66,0.08);
+      color: #fff2d5;
       font-size: 13px;
-      width: fit-content;
+      line-height: 1.7;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1fr 380px;
+      grid-template-columns: minmax(0, 1fr) 400px;
       gap: 18px;
     }
 
     .panel {
-      padding: 22px;
+      padding: 24px;
+      background:
+        linear-gradient(180deg, rgba(12, 18, 31, 0.88), rgba(10, 15, 26, 0.92));
     }
 
     .panel h2 {
-      margin: 0 0 14px;
+      margin: 0;
       font-size: 20px;
+      letter-spacing: -0.2px;
     }
 
     .section-title {
@@ -133,6 +299,35 @@
       font-size: 13px;
     }
 
+    .group-shell {
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.025);
+      margin-bottom: 18px;
+    }
+
+    .group-shell:last-child {
+      margin-bottom: 0;
+    }
+
+    .group-shell-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .group-shell-head strong {
+      font-size: 16px;
+    }
+
+    .group-shell-head span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -146,24 +341,32 @@
     }
 
     .field label, .field-title {
-      font-size: 14px;
+      font-size: 13px;
       color: #dce6ff;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.2px;
     }
 
     select, input[type="text"], textarea {
       width: 100%;
       background: var(--panel-2);
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       color: var(--text);
-      padding: 12px 14px;
+      padding: 13px 14px;
       outline: none;
       font-size: 14px;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    select:focus, input[type="text"]:focus, textarea:focus {
+      border-color: var(--line-strong);
+      box-shadow: 0 0 0 4px rgba(141,167,255,0.08);
+      transform: translateY(-1px);
     }
 
     textarea {
-      min-height: 108px;
+      min-height: 110px;
       resize: vertical;
     }
 
@@ -171,27 +374,36 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
-      margin-top: 10px;
+      margin-top: 6px;
     }
 
     .score-item {
-      padding: 16px;
+      padding: 18px;
       border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(255,255,255,0.02);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.028), rgba(255,255,255,0.015));
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .score-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.2);
     }
 
     .score-item h3 {
       margin: 0 0 6px;
       font-size: 16px;
+      letter-spacing: -0.2px;
     }
 
     .score-item p {
       margin: 0 0 14px;
       color: var(--muted);
       font-size: 12px;
-      line-height: 1.6;
-      min-height: 38px;
+      line-height: 1.7;
+      min-height: 40px;
     }
 
     .toggle-group {
@@ -204,23 +416,31 @@
       border: 1px solid var(--line);
       background: var(--panel-2);
       color: var(--text);
-      border-radius: 12px;
-      padding: 10px 12px;
+      border-radius: 14px;
+      padding: 11px 12px;
       cursor: pointer;
-      font-weight: 700;
+      font-weight: 800;
       transition: 0.18s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .toggle-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
     }
 
     .toggle-btn.active.yes {
       background: rgba(25,195,125,0.16);
       border-color: rgba(25,195,125,0.55);
       color: #dff8ee;
+      box-shadow: 0 10px 24px rgba(25,195,125,0.12);
     }
 
     .toggle-btn.active.no {
       background: rgba(239,68,68,0.16);
       border-color: rgba(239,68,68,0.5);
       color: #ffe7e7;
+      box-shadow: 0 10px 24px rgba(239,68,68,0.1);
     }
 
     .actions {
@@ -232,23 +452,24 @@
 
     button.primary, button.secondary {
       border: none;
-      border-radius: 12px;
-      padding: 13px 18px;
+      border-radius: 14px;
+      padding: 14px 18px;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.15s ease;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.18s ease;
     }
 
-    button:hover { transform: translateY(-1px); }
+    button.primary:hover, button.secondary:hover { transform: translateY(-1px); }
 
     .primary {
-      background: linear-gradient(135deg, #7c9cff, #5d78ff);
+      background: linear-gradient(135deg, var(--accent), #6a82ff 60%, var(--accent-2));
       color: white;
+      box-shadow: 0 14px 32px rgba(106,130,255,0.3);
     }
 
     .secondary {
-      background: #242d42;
+      background: #1c2538;
       color: #dce6ff;
       border: 1px solid var(--line);
     }
@@ -261,37 +482,67 @@
       margin-bottom: 12px;
     }
 
-    .score-box {
-      padding: 18px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(124,156,255,0.08), rgba(255,255,255,0.02));
+    .result-sub {
+      color: var(--muted);
+      font-size: 12px;
       margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    .score-box {
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at top right, rgba(141,167,255,0.14), transparent 38%),
+        linear-gradient(180deg, rgba(141,167,255,0.08), rgba(255,255,255,0.02));
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-box::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -40px;
+      top: -50px;
+      border-radius: 999px;
+      background: rgba(141,167,255,0.12);
+      filter: blur(18px);
     }
 
     .score-number {
-      font-size: 54px;
+      position: relative;
+      z-index: 1;
+      font-size: 58px;
       line-height: 1;
       font-weight: 900;
       margin-bottom: 8px;
+      letter-spacing: -2px;
     }
 
     .score-label {
+      position: relative;
+      z-index: 1;
       color: var(--muted);
       font-size: 13px;
+      line-height: 1.7;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 9px 12px;
-      min-width: 118px;
+      padding: 10px 14px;
+      min-width: 122px;
       border-radius: 999px;
       font-weight: 900;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
       font-size: 13px;
       border: 1px solid transparent;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
     }
 
     .badge.strong { background: rgba(25,195,125,0.16); color: #dff8ee; border-color: rgba(25,195,125,0.5); }
@@ -309,15 +560,20 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.02);
+      padding: 11px 12px;
+      background: rgba(255,255,255,0.025);
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       font-size: 14px;
+    }
+
+    .mini-row span:first-child {
+      color: #dfe7ff;
     }
 
     .mini-row span:last-child {
       font-weight: 800;
+      text-align: right;
     }
 
     .ok { color: var(--good); }
@@ -326,21 +582,22 @@
 
     .block {
       margin-top: 16px;
-      padding: 14px;
-      border-radius: 14px;
+      padding: 16px;
+      border-radius: 18px;
       border: 1px solid var(--line);
-      background: rgba(255,255,255,0.02);
+      background: rgba(255,255,255,0.025);
     }
 
     .block h3 {
       margin: 0 0 10px;
       font-size: 15px;
+      letter-spacing: -0.15px;
     }
 
     .block p, .block li {
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.8;
       margin: 0;
     }
 
@@ -349,49 +606,119 @@
       padding-left: 18px;
     }
 
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .kpi-card {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .kpi-card small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .kpi-card strong {
+      display: block;
+      font-size: 16px;
+    }
+
     .footer-note {
       margin-top: 16px;
       color: var(--muted);
       font-size: 12px;
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
-    @media (max-width: 980px) {
+    @media (max-width: 1120px) {
       .hero, .layout { grid-template-columns: 1fr; }
     }
 
-    @media (max-width: 720px) {
-      .grid-2, .score-grid { grid-template-columns: 1fr; }
-      .score-number { font-size: 44px; }
+    @media (max-width: 760px) {
+      .grid-2, .score-grid, .hero-side-grid, .kpi-strip { grid-template-columns: 1fr; }
+      .score-number { font-size: 46px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .top-metrics { justify-content: flex-start; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">MI6</div>
+        <div class="brand-text">
+          <strong>MI6 六分交易评分器 v2</strong>
+          <span>Scoring · Filtering · Audit</span>
+        </div>
+      </div>
+      <div class="top-metrics">
+        <div class="metric-pill">六分评分核心</div>
+        <div class="metric-pill">高级过滤层</div>
+        <div class="metric-pill">执行审计机制</div>
+      </div>
+    </div>
     <section class="hero">
       <div class="card hero-main">
-        <div class="status-chip">MI6 六分交易评分器 v1</div>
-        <h1>把复杂判断，压缩成 6 分执行系统</h1>
+        <div class="eyebrow">Professional Decision Engine</div>
+        <h1>让评分器看起来像产品，<br>也开始像产品一样工作</h1>
         <p class="sub">
-          用户先选择交易方向与市场趋势，再对 6 个关键技术条件进行打分：Candlestick、Chart Pattern、Wave、MA、Bollinger Band、Fibo。
-          系统自动计算总分，并输出 TRADE / WATCH / NO TRADE 结果与原因说明。
+          MI6 v2 不只是把 6 个条件勾一勾，而是先完成基础评分，再通过高级过滤与执行审计，帮助用户筛掉垃圾单、延迟冲动单、留下更可执行的 setup。
         </p>
+        <div class="hero-points">
+          <div class="hero-point">6 项核心打分</div>
+          <div class="hero-point">Trend / Session / ATR 过滤</div>
+          <div class="hero-point">Trigger / Zone / Trap 审计</div>
+          <div class="hero-point">自动降级与 BLOCK</div>
+        </div>
       </div>
       <div class="card hero-side">
-        <div class="status-chip">评分阈值：6 强 / 5 可做 / 4 观察 / 0-3 不做</div>
-        <div class="status-chip">盘整市场：自动偏保守</div>
-        <div class="status-chip">方向与趋势冲突：自动警告</div>
+        <div class="hero-side-grid">
+          <div class="info-box">
+            <small>结果层级</small>
+            <strong>Strong Trade / Trade / Watch / No Trade / Block</strong>
+          </div>
+          <div class="info-box">
+            <small>产品定位</small>
+            <strong>交易决策限制器，而不只是打分工具</strong>
+          </div>
+          <div class="info-box">
+            <small>适用场景</small>
+            <strong>手动复盘、临盘判断、截图前自检</strong>
+          </div>
+          <div class="info-box">
+            <small>下一阶段</small>
+            <strong>记录历史、上传截图、会员版分析</strong>
+          </div>
+        </div>
+        <div class="hero-side-note">
+          当前最重要的不是加更多功能，而是先让用户一进来就感觉：这是一个有方法、有标准、有审计的产品，而不是一个零散的表单。
+        </div>
       </div>
     </section>
 
     <section class="layout">
       <div class="card panel">
         <div class="section-title">
-          <h2>输入区</h2>
-          <div class="hint">先选方向和趋势，再完成 6 项评分</div>
+          <h2>决策输入台</h2>
+          <div class="hint">先定义方向与市场背景，再完成评分、过滤与审计</div>
         </div>
 
-        <div class="grid-2">
+        <div class="group-shell">
+          <div class="group-shell-head">
+            <strong>Step 1 · 市场背景</strong>
+            <span>定义这笔交易的基础前提</span>
+          </div>
+          <div class="grid-2">
           <div class="field">
             <label for="direction">交易方向</label>
             <select id="direction">
@@ -408,13 +735,25 @@
             </select>
           </div>
         </div>
+        </div>
 
-        <div class="field" style="margin-top:14px;">
+        <div class="group-shell">
+          <div class="group-shell-head">
+            <strong>Step 2 · 交易标的</strong>
+            <span>可用于记录品种与时间框架</span>
+          </div>
+          <div class="field" style="margin-top:0;">
           <label for="symbol">标的 / 时间框架（可选）</label>
           <input id="symbol" type="text" placeholder="例如：XAUUSD H1" />
         </div>
+        </div>
 
-        <div class="score-grid">
+        <div class="group-shell">
+          <div class="group-shell-head">
+            <strong>Step 3 · MI6 六分评分</strong>
+            <span>从方向、结构、位置、确认到触发</span>
+          </div>
+          <div class="score-grid">
           <div class="score-item" data-key="candlestick">
             <h3>1. Candlestick Pattern</h3>
             <p>是否出现明确的蜡烛触发，例如强阳、强阴、锤头、吞没或拒绝信号。</p>
@@ -469,10 +808,17 @@
             </div>
           </div>
         </div>
+        </div>
 
-        <div class="field" style="margin-top:18px;">
+        <div class="group-shell">
+          <div class="group-shell-head">
+            <strong>Step 4 · 交易备注</strong>
+            <span>把主观判断写下来，方便复盘</span>
+          </div>
+          <div class="field" style="margin-top:0;">
           <label for="notes">备注（可选）</label>
           <textarea id="notes" placeholder="例如：接近 61.8，下降通道内，等待强阴确认"></textarea>
+        </div>
         </div>
 
         <div class="actions">
@@ -483,8 +829,24 @@
 
       <aside class="card panel">
         <div class="result-top">
-          <h2>结果区</h2>
+          <h2>决策结果面板</h2>
           <div id="resultBadge" class="badge no">NO TRADE</div>
+        </div>
+        <div class="result-sub">把评分、过滤、审计整合成一个最终判断，而不是只看分数高低。</div>
+
+        <div class="kpi-strip">
+          <div class="kpi-card">
+            <small>系统模式</small>
+            <strong>MI6 v2</strong>
+          </div>
+          <div class="kpi-card">
+            <small>分析结构</small>
+            <strong>Score + Filter + Audit</strong>
+          </div>
+          <div class="kpi-card">
+            <small>目标</small>
+            <strong>减少垃圾单</strong>
+          </div>
         </div>
 
         <div class="score-box">
