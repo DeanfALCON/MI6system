@@ -803,12 +803,109 @@
       background: rgba(239, 68, 68, 0.04);
     }
 
+    .export-block {
+      background: rgba(255,255,255,0.025);
+    }
+
+    .export-card {
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid rgba(141, 167, 255, 0.18);
+      background:
+        radial-gradient(circle at top right, rgba(141,167,255,0.12), transparent 30%),
+        linear-gradient(180deg, rgba(15, 21, 36, 0.98), rgba(10, 15, 26, 0.98));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .export-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .export-brand {
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .export-sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .export-score-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .export-score-box {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .export-score-box small {
+      display: block;
+      color: #8ea0cb;
+      font-size: 10px;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .export-score-box strong {
+      display: block;
+      font-size: 18px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .export-meta {
+      margin-bottom: 12px;
+      color: #dbe5ff;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .export-section {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .export-section-title {
+      color: #8da7ff;
+      font-size: 11px;
+      letter-spacing: 1px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      margin-bottom: 8px;
+    }
+
+    .export-section p {
+      margin: 0;
+      color: #dfe7fb;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .export-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
     @media (max-width: 1120px) {
       .hero, .layout { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
-      .grid-2, .score-grid, .hero-side-grid, .kpi-strip, .terminal-status-grid, .terminal-kpi-grid { grid-template-columns: 1fr; }
+      .grid-2, .score-grid, .hero-side-grid, .kpi-strip, .terminal-status-grid, .terminal-kpi-grid, .export-score-row { grid-template-columns: 1fr; }
       .score-number { font-size: 46px; }
       .topbar { flex-direction: column; align-items: flex-start; }
       .top-metrics { justify-content: flex-start; }
@@ -1083,9 +1180,46 @@
           </div>
         </div>
 
-        <div class="footer-note">
-          说明：当前为终端化展示版本，适合继续扩展历史记录、截图上传、策略模板与会员分析模块。
+        <div class="terminal-block">
+          <div class="terminal-block-title">EXPORT CARD</div>
+          <div class="block terminal-inner-block export-block">
+            <h3>导出结果卡片</h3>
+            <div id="exportCard" class="export-card">
+              <div class="export-card-head">
+                <div>
+                  <div class="export-brand">MI6 六分交易评分器 v2</div>
+                  <div class="export-sub">Trading Decision Summary</div>
+                </div>
+                <div id="exportBadge" class="badge no">NO TRADE</div>
+              </div>
+              <div class="export-score-row">
+                <div class="export-score-box">
+                  <small>SCORE</small>
+                  <strong id="exportScore">0/6</strong>
+                </div>
+                <div class="export-score-box">
+                  <small>SIGNAL</small>
+                  <strong id="exportSignal">IDLE</strong>
+                </div>
+              </div>
+              <div class="export-meta" id="exportMeta">未生成摘要</div>
+              <div class="export-section">
+                <div class="export-section-title">KEY SUMMARY</div>
+                <p id="exportSummary">完成评分后，系统会自动生成适合分享的判断摘要。</p>
+              </div>
+              <div class="export-section">
+                <div class="export-section-title">RISK NOTE</div>
+                <p id="exportRisk">暂无风险提示。</p>
+              </div>
+            </div>
+            <div class="export-actions">
+              <button class="primary" id="copyExportBtn" type="button">复制摘要</button>
+              <button class="secondary" id="downloadExportBtn" type="button">下载卡片 HTML</button>
+            </div>
+          </div>
         </div>
+
+        <div class="footer-note">说明：当前为终端化展示版本，适合继续扩展历史记录、截图上传、策略模板与会员分析模块。</div>
       </aside>
     </section>
   </div>
@@ -1231,6 +1365,14 @@
       }
       document.getElementById('adviceText').textContent = advice;
 
+      document.getElementById('exportBadge').textContent = result;
+      document.getElementById('exportBadge').className = `badge ${badgeClass}`;
+      document.getElementById('exportScore').textContent = `${score}/6`;
+      document.getElementById('exportSignal').textContent = score >= 5 ? 'HIGH' : score === 4 ? 'MEDIUM' : score >= 2 ? 'LOW' : 'IDLE';
+      document.getElementById('exportMeta').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)} · ${getSessionText(advancedState.session)}`;
+      document.getElementById('exportSummary').textContent = `结果：${result}。基础评分 ${score}/6。${positives.length ? `已满足：${positives.join('、')}。` : ''}${missing.length ? `仍欠缺：${missing.join('、')}。` : ''}${warnings.length ? `过滤修正：${warnings.join(' ')}` : ''}${auditFails.length ? `审计失败：${auditFails.join('、')}。` : ''}`;
+      document.getElementById('exportRisk').textContent = auditFails.length ? `重点风险：${auditFails.join('、')}。` : (warnings[0] || '请搭配止损、仓位管理与风险报酬比。');
+
       const riskList = document.getElementById('riskList');
       riskList.innerHTML = '';
       const risks = [
@@ -1277,9 +1419,47 @@
         <li>盘整市场默认偏保守。</li>
         <li>方向与趋势冲突时，需要额外谨慎。</li>
       `;
+      document.getElementById('exportBadge').textContent = 'NO TRADE';
+      document.getElementById('exportBadge').className = 'badge no';
+      document.getElementById('exportScore').textContent = '0/6';
+      document.getElementById('exportSignal').textContent = 'IDLE';
+      document.getElementById('exportMeta').textContent = '未生成摘要';
+      document.getElementById('exportSummary').textContent = '完成评分后，系统会自动生成适合分享的判断摘要。';
+      document.getElementById('exportRisk').textContent = '暂无风险提示。';
     }
 
     document.getElementById('calculateBtn').addEventListener('click', calculateResult);
+
+    document.getElementById('copyExportBtn').addEventListener('click', async () => {
+      const text = [
+        'MI6 六分交易评分器 v2',
+        document.getElementById('exportMeta').textContent,
+        `结果：${document.getElementById('exportBadge').textContent}`,
+        `分数：${document.getElementById('exportScore').textContent}`,
+        `信号：${document.getElementById('exportSignal').textContent}`,
+        `摘要：${document.getElementById('exportSummary').textContent}`,
+        `风险：${document.getElementById('exportRisk').textContent}`
+      ].join('
+');
+      try {
+        await navigator.clipboard.writeText(text);
+        document.getElementById('copyExportBtn').textContent = '已复制';
+        setTimeout(() => document.getElementById('copyExportBtn').textContent = '复制摘要', 1200);
+      } catch (e) {
+        alert('复制失败，请手动复制。');
+      }
+    });
+
+    document.getElementById('downloadExportBtn').addEventListener('click', () => {
+      const cardHtml = document.getElementById('exportCard').outerHTML;
+      const blob = new Blob([`<html><head><meta charset="UTF-8"><title>MI6 Export Card</title></head><body style="background:#070b13;padding:24px;font-family:Inter,Arial,sans-serif;">${cardHtml}</body></html>`], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mi6-export-card.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
     document.getElementById('resetBtn').addEventListener('click', resetForm);
   </script>
   <script>
