@@ -706,5 +706,301 @@
     document.getElementById('calculateBtn').addEventListener('click', calculateResult);
     document.getElementById('resetBtn').addEventListener('click', resetForm);
   </script>
+  <script>
+    // v2 upgrade: advanced filters + audit + richer scoring logic
+    const advancedState = {
+      session: 'overlap',
+      atr: 'normal',
+      structural: 'yes',
+      isolated: 'no',
+      trigger: 'yes',
+      keyzone: 'yes',
+      trapzone: 'no'
+    };
+
+    function buildAdvancedControls() {
+      const leftPanel = document.querySelector('.panel');
+      const actions = document.querySelector('.actions');
+      const notesField = document.getElementById('notes').closest('.field');
+
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `
+        <div class="section-title" style="margin-top:22px;">
+          <h2>高级过滤区（v2）</h2>
+          <div class="hint">过滤垃圾信号、加入时段与波动审计</div>
+        </div>
+
+        <div class="score-grid" id="advancedGrid">
+          <div class="score-item">
+            <h3>结构一致性</h3>
+            <p>当前交易方向是否顺着主趋势。逆势单会自动降级处理。</p>
+            <div class="field">
+              <select id="structuralConsistency">
+                <option value="yes">顺主趋势</option>
+                <option value="no">逆主趋势</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="score-item">
+            <h3>形态完整性</h3>
+            <p>信号是否有前后结构支撑，而不是单根 K 线孤立出现。</p>
+            <div class="field">
+              <select id="isolatedPattern">
+                <option value="no">不是孤立形态</option>
+                <option value="yes">是孤立形态</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="score-item">
+            <h3>Session Filter</h3>
+            <p>选择当前时段。重叠时段质量较高，亚洲盘默认偏保守。</p>
+            <div class="field">
+              <select id="sessionFilter">
+                <option value="asia">亚洲盘</option>
+                <option value="london">伦敦盘</option>
+                <option value="newyork">纽约盘</option>
+                <option value="overlap" selected>重叠时段</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="score-item">
+            <h3>ATR 波动过滤</h3>
+            <p>波动过低代表没量，过高代表过热，正常波动才是较优环境。</p>
+            <div class="field">
+              <select id="atrFilter">
+                <option value="low">过低</option>
+                <option value="normal" selected>正常</option>
+                <option value="high">过高</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top:22px;">
+          <h2>执行审计区（v2）</h2>
+          <div class="hint">关键项失败时，系统直接 BLOCK</div>
+        </div>
+
+        <div class="score-grid" id="auditGrid">
+          <div class="score-item">
+            <h3>Trigger Audit</h3>
+            <p>是否真的出现明确信号，例如强阳、强阴、拒绝或吞没。</p>
+            <div class="field">
+              <select id="triggerAudit">
+                <option value="yes" selected>有明确触发</option>
+                <option value="no">没有明确触发</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="score-item">
+            <h3>Key Zone Audit</h3>
+            <p>是否位于关键区域，例如 Fibo、支撑阻力、回踩区、突破确认区。</p>
+            <div class="field">
+              <select id="keyZoneAudit">
+                <option value="yes" selected>在关键区</option>
+                <option value="no">不在关键区</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="score-item">
+            <h3>Trap Zone Audit</h3>
+            <p>是否接近高密度成交区、明显阻力位或容易诱多诱空的陷阱区域。</p>
+            <div class="field">
+              <select id="trapZoneAudit">
+                <option value="no" selected>不是陷阱区</option>
+                <option value="yes">接近陷阱区</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      `;
+      leftPanel.insertBefore(wrapper, notesField);
+    }
+
+    function getResultRank(result) {
+      return { 'NO TRADE': 0, 'WATCH': 1, 'TRADE': 2, 'STRONG TRADE': 3, 'BLOCK': -1 }[result] ?? 0;
+    }
+
+    function downgradeResult(result) {
+      if (result === 'STRONG TRADE') return 'TRADE';
+      if (result === 'TRADE') return 'WATCH';
+      if (result === 'WATCH') return 'NO TRADE';
+      return 'NO TRADE';
+    }
+
+    function updateAdvancedState() {
+      advancedState.session = document.getElementById('sessionFilter').value;
+      advancedState.atr = document.getElementById('atrFilter').value;
+      advancedState.structural = document.getElementById('structuralConsistency').value;
+      advancedState.isolated = document.getElementById('isolatedPattern').value;
+      advancedState.trigger = document.getElementById('triggerAudit').value;
+      advancedState.keyzone = document.getElementById('keyZoneAudit').value;
+      advancedState.trapzone = document.getElementById('trapZoneAudit').value;
+    }
+
+    function getSessionText(value) {
+      return { asia: '亚洲盘', london: '伦敦盘', newyork: '纽约盘', overlap: '重叠时段' }[value] || value;
+    }
+
+    function getAtrText(value) {
+      return { low: '过低', normal: '正常', high: '过高' }[value] || value;
+    }
+
+    const originalCalculateResult = calculateResult;
+    calculateResult = function() {
+      updateAdvancedState();
+
+      const direction = document.getElementById('direction').value;
+      const trend = document.getElementById('trend').value;
+      const symbol = document.getElementById('symbol').value.trim();
+      const notes = document.getElementById('notes').value.trim();
+      let score = Object.values(state).reduce((a, b) => a + b, 0);
+
+      let result = 'NO TRADE';
+      if (score === 6) result = 'STRONG TRADE';
+      else if (score === 5) result = 'TRADE';
+      else if (score === 4) result = 'WATCH';
+
+      const warnings = [];
+      const auditFails = [];
+
+      const directionWarning = getDirectionWarning(direction, trend);
+      if (directionWarning) {
+        warnings.push(directionWarning);
+        result = downgradeResult(result);
+      }
+
+      if (trend === 'sideways') {
+        warnings.push('当前属于盘整市场，系统自动偏保守处理。');
+        result = downgradeResult(result);
+      }
+
+      if (advancedState.structural === 'no') {
+        warnings.push('当前方向与主趋势不一致，已自动降级。');
+        result = downgradeResult(result);
+      }
+
+      if (advancedState.isolated === 'yes') {
+        warnings.push('当前形态偏孤立，缺乏前后结构支撑。');
+        result = downgradeResult(result);
+      }
+
+      if (advancedState.session === 'asia') {
+        warnings.push('当前为亚洲盘，流动性与动能通常较弱，系统自动偏保守。');
+        result = downgradeResult(result);
+      }
+
+      if (advancedState.atr !== 'normal') {
+        warnings.push(`ATR 波动状态为${getAtrText(advancedState.atr)}，已自动降级。`);
+        result = downgradeResult(result);
+      }
+
+      if (advancedState.trigger === 'no') auditFails.push('没有明确触发');
+      if (advancedState.keyzone === 'no') auditFails.push('当前位置不在关键区');
+      if (advancedState.trapzone === 'yes') auditFails.push('当前接近陷阱区或高阻力区');
+
+      if (auditFails.length > 0) {
+        result = 'BLOCK';
+      }
+
+      let badgeClass = 'no';
+      if (result === 'STRONG TRADE') badgeClass = 'strong';
+      else if (result === 'TRADE') badgeClass = 'trade';
+      else if (result === 'WATCH') badgeClass = 'watch';
+      else badgeClass = 'no';
+
+      document.getElementById('scoreNumber').textContent = `${score}/6`;
+      document.getElementById('scoreLabel').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)} · ${getSessionText(advancedState.session)}`;
+
+      const badge = document.getElementById('resultBadge');
+      badge.textContent = result;
+      badge.className = `badge ${badgeClass}`;
+
+      buildChecks(score);
+      const checks = document.getElementById('checks');
+      const extras = [
+        ['结构一致性', advancedState.structural === 'yes' ? '顺主趋势' : '逆主趋势', advancedState.structural === 'yes' ? 'ok' : 'bad'],
+        ['形态完整性', advancedState.isolated === 'yes' ? '孤立形态' : '结构完整', advancedState.isolated === 'yes' ? 'bad' : 'ok'],
+        ['Session', getSessionText(advancedState.session), advancedState.session === 'asia' ? 'warn' : 'ok'],
+        ['ATR', getAtrText(advancedState.atr), advancedState.atr === 'normal' ? 'ok' : 'warn'],
+        ['Trigger Audit', advancedState.trigger === 'yes' ? '通过' : '失败', advancedState.trigger === 'yes' ? 'ok' : 'bad'],
+        ['Key Zone Audit', advancedState.keyzone === 'yes' ? '通过' : '失败', advancedState.keyzone === 'yes' ? 'ok' : 'bad'],
+        ['Trap Zone Audit', advancedState.trapzone === 'yes' ? '危险' : '安全', advancedState.trapzone === 'yes' ? 'bad' : 'ok'],
+      ];
+      extras.forEach(([label, text, cls]) => {
+        const row = document.createElement('div');
+        row.className = 'mini-row';
+        row.innerHTML = `<span>${label}</span><span class="${cls}">${text}</span>`;
+        checks.appendChild(row);
+      });
+
+      const positives = [];
+      const missing = [];
+      Object.keys(state).forEach(key => {
+        if (state[key] === 1) positives.push(labels[key]);
+        else missing.push(labels[key]);
+      });
+
+      let analysis = `当前选择为 ${direction}，市场状态为 ${getTrendText(trend)}。六分基础得分为 ${score}/6。`;
+      if (positives.length) analysis += ` 已满足：${positives.join('、')}。`;
+      if (missing.length) analysis += ` 欠缺：${missing.join('、')}。`;
+      analysis += ` 高级过滤：结构${advancedState.structural === 'yes' ? '一致' : '不一致'}，形态${advancedState.isolated === 'yes' ? '偏孤立' : '完整'}，时段为${getSessionText(advancedState.session)}，ATR 为${getAtrText(advancedState.atr)}。`;
+      if (warnings.length) analysis += ` 风险修正：${warnings.join(' ')}`;
+      if (auditFails.length) analysis += ` 审计失败：${auditFails.join('、')}。`;
+      if (notes) analysis += ` 备注：${notes}`;
+      document.getElementById('analysisText').textContent = analysis;
+
+      let advice = '';
+      if (result === 'STRONG TRADE') {
+        advice = '基础评分与过滤、审计均通过，可进入执行阶段。下一步应补充 Entry、SL、TP 与仓位控制。';
+      } else if (result === 'TRADE') {
+        advice = '整体条件良好，可以准备执行，但仍要确认风险报酬比与进场时机。';
+      } else if (result === 'WATCH') {
+        advice = '当前更适合等待。建议继续观察更清晰的触发、结构突破或更优位置。';
+      } else if (result === 'BLOCK') {
+        advice = '当前被系统直接拦截。请先解决审计失败项，再考虑是否重新评估。';
+      } else {
+        advice = '当前不建议交易。先保护资金，等待更高质量的 setup。';
+      }
+      document.getElementById('adviceText').textContent = advice;
+
+      const riskList = document.getElementById('riskList');
+      riskList.innerHTML = '';
+      const risks = [
+        '分数高不等于必胜，系统只是过滤器，不是保证器。',
+        '任何结果都必须搭配止损、仓位和风险报酬比。',
+        '没有触发，不要提前进场。'
+      ];
+      if (warnings.length) warnings.forEach(w => risks.unshift(w));
+      if (auditFails.length) auditFails.forEach(a => risks.unshift(`审计失败：${a}`));
+      risks.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        riskList.appendChild(li);
+      });
+    };
+
+    const originalResetForm = resetForm;
+    resetForm = function() {
+      originalResetForm();
+      document.getElementById('structuralConsistency').value = 'yes';
+      document.getElementById('isolatedPattern').value = 'no';
+      document.getElementById('sessionFilter').value = 'overlap';
+      document.getElementById('atrFilter').value = 'normal';
+      document.getElementById('triggerAudit').value = 'yes';
+      document.getElementById('keyZoneAudit').value = 'yes';
+      document.getElementById('trapZoneAudit').value = 'no';
+      Object.assign(advancedState, {
+        session: 'overlap', atr: 'normal', structural: 'yes', isolated: 'no', trigger: 'yes', keyzone: 'yes', trapzone: 'no'
+      });
+    };
+
+    buildAdvancedControls();
+  </script>
 </body>
 </html>
