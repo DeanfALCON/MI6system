@@ -3,420 +3,308 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI6 六分交易评分器 v2.1</title>
+  <title>MI6 六分交易评分器 v2.1 Stable</title>
   <style>
-    :root {
-      --bg: #070b13;
-      --panel: rgba(14, 20, 34, 0.94);
-      --panel-2: rgba(20, 28, 46, 0.95);
-      --line: rgba(138, 160, 255, 0.16);
-      --line-strong: rgba(138, 160, 255, 0.32);
-      --text: #eef3ff;
-      --muted: #9fb0d1;
-      --accent: #8da7ff;
-      --accent-2: #b27dff;
-      --good: #19c37d;
-      --warn: #f5b942;
-      --bad: #ef4444;
-      --shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
-      --radius: 24px;
+    :root{
+      --bg:#070b13;
+      --panel:rgba(14,20,34,.94);
+      --panel2:rgba(20,28,46,.95);
+      --line:rgba(138,160,255,.16);
+      --line-strong:rgba(138,160,255,.32);
+      --text:#eef3ff;
+      --muted:#9fb0d1;
+      --accent:#8da7ff;
+      --accent2:#b27dff;
+      --good:#19c37d;
+      --warn:#f5b942;
+      --bad:#ef4444;
+      --shadow:0 24px 60px rgba(0,0,0,.42);
+      --radius:24px;
     }
 
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,"Noto Sans SC","Microsoft YaHei",Arial,sans-serif;
       background:
-        radial-gradient(circle at 15% 15%, rgba(141,167,255,0.15), transparent 24%),
-        radial-gradient(circle at 85% 12%, rgba(178,125,255,0.12), transparent 20%),
-        linear-gradient(180deg, #060913 0%, #090e1a 45%, #070b13 100%);
-      color: var(--text);
-      min-height: 100vh;
+        radial-gradient(circle at 15% 15%, rgba(141,167,255,.15), transparent 24%),
+        radial-gradient(circle at 85% 12%, rgba(178,125,255,.12), transparent 20%),
+        linear-gradient(180deg,#060913 0%,#090e1a 45%,#070b13 100%);
+      color:var(--text);
+      min-height:100vh;
     }
 
-    .wrap {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 28px 20px 48px;
+    .wrap{
+      max-width:1320px;
+      margin:0 auto;
+      padding:28px 20px 48px;
     }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-      padding: 14px 18px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(9, 14, 26, 0.72);
-      backdrop-filter: blur(16px);
-      box-shadow: var(--shadow);
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+      padding:14px 18px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(9,14,26,.72);
+      backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand-mark{
+      width:46px;height:46px;border-radius:14px;
+      display:grid;place-items:center;
+      font-weight:900;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      box-shadow:0 12px 26px rgba(125,120,255,.32);
+    }
+    .brand-text strong{display:block;font-size:16px}
+    .brand-text span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+
+    .top-metrics{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .metric-pill{
+      padding:10px 12px;border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:#dfe8ff;font-size:12px;white-space:nowrap;
     }
 
-    .brand-mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 12px 26px rgba(125, 120, 255, 0.32);
+    .hero{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+      margin-bottom:18px;
     }
 
-    .brand-text strong { display: block; font-size: 16px; }
-    .brand-text span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
-
-    .top-metrics {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
     }
 
-    .metric-pill {
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.03);
-      color: #dfe8ff;
-      font-size: 12px;
-      white-space: nowrap;
+    .hero-main{
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+      min-height:220px;
+      background:linear-gradient(135deg,rgba(141,167,255,.16),rgba(178,125,255,.08)),rgba(10,16,28,.82);
     }
 
-    .hero {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 18px;
-      margin-bottom: 18px;
+    .hero-main::before{
+      content:"MI6 v2.1";
+      position:absolute;
+      right:22px;top:18px;
+      font-size:78px;line-height:.9;
+      font-weight:900;
+      color:rgba(255,255,255,.05);
+      pointer-events:none;
     }
 
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:#e8eeff;font-size:12px;margin-bottom:14px;
     }
 
-    .hero-main {
-      padding: 28px;
-      position: relative;
-      overflow: hidden;
-      min-height: 240px;
-      background: linear-gradient(135deg, rgba(141,167,255,0.16), rgba(178,125,255,0.08)), rgba(10, 16, 28, 0.82);
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(30px,4vw,46px);
+      line-height:1.06;
+      letter-spacing:-1px;
+      max-width:760px;
     }
 
-    .hero-main::before {
-      content: "MI6 v2.1";
-      position: absolute;
-      right: 22px;
-      top: 18px;
-      font-size: 78px;
-      line-height: 0.9;
-      font-weight: 900;
-      color: rgba(255,255,255,0.05);
-      pointer-events: none;
+    .sub{margin:0;color:var(--muted);font-size:15px;line-height:1.8;max-width:760px}
+
+    .hero-points{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .hero-point{
+      padding:10px 12px;border-radius:14px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:12px;color:#e5edff;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #e8eeff;
-      font-size: 12px;
-      margin-bottom: 14px;
+    .hero-side{
+      padding:22px;display:flex;flex-direction:column;gap:12px;justify-content:space-between;
+      background:linear-gradient(180deg,rgba(17,24,40,.9),rgba(10,14,24,.92));
     }
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: clamp(30px, 4vw, 46px);
-      line-height: 1.06;
-      letter-spacing: -1px;
-      max-width: 760px;
+    .hero-side-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .info-box{
+      padding:14px;border-radius:18px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+    }
+    .info-box small{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}
+    .info-box strong{display:block;font-size:16px;line-height:1.4}
+
+    .hero-side-note{
+      padding:14px;border-radius:18px;
+      border:1px solid rgba(245,185,66,.18);
+      background:rgba(245,185,66,.08);
+      color:#fff2d5;font-size:13px;line-height:1.7;
     }
 
-    .sub {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.8;
-      max-width: 760px;
+    .layout{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 430px;
+      gap:18px;
     }
 
-    .hero-points {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 18px;
+    .panel{
+      padding:24px;
+      background:linear-gradient(180deg,rgba(12,18,31,.88),rgba(10,15,26,.92));
     }
 
-    .hero-point {
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 12px;
-      color: #e5edff;
+    .panel h2{margin:0;font-size:20px}
+    .section-title{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;
+    }
+    .hint{color:var(--muted);font-size:13px}
+
+    .group-shell{
+      padding:18px;border-radius:20px;border:1px solid var(--line);
+      background:rgba(255,255,255,.025);margin-bottom:18px;
     }
 
-    .hero-side {
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      justify-content: space-between;
-      background: linear-gradient(180deg, rgba(17,24,40,0.9), rgba(10,14,24,0.92));
+    .group-shell-head{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;
+    }
+    .group-shell-head strong{font-size:16px}
+    .group-shell-head span{color:var(--muted);font-size:12px}
+
+    .grid-2,.score-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
     }
 
-    .hero-side-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    .field{display:flex;flex-direction:column;gap:8px}
+    .field label{font-size:13px;color:#dce6ff;font-weight:700}
+
+    select,input[type="text"],textarea{
+      width:100%;
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:14px;
+      color:var(--text);
+      padding:13px 14px;
+      outline:none;
+      font-size:14px;
+      transition:border-color .18s ease, box-shadow .18s ease;
     }
 
-    .info-box {
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.03);
+    select:focus,input[type="text"]:focus,textarea:focus{
+      border-color:var(--line-strong);
+      box-shadow:0 0 0 4px rgba(141,167,255,.08);
     }
 
-    .info-box small { display: block; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
-    .info-box strong { display: block; font-size: 16px; line-height: 1.4; }
+    textarea{min-height:110px;resize:vertical}
 
-    .hero-side-note {
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid rgba(245,185,66,0.18);
-      background: rgba(245,185,66,0.08);
-      color: #fff2d5;
-      font-size: 13px;
-      line-height: 1.7;
+    .score-item{
+      padding:18px;border:1px solid var(--line);border-radius:18px;
+      background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.015));
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 430px;
-      gap: 18px;
+    .score-item h3{margin:0 0 6px;font-size:16px}
+    .score-item p{margin:0 0 14px;color:var(--muted);font-size:12px;line-height:1.7;min-height:40px}
+
+    .toggle-group{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:8px;
     }
 
-    .panel {
-      padding: 24px;
-      background: linear-gradient(180deg, rgba(12, 18, 31, 0.88), rgba(10, 15, 26, 0.92));
+    .toggle-btn{
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      border-radius:14px;
+      padding:11px 12px;
+      cursor:pointer;
+      font-weight:800;
+      transition:.18s ease;
+      user-select:none;
     }
 
-    .panel h2 { margin: 0; font-size: 20px; }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+    .toggle-btn:hover{
+      border-color:var(--line-strong);
+      transform:translateY(-1px);
     }
 
-    .hint { color: var(--muted); font-size: 13px; }
-
-    .group-shell {
-      padding: 18px;
-      border-radius: 20px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.025);
-      margin-bottom: 18px;
+    .toggle-btn.active.yes{
+      background:rgba(25,195,125,.16);
+      border-color:rgba(25,195,125,.55);
+      color:#dff8ee;
     }
 
-    .group-shell-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+    .toggle-btn.active.no{
+      background:rgba(239,68,68,.16);
+      border-color:rgba(239,68,68,.5);
+      color:#ffe7e7;
     }
 
-    .group-shell-head strong { font-size: 16px; }
-    .group-shell-head span { color: var(--muted); font-size: 12px; }
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
 
-    .grid-2, .score-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
+    button.primary,button.secondary{
+      border:none;border-radius:14px;padding:14px 18px;
+      font-size:14px;font-weight:900;cursor:pointer;
     }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .primary{
+      background:linear-gradient(135deg,var(--accent),#6a82ff 60%,var(--accent2));
+      color:white;box-shadow:0 14px 32px rgba(106,130,255,.3);
     }
 
-    .field label {
-      font-size: 13px;
-      color: #dce6ff;
-      font-weight: 700;
+    .secondary{
+      background:#1c2538;color:#dce6ff;border:1px solid var(--line);
     }
 
-    select, input[type="text"], textarea {
-      width: 100%;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      color: var(--text);
-      padding: 13px 14px;
-      outline: none;
-      font-size: 14px;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    .badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:10px 14px;min-width:122px;border-radius:999px;
+      font-weight:900;font-size:13px;border:1px solid transparent;
     }
 
-    select:focus, input[type="text"]:focus, textarea:focus {
-      border-color: var(--line-strong);
-      box-shadow: 0 0 0 4px rgba(141,167,255,0.08);
+    .badge.strong{background:rgba(25,195,125,.16);color:#dff8ee;border-color:rgba(25,195,125,.5)}
+    .badge.trade{background:rgba(61,174,255,.15);color:#e2f3ff;border-color:rgba(61,174,255,.45)}
+    .badge.watch{background:rgba(245,185,66,.16);color:#fff3d6;border-color:rgba(245,185,66,.45)}
+    .badge.no{background:rgba(239,68,68,.16);color:#ffe7e7;border-color:rgba(239,68,68,.45)}
+
+    .terminal-panel{
+      background:linear-gradient(180deg,rgba(8,13,23,.96),rgba(6,10,18,.98));
+      border-color:rgba(92,114,255,.22);
     }
 
-    textarea { min-height: 110px; resize: vertical; }
-
-    .score-item {
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.028), rgba(255,255,255,0.015));
+    .result-top{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
     }
 
-    .score-item h3 { margin: 0 0 6px; font-size: 16px; }
-    .score-item p { margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.7; min-height: 40px; }
+    .result-sub{color:var(--muted);font-size:12px;margin-bottom:16px;line-height:1.7}
 
-    .toggle-group {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+    .terminal-shell{
+      border:1px solid rgba(86,107,255,.18);
+      background:radial-gradient(circle at top right, rgba(64,110,255,.08), transparent 32%), linear-gradient(180deg, rgba(6,11,20,.96), rgba(9,14,24,.98));
+      border-radius:22px;padding:16px;
     }
 
-    .toggle-btn {
-      border: 1px solid var(--line);
-      background: var(--panel-2);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 11px 12px;
-      cursor: pointer;
-      font-weight: 800;
-      transition: 0.18s ease;
-      user-select: none;
+    .terminal-shell-top{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06);
     }
 
-    .toggle-btn:hover {
-      border-color: var(--line-strong);
-      transform: translateY(-1px);
-    }
-
-    .toggle-btn.active.yes {
-      background: rgba(25,195,125,0.16);
-      border-color: rgba(25,195,125,0.55);
-      color: #dff8ee;
-    }
-
-    .toggle-btn.active.no {
-      background: rgba(239,68,68,0.16);
-      border-color: rgba(239,68,68,0.5);
-      color: #ffe7e7;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    button.primary, button.secondary {
-      border: none;
-      border-radius: 14px;
-      padding: 14px 18px;
-      font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .primary {
-      background: linear-gradient(135deg, var(--accent), #6a82ff 60%, var(--accent-2));
-      color: white;
-      box-shadow: 0 14px 32px rgba(106,130,255,0.3);
-    }
-
-    .secondary {
-      background: #1c2538;
-      color: #dce6ff;
-      border: 1px solid var(--line);
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 14px;
-      min-width: 122px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 13px;
-      border: 1px solid transparent;
-    }
-
-    .badge.strong { background: rgba(25,195,125,0.16); color: #dff8ee; border-color: rgba(25,195,125,0.5); }
-    .badge.trade { background: rgba(61,174,255,0.15); color: #e2f3ff; border-color: rgba(61,174,255,0.45); }
-    .badge.watch { background: rgba(245,185,66,0.16); color: #fff3d6; border-color: rgba(245,185,66,0.45); }
-    .badge.no { background: rgba(239,68,68,0.16); color: #ffe7e7; border-color: rgba(239,68,68,0.45); }
-
-    .terminal-panel {
-      background: linear-gradient(180deg, rgba(8, 13, 23, 0.96), rgba(6, 10, 18, 0.98));
-      border-color: rgba(92, 114, 255, 0.22);
-    }
-
-    .result-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .result-sub {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 16px;
-      line-height: 1.7;
-    }
-
-    .terminal-shell {
-      border: 1px solid rgba(86, 107, 255, 0.18);
-      background: radial-gradient(circle at top right, rgba(64, 110, 255, 0.08), transparent 32%), linear-gradient(180deg, rgba(6, 11, 20, 0.96), rgba(9, 14, 24, 0.98));
-      border-radius: 22px;
-      padding: 16px;
-    }
-
-    .terminal-shell-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding-bottom: 12px;
-      margin-bottom: 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .terminal-dots { display: flex; gap: 6px; }
-    .terminal-dots span { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
-    .terminal-dots span:nth-child(1) { background: #ff5f57; }
-    .terminal-dots span:nth-child(2) { background: #febc2e; }
-    .terminal-dots span:nth-child(3) { background: #28c840; }
+    .terminal-dots{display:flex;gap:6px}
+    .terminal-dots span{width:10px;height:10px;border-radius:999px;display:inline-block}
+    .terminal-dots span:nth-child(1){background:#ff5f57}
+    .terminal-dots span:nth-child(2){background:#febc2e}
+    .terminal-dots span:nth-child(3){background:#28c840}
 
     .terminal-name,
     .terminal-block-title,
@@ -424,304 +312,194 @@
     .export-section-title,
     .export-big-label,
     .export-footer-item small,
-    .export-signal-chip span {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    .export-signal-chip span{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     }
 
-    .terminal-name { color: #b9c7ea; font-size: 12px; }
+    .terminal-name{color:#b9c7ea;font-size:12px}
 
-    .terminal-status-grid,
-    .terminal-kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
+    .terminal-status-grid,.terminal-kpi-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;
     }
 
-    .terminal-stat,
-    .terminal-kpi-card {
-      padding: 12px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.02);
-      border-radius: 16px;
+    .terminal-stat,.terminal-kpi-card{
+      padding:12px;border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.02);border-radius:16px;
     }
 
-    .terminal-stat small,
-    .terminal-kpi-card small {
-      display: block;
-      color: #7f93bf;
-      font-size: 10px;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
+    .terminal-stat small,.terminal-kpi-card small{
+      display:block;color:#7f93bf;font-size:10px;letter-spacing:1px;margin-bottom:6px;
     }
 
-    .terminal-stat strong,
-    .terminal-kpi-card strong {
-      display: block;
-      font-size: 13px;
-      color: #eff4ff;
-      line-height: 1.4;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    .terminal-stat strong,.terminal-kpi-card strong{
+      display:block;font-size:13px;color:#eff4ff;line-height:1.4;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     }
 
-    .score-box {
-      padding: 20px;
-      border-radius: 22px;
-      border: 1px solid rgba(96, 122, 255, 0.24);
-      background: radial-gradient(circle at top right, rgba(71, 120, 255, 0.18), transparent 30%), linear-gradient(180deg, rgba(12, 20, 38, 0.96), rgba(10, 16, 30, 0.96));
-      margin-bottom: 14px;
+    .score-box{
+      padding:20px;border-radius:22px;border:1px solid rgba(96,122,255,.24);
+      background:radial-gradient(circle at top right, rgba(71,120,255,.18), transparent 30%), linear-gradient(180deg, rgba(12,20,38,.96), rgba(10,16,30,.96));
+      margin-bottom:14px;
     }
 
-    .score-box-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-      color: #98aae0;
-      font-size: 11px;
-      letter-spacing: 1px;
+    .score-box-head{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      margin-bottom:10px;color:#98aae0;font-size:11px;letter-spacing:1px;
     }
 
-    .score-number {
-      font-size: 58px;
-      line-height: 1;
-      font-weight: 900;
-      margin-bottom: 10px;
-      letter-spacing: -2px;
+    .score-number{
+      font-size:58px;line-height:1;font-weight:900;margin-bottom:10px;letter-spacing:-2px;
     }
 
-    .score-progress-track {
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      overflow: hidden;
-      margin-bottom: 10px;
-      border: 1px solid rgba(255,255,255,0.05);
+    .score-progress-track{
+      width:100%;height:10px;border-radius:999px;background:rgba(255,255,255,.06);
+      overflow:hidden;margin-bottom:10px;border:1px solid rgba(255,255,255,.05);
     }
 
-    .score-progress-bar {
-      height: 100%;
-      width: 0%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #ef4444 0%, #f5b942 50%, #19c37d 100%);
-      transition: width 0.28s ease;
+    .score-progress-bar{
+      height:100%;width:0%;border-radius:inherit;
+      background:linear-gradient(90deg,#ef4444 0%,#f5b942 50%,#19c37d 100%);
+      transition:width .28s ease;
     }
 
-    .score-label { color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .score-label{color:var(--muted);font-size:13px;line-height:1.7}
 
-    .terminal-block { margin-bottom: 14px; }
-    .terminal-block-title { margin-bottom: 8px; color: #8da7ff; font-size: 11px; letter-spacing: 1.2px; }
+    .terminal-block{margin-bottom:14px}
+    .terminal-block-title{margin-bottom:8px;color:#8da7ff;font-size:11px;letter-spacing:1.2px}
+    .mini-list{display:grid;gap:10px}
 
-    .mini-list { display: grid; gap: 10px; }
-
-    .mini-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 11px 12px;
-      background: rgba(255,255,255,0.025);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      font-size: 14px;
+    .mini-row{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      padding:11px 12px;background:rgba(255,255,255,.025);
+      border:1px solid var(--line);border-radius:14px;font-size:14px;
     }
 
-    .mini-row span:last-child { font-weight: 800; text-align: right; }
+    .mini-row span:last-child{font-weight:800;text-align:right}
+    .ok{color:var(--good)} .warn{color:var(--warn)} .bad{color:var(--bad)}
 
-    .ok { color: var(--good); }
-    .warn { color: var(--warn); }
-    .bad { color: var(--bad); }
-
-    .block {
-      margin-top: 0;
-      padding: 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.02);
+    .block{
+      margin-top:0;padding:16px;border-radius:18px;
+      border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);
     }
 
-    .block h3 { margin: 0 0 10px; font-size: 15px; }
-    .block p, .block li { color: var(--muted); font-size: 14px; line-height: 1.8; margin: 0; }
-    .block ul { margin: 0; padding-left: 18px; }
+    .block h3{margin:0 0 10px;font-size:15px}
+    .block p,.block li{color:var(--muted);font-size:14px;line-height:1.8;margin:0}
+    .block ul{margin:0;padding-left:18px}
+    .risk-block{border-color:rgba(239,68,68,.18);background:rgba(239,68,68,.04)}
 
-    .risk-block { border-color: rgba(239, 68, 68, 0.18); background: rgba(239, 68, 68, 0.04); }
-
-    .export-card {
-      border-radius: 28px;
-      padding: 24px;
-      border: 1px solid rgba(141, 167, 255, 0.22);
+    .export-card{
+      border-radius:28px;
+      padding:24px;
+      border:1px solid rgba(141,167,255,.22);
       background:
-        radial-gradient(circle at 85% 10%, rgba(141,167,255,0.2), transparent 24%),
-        radial-gradient(circle at 10% 90%, rgba(178,125,255,0.16), transparent 20%),
-        linear-gradient(180deg, rgba(15,21,36,0.96), rgba(8,12,22,0.98));
-      position: relative;
-      overflow: hidden;
-      min-height: 760px;
-      aspect-ratio: 4 / 5;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.24);
+        radial-gradient(circle at 85% 10%, rgba(141,167,255,.2), transparent 24%),
+        radial-gradient(circle at 10% 90%, rgba(178,125,255,.16), transparent 20%),
+        linear-gradient(180deg, rgba(15,21,36,.96), rgba(8,12,22,.98));
+      position:relative;
+      overflow:hidden;
+      min-height:760px;
+      aspect-ratio:4 / 5;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      box-shadow:0 18px 40px rgba(0,0,0,.24);
     }
 
-    .export-card-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 24px;
+    .export-card-head{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:24px;
     }
 
-    .export-brand { font-weight: 900; font-size: 18px; line-height: 1.3; }
-    .export-sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .export-brand{font-weight:900;font-size:18px;line-height:1.3}
+    .export-sub{color:var(--muted);font-size:12px;margin-top:4px}
 
-    .export-hero {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      align-items: end;
-      margin-bottom: 18px;
+    .export-hero{
+      display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end;margin-bottom:18px;
     }
 
-    .export-big-score {
-      font-size: clamp(56px, 6vw, 88px);
-      line-height: 0.95;
-      font-weight: 900;
-      letter-spacing: -3px;
+    .export-big-score{
+      font-size:clamp(56px,6vw,88px);
+      line-height:.95;font-weight:900;letter-spacing:-3px;
     }
 
-    .export-big-label {
-      margin-top: 8px;
-      font-size: 11px;
-      letter-spacing: 1.4px;
-      color: #8da7ff;
+    .export-big-label{
+      margin-top:8px;font-size:11px;letter-spacing:1.4px;color:#8da7ff;
     }
 
-    .export-hero-right {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: flex-end;
-      text-align: right;
+    .export-hero-right{
+      display:flex;flex-direction:column;gap:10px;align-items:flex-end;text-align:right;
     }
 
-    .export-signal-chip {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: flex-end;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
+    .export-signal-chip{
+      display:inline-flex;flex-direction:column;align-items:flex-end;
+      padding:12px 14px;border-radius:16px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
     }
 
-    .export-signal-chip span,
-    .export-footer-item small {
-      display: block;
-      color: #8ea0cb;
-      font-size: 10px;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
+    .export-signal-chip span,.export-footer-item small{
+      display:block;color:#8ea0cb;font-size:10px;letter-spacing:1px;margin-bottom:6px;
     }
 
-    .export-signal-chip strong {
-      display: block;
-      font-size: 20px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    .export-signal-chip strong{
+      display:block;font-size:20px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     }
 
-    .export-meta {
-      color: #dbe5ff;
-      font-size: 12px;
-      line-height: 1.8;
-      max-width: 280px;
+    .export-meta{color:#dbe5ff;font-size:12px;line-height:1.8;max-width:280px}
+
+    .export-divider{
+      height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+      margin:10px 0 18px;
     }
 
-    .export-divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-      margin: 10px 0 18px;
+    .export-section-grid{
+      display:grid;grid-template-columns:1fr;gap:14px;flex:1;
     }
 
-    .export-section-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-      flex: 1;
+    .export-panel{
+      padding:16px;border-radius:18px;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
     }
 
-    .export-panel {
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
+    .export-panel-risk{
+      border-color:rgba(239,68,68,.15);
+      background:rgba(239,68,68,.05);
     }
 
-    .export-panel-risk {
-      border-color: rgba(239, 68, 68, 0.15);
-      background: rgba(239, 68, 68, 0.05);
+    .export-section-title{
+      color:#8da7ff;font-size:11px;letter-spacing:1px;margin-bottom:8px;
     }
 
-    .export-section-title {
-      color: #8da7ff;
-      font-size: 11px;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
+    .export-panel p{margin:0;color:#dfe7fb;font-size:14px;line-height:1.9}
+
+    .export-footer{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;
     }
 
-    .export-panel p {
-      margin: 0;
-      color: #dfe7fb;
-      font-size: 14px;
-      line-height: 1.9;
+    .export-footer-item{
+      padding:12px;border-radius:16px;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
     }
 
-    .export-footer {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 18px;
+    .export-footer-item strong{
+      display:block;font-size:12px;line-height:1.7;color:#eef3ff;
     }
 
-    .export-footer-item {
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
+    .export-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .footer-note{margin-top:16px;color:var(--muted);font-size:12px;line-height:1.8}
+
+    @media (max-width:1120px){
+      .hero,.layout{grid-template-columns:1fr}
     }
 
-    .export-footer-item strong {
-      display: block;
-      font-size: 12px;
-      line-height: 1.7;
-      color: #eef3ff;
-    }
-
-    .export-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-    .footer-note { margin-top: 16px; color: var(--muted); font-size: 12px; line-height: 1.8; }
-
-    @media (max-width: 1120px) {
-      .hero, .layout { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 760px) {
-      .grid-2,
-      .score-grid,
-      .hero-side-grid,
-      .terminal-status-grid,
-      .terminal-kpi-grid,
-      .export-hero,
-      .export-footer {
-        grid-template-columns: 1fr;
+    @media (max-width:760px){
+      .grid-2,.score-grid,.hero-side-grid,.terminal-status-grid,.terminal-kpi-grid,.export-hero,.export-footer{
+        grid-template-columns:1fr;
       }
-
-      .topbar { flex-direction: column; align-items: flex-start; }
-      .top-metrics { justify-content: flex-start; }
-      .terminal-shell-top { flex-direction: column; align-items: flex-start; }
-      .score-number { font-size: 46px; }
-      .export-card { min-height: auto; }
+      .topbar{flex-direction:column;align-items:flex-start}
+      .top-metrics{justify-content:flex-start}
+      .terminal-shell-top{flex-direction:column;align-items:flex-start}
+      .score-number{font-size:46px}
+      .export-card{min-height:auto}
     }
   </style>
 </head>
@@ -731,7 +509,7 @@
       <div class="brand">
         <div class="brand-mark">MI6</div>
         <div class="brand-text">
-          <strong>MI6 六分交易评分器 v2.1</strong>
+          <strong>MI6 六分交易评分器 v2.1 Stable</strong>
           <span>Scoring · Filtering · Audit</span>
         </div>
       </div>
@@ -745,7 +523,7 @@
     <section class="hero">
       <div class="card hero-main">
         <div class="eyebrow">Professional Decision Engine</div>
-        <h1>MI6 交易评分 + 过滤 + 审计<br>完整稳定版</h1>
+        <h1>MI6 交易评分 + 过滤 + 审计<br>稳定完整版</h1>
         <p class="sub">先完成六分评分，再通过高级过滤与执行审计，帮助用户减少垃圾单、降低冲动单，并生成可直接分享的 IG 风格摘要卡片。</p>
         <div class="hero-points">
           <div class="hero-point">6 项核心打分</div>
@@ -754,6 +532,7 @@
           <div class="hero-point">IG 导出卡</div>
         </div>
       </div>
+
       <div class="card hero-side">
         <div class="hero-side-grid">
           <div class="info-box"><small>结果层级</small><strong>Strong Trade / Trade / Watch / No Trade / Block</strong></div>
@@ -803,51 +582,56 @@
 
         <div class="group-shell">
           <div class="group-shell-head"><strong>Step 3 · MI6 六分评分</strong><span>从结构、位置到触发</span></div>
-          <div class="score-grid">
+          <div class="score-grid" id="scoreGrid">
             <div class="score-item">
               <h3>1. Candlestick Pattern</h3>
               <p>是否出现明确蜡烛触发，例如强阳、强阴、锤头、吞没或拒绝信号。</p>
-              <div class="toggle-group" data-group="candlestick">
+              <div class="toggle-group">
                 <button type="button" class="toggle-btn" data-key="candlestick" data-value="1">符合 +1</button>
                 <button type="button" class="toggle-btn active no" data-key="candlestick" data-value="0">不符合 0</button>
               </div>
             </div>
+
             <div class="score-item">
               <h3>2. Chart Pattern</h3>
               <p>是否存在清晰结构，例如通道、三角、双顶双底、长方形、突破或回踩。</p>
-              <div class="toggle-group" data-group="chartpattern">
+              <div class="toggle-group">
                 <button type="button" class="toggle-btn" data-key="chartpattern" data-value="1">符合 +1</button>
                 <button type="button" class="toggle-btn active no" data-key="chartpattern" data-value="0">不符合 0</button>
               </div>
             </div>
+
             <div class="score-item">
               <h3>3. Wave</h3>
               <p>波浪阶段是否清晰，方向是否与当前交易想法一致。</p>
-              <div class="toggle-group" data-group="wave">
+              <div class="toggle-group">
                 <button type="button" class="toggle-btn" data-key="wave" data-value="1">符合 +1</button>
                 <button type="button" class="toggle-btn active no" data-key="wave" data-value="0">不符合 0</button>
               </div>
             </div>
+
             <div class="score-item">
               <h3>4. MA</h3>
               <p>均线是否支持当前方向，例如站上均线做多，跌破均线做空。</p>
-              <div class="toggle-group" data-group="ma">
+              <div class="toggle-group">
                 <button type="button" class="toggle-btn" data-key="ma" data-value="1">符合 +1</button>
                 <button type="button" class="toggle-btn active no" data-key="ma" data-value="0">不符合 0</button>
               </div>
             </div>
+
             <div class="score-item">
               <h3>5. Bollinger Band</h3>
               <p>布林带位置是否合理，例如上轨做空、下轨做多、中轨确认。</p>
-              <div class="toggle-group" data-group="bb">
+              <div class="toggle-group">
                 <button type="button" class="toggle-btn" data-key="bb" data-value="1">符合 +1</button>
                 <button type="button" class="toggle-btn active no" data-key="bb" data-value="0">不符合 0</button>
               </div>
             </div>
+
             <div class="score-item">
               <h3>6. Fibo</h3>
               <p>是否位于关键 Fibo 区，例如 38.2 / 50 / 61.8 / 76.4 等位置。</p>
-              <div class="toggle-group" data-group="fibo">
+              <div class="toggle-group">
                 <button type="button" class="toggle-btn" data-key="fibo" data-value="1">符合 +1</button>
                 <button type="button" class="toggle-btn active no" data-key="fibo" data-value="0">不符合 0</button>
               </div>
@@ -863,16 +647,19 @@
               <p>当前交易方向是否顺主趋势。逆势单会自动降级。</p>
               <div class="field"><select id="structuralConsistency"><option value="yes">顺主趋势</option><option value="no">逆主趋势</option></select></div>
             </div>
+
             <div class="score-item">
               <h3>形态完整性</h3>
               <p>信号是否有前后结构支撑，而不是单根 K 线孤立出现。</p>
               <div class="field"><select id="isolatedPattern"><option value="no">不是孤立形态</option><option value="yes">是孤立形态</option></select></div>
             </div>
+
             <div class="score-item">
               <h3>Session Filter</h3>
               <p>重叠时段通常更强；亚洲盘默认偏保守。</p>
               <div class="field"><select id="sessionFilter"><option value="asia">亚洲盘</option><option value="london">伦敦盘</option><option value="newyork">纽约盘</option><option value="overlap" selected>重叠时段</option></select></div>
             </div>
+
             <div class="score-item">
               <h3>ATR 波动过滤</h3>
               <p>过低代表没量，过高代表过热，正常才是较优环境。</p>
@@ -889,11 +676,13 @@
               <p>是否真的出现明确触发，例如强阳、强阴、拒绝或吞没。</p>
               <div class="field"><select id="triggerAudit"><option value="yes" selected>有明确触发</option><option value="no">没有明确触发</option></select></div>
             </div>
+
             <div class="score-item">
               <h3>Key Zone Audit</h3>
               <p>是否位于关键区域，例如 Fibo、支撑阻力、回踩区、突破确认区。</p>
               <div class="field"><select id="keyZoneAudit"><option value="yes" selected>在关键区</option><option value="no">不在关键区</option></select></div>
             </div>
+
             <div class="score-item">
               <h3>Trap Zone Audit</h3>
               <p>是否接近高密度成交区、明显阻力位或诱多诱空陷阱。</p>
@@ -926,7 +715,7 @@
         <div class="terminal-shell">
           <div class="terminal-shell-top">
             <div class="terminal-dots"><span></span><span></span><span></span></div>
-            <div class="terminal-name">MI6 v2.1 Decision Terminal</div>
+            <div class="terminal-name">MI6 v2.1 Stable Terminal</div>
           </div>
 
           <div class="terminal-status-grid">
@@ -1052,68 +841,72 @@
       fibo: 'Fibo'
     };
 
-    function getEl(id) { return document.getElementById(id); }
-    function getTrendText(value) { return value === 'up' ? '上升趋势' : value === 'down' ? '下跌趋势' : '盘整'; }
-    function getSessionText(value) { return ({ asia:'亚洲盘', london:'伦敦盘', newyork:'纽约盘', overlap:'重叠时段' })[value] || value; }
-    function getAtrText(value) { return ({ low:'过低', normal:'正常', high:'过高' })[value] || value; }
+    const $ = (id) => document.getElementById(id);
+
+    function getTrendText(value) {
+      return value === 'up' ? '上升趋势' : value === 'down' ? '下跌趋势' : '盘整';
+    }
+
+    function getSessionText(value) {
+      const map = { asia: '亚洲盘', london: '伦敦盘', newyork: '纽约盘', overlap: '重叠时段' };
+      return map[value] || value;
+    }
+
+    function getAtrText(value) {
+      const map = { low: '过低', normal: '正常', high: '过高' };
+      return map[value] || value;
+    }
+
     function getDirectionWarning(direction, trend) {
       if (trend === 'up' && direction === 'SELL') return '当前为上升趋势，但你选择 SELL，方向与趋势冲突。';
       if (trend === 'down' && direction === 'BUY') return '当前为下跌趋势，但你选择 BUY，方向与趋势冲突。';
       return '';
     }
+
     function downgradeResult(result) {
       if (result === 'STRONG TRADE') return 'TRADE';
       if (result === 'TRADE') return 'WATCH';
       if (result === 'WATCH') return 'NO TRADE';
       return 'NO TRADE';
     }
+
     function getBadgeClass(result) {
       if (result === 'STRONG TRADE') return 'strong';
       if (result === 'TRADE') return 'trade';
       if (result === 'WATCH') return 'watch';
       return 'no';
     }
+
     function getSignalLabel(score) {
       if (score >= 5) return 'HIGH';
       if (score === 4) return 'MEDIUM';
       if (score >= 2) return 'LOW';
       return 'IDLE';
     }
+
     function readAdvancedState() {
       return {
-        structural: getEl('structuralConsistency').value,
-        isolated: getEl('isolatedPattern').value,
-        session: getEl('sessionFilter').value,
-        atr: getEl('atrFilter').value,
-        trigger: getEl('triggerAudit').value,
-        keyzone: getEl('keyZoneAudit').value,
-        trapzone: getEl('trapZoneAudit').value
+        structural: $('structuralConsistency').value,
+        isolated: $('isolatedPattern').value,
+        session: $('sessionFilter').value,
+        atr: $('atrFilter').value,
+        trigger: $('triggerAudit').value,
+        keyzone: $('keyZoneAudit').value,
+        trapzone: $('trapZoneAudit').value
       };
     }
 
-    function applyToggleEvents() {
-      document.querySelectorAll('.toggle-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.key;
-          const value = Number(btn.dataset.value);
-          state[key] = value;
-          const group = btn.closest('.toggle-group');
-          group.querySelectorAll('.toggle-btn').forEach((b) => b.classList.remove('active', 'yes', 'no'));
-          btn.classList.add('active');
-          btn.classList.add(value === 1 ? 'yes' : 'no');
-        });
-      });
-    }
-
     function buildChecks(score, advancedState) {
-      const checks = getEl('checks');
+      const checks = $('checks');
       checks.innerHTML = '';
+
       Object.keys(state).forEach((key) => {
         const row = document.createElement('div');
         row.className = 'mini-row';
         row.innerHTML = `<span>${labels[key]}</span><span class="${state[key] === 1 ? 'ok' : 'bad'}">${state[key] === 1 ? '符合 +1' : '不符合 0'}</span>`;
         checks.appendChild(row);
       });
+
       [
         ['结构一致性', advancedState.structural === 'yes' ? '顺主趋势' : '逆主趋势', advancedState.structural === 'yes' ? 'ok' : 'bad'],
         ['形态完整性', advancedState.isolated === 'yes' ? '孤立形态' : '结构完整', advancedState.isolated === 'yes' ? 'bad' : 'ok'],
@@ -1133,11 +926,11 @@
 
     function calculateResult() {
       const advancedState = readAdvancedState();
-      const direction = getEl('direction').value;
-      const trend = getEl('trend').value;
-      const symbol = getEl('symbol').value.trim();
-      const notes = getEl('notes').value.trim();
-      const score = Object.values(state).reduce((sum, n) => sum + n, 0);
+      const direction = $('direction').value;
+      const trend = $('trend').value;
+      const symbol = $('symbol').value.trim();
+      const notes = $('notes').value.trim();
+      const score = Object.values(state).reduce((sum, val) => sum + val, 0);
 
       let result = 'NO TRADE';
       if (score === 6) result = 'STRONG TRADE';
@@ -1146,51 +939,65 @@
 
       const warnings = [];
       const auditFails = [];
+
       const directionWarning = getDirectionWarning(direction, trend);
       if (directionWarning) {
         warnings.push(directionWarning);
         result = downgradeResult(result);
       }
+
       if (trend === 'sideways') {
         warnings.push('当前属于盘整市场，系统自动偏保守处理。');
         result = downgradeResult(result);
       }
+
       if (advancedState.structural === 'no') {
         warnings.push('当前方向与主趋势不一致，已自动降级。');
         result = downgradeResult(result);
       }
+
       if (advancedState.isolated === 'yes') {
         warnings.push('当前形态偏孤立，缺乏前后结构支撑。');
         result = downgradeResult(result);
       }
+
       if (advancedState.session === 'asia') {
         warnings.push('当前为亚洲盘，流动性与动能通常较弱，系统自动偏保守。');
         result = downgradeResult(result);
       }
+
       if (advancedState.atr !== 'normal') {
         warnings.push(`ATR 波动状态为${getAtrText(advancedState.atr)}，已自动降级。`);
         result = downgradeResult(result);
       }
+
       if (advancedState.trigger === 'no') auditFails.push('没有明确触发');
       if (advancedState.keyzone === 'no') auditFails.push('当前位置不在关键区');
       if (advancedState.trapzone === 'yes') auditFails.push('当前接近陷阱区或高阻力区');
-      if (auditFails.length > 0) result = 'BLOCK';
+
+      if (auditFails.length > 0) {
+        result = 'BLOCK';
+      }
 
       const badgeClass = getBadgeClass(result);
       const signalLabel = getSignalLabel(score);
-      getEl('resultBadge').textContent = result;
-      getEl('resultBadge').className = `badge ${badgeClass}`;
-      getEl('terminalStatus').textContent = result;
-      getEl('scoreNumber').textContent = `${score}/6`;
-      getEl('scoreSignalText').textContent = signalLabel;
-      getEl('scoreProgressBar').style.width = `${(score / 6) * 100}%`;
-      getEl('scoreLabel').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)} · ${getSessionText(advancedState.session)}`;
+
+      $('resultBadge').textContent = result;
+      $('resultBadge').className = `badge ${badgeClass}`;
+      $('terminalStatus').textContent = result;
+      $('scoreNumber').textContent = `${score}/6`;
+      $('scoreSignalText').textContent = signalLabel;
+      $('scoreProgressBar').style.width = `${(score / 6) * 100}%`;
+      $('scoreLabel').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)} · ${getSessionText(advancedState.session)}`;
 
       buildChecks(score, advancedState);
 
       const positives = [];
       const missing = [];
-      Object.keys(state).forEach((key) => { if (state[key] === 1) positives.push(labels[key]); else missing.push(labels[key]); });
+      Object.keys(state).forEach((key) => {
+        if (state[key] === 1) positives.push(labels[key]);
+        else missing.push(labels[key]);
+      });
 
       let analysis = `当前选择为 ${direction}，市场状态为 ${getTrendText(trend)}。六分基础得分为 ${score}/6。`;
       if (positives.length) analysis += ` 已满足：${positives.join('、')}。`;
@@ -1199,17 +1006,23 @@
       if (warnings.length) analysis += ` 风险修正：${warnings.join(' ')}`;
       if (auditFails.length) analysis += ` 审计失败：${auditFails.join('、')}。`;
       if (notes) analysis += ` 备注：${notes}`;
-      getEl('analysisText').textContent = analysis;
+      $('analysisText').textContent = analysis;
 
       let advice = '';
-      if (result === 'STRONG TRADE') advice = '基础评分与过滤、审计均通过，可进入执行阶段。下一步应补充 Entry、SL、TP 与仓位控制。';
-      else if (result === 'TRADE') advice = '整体条件良好，可以准备执行，但仍要确认风险报酬比与进场时机。';
-      else if (result === 'WATCH') advice = '当前更适合等待。建议继续观察更清晰的触发、结构突破或更优位置。';
-      else if (result === 'BLOCK') advice = '当前被系统直接拦截。请先解决审计失败项，再考虑是否重新评估。';
-      else advice = '当前不建议交易。先保护资金，等待更高质量的 setup。';
-      getEl('adviceText').textContent = advice;
+      if (result === 'STRONG TRADE') {
+        advice = '基础评分与过滤、审计均通过，可进入执行阶段。下一步应补充 Entry、SL、TP 与仓位控制。';
+      } else if (result === 'TRADE') {
+        advice = '整体条件良好，可以准备执行，但仍要确认风险报酬比与进场时机。';
+      } else if (result === 'WATCH') {
+        advice = '当前更适合等待。建议继续观察更清晰的触发、结构突破或更优位置。';
+      } else if (result === 'BLOCK') {
+        advice = '当前被系统直接拦截。请先解决审计失败项，再考虑是否重新评估。';
+      } else {
+        advice = '当前不建议交易。先保护资金，等待更高质量的 setup。';
+      }
+      $('adviceText').textContent = advice;
 
-      const riskList = getEl('riskList');
+      const riskList = $('riskList');
       riskList.innerHTML = '';
       const risks = [
         '分数高不等于必胜，系统只是过滤器，不是保证器。',
@@ -1224,67 +1037,81 @@
         riskList.appendChild(li);
       });
 
-      getEl('exportBadge').textContent = result;
-      getEl('exportBadge').className = `badge ${badgeClass}`;
-      getEl('exportScore').textContent = `${score}/6`;
-      getEl('exportSignal').textContent = signalLabel;
-      getEl('exportMeta').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)} · ${getSessionText(advancedState.session)}`;
-      getEl('exportSummary').textContent = `结果：${result}。基础评分 ${score}/6。${positives.length ? `已满足：${positives.join('、')}。` : ''}${missing.length ? `仍欠缺：${missing.join('、')}。` : ''}${warnings.length ? `过滤修正：${warnings.join(' ')}` : ''}${auditFails.length ? `审计失败：${auditFails.join('、')}。` : ''}`;
-      getEl('exportRisk').textContent = auditFails.length ? `重点风险：${auditFails.join('、')}。` : (warnings[0] || '请搭配止损、仓位管理与风险报酬比。');
+      $('exportBadge').textContent = result;
+      $('exportBadge').className = `badge ${badgeClass}`;
+      $('exportScore').textContent = `${score}/6`;
+      $('exportSignal').textContent = signalLabel;
+      $('exportMeta').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)} · ${getSessionText(advancedState.session)}`;
+      $('exportSummary').textContent =
+        `结果：${result}。基础评分 ${score}/6。` +
+        `${positives.length ? `已满足：${positives.join('、')}。` : ''}` +
+        `${missing.length ? `仍欠缺：${missing.join('、')}。` : ''}` +
+        `${warnings.length ? `过滤修正：${warnings.join(' ')}` : ''}` +
+        `${auditFails.length ? `审计失败：${auditFails.join('、')}。` : ''}`;
+      $('exportRisk').textContent =
+        auditFails.length ? `重点风险：${auditFails.join('、')}。` : (warnings[0] || '请搭配止损、仓位管理与风险报酬比。');
     }
 
     function resetForm() {
-      getEl('direction').value = 'BUY';
-      getEl('trend').value = 'up';
-      getEl('symbol').value = '';
-      getEl('notes').value = '';
-      getEl('structuralConsistency').value = 'yes';
-      getEl('isolatedPattern').value = 'no';
-      getEl('sessionFilter').value = 'overlap';
-      getEl('atrFilter').value = 'normal';
-      getEl('triggerAudit').value = 'yes';
-      getEl('keyZoneAudit').value = 'yes';
-      getEl('trapZoneAudit').value = 'no';
-      Object.keys(state).forEach((key) => { state[key] = 0; });
+      $('direction').value = 'BUY';
+      $('trend').value = 'up';
+      $('symbol').value = '';
+      $('notes').value = '';
+      $('structuralConsistency').value = 'yes';
+      $('isolatedPattern').value = 'no';
+      $('sessionFilter').value = 'overlap';
+      $('atrFilter').value = 'normal';
+      $('triggerAudit').value = 'yes';
+      $('keyZoneAudit').value = 'yes';
+      $('trapZoneAudit').value = 'no';
+
+      Object.keys(state).forEach((key) => {
+        state[key] = 0;
+      });
+
       document.querySelectorAll('.toggle-group').forEach((group) => {
-        group.querySelectorAll('.toggle-btn').forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
+        group.querySelectorAll('.toggle-btn').forEach((btn) => {
+          btn.classList.remove('active', 'yes', 'no');
+        });
         const noBtn = group.querySelector('.toggle-btn[data-value="0"]');
         if (noBtn) noBtn.classList.add('active', 'no');
       });
-      getEl('resultBadge').textContent = 'NO TRADE';
-      getEl('resultBadge').className = 'badge no';
-      getEl('terminalStatus').textContent = 'AWAITING INPUT';
-      getEl('scoreNumber').textContent = '0/6';
-      getEl('scoreSignalText').textContent = 'IDLE';
-      getEl('scoreProgressBar').style.width = '0%';
-      getEl('scoreLabel').textContent = '等待输入条件后自动评分';
-      getEl('checks').innerHTML = '';
-      getEl('analysisText').textContent = '请先完成左侧输入，再点击“计算评分”。';
-      getEl('adviceText').textContent = '暂无建议。';
-      getEl('riskList').innerHTML = '<li>没有触发，不要提前进场。</li><li>盘整市场默认偏保守。</li><li>方向与趋势冲突时，需要额外谨慎。</li>';
-      getEl('exportBadge').textContent = 'NO TRADE';
-      getEl('exportBadge').className = 'badge no';
-      getEl('exportScore').textContent = '0/6';
-      getEl('exportSignal').textContent = 'IDLE';
-      getEl('exportMeta').textContent = '未生成摘要';
-      getEl('exportSummary').textContent = '完成评分后，系统会自动生成适合分享的判断摘要。';
-      getEl('exportRisk').textContent = '暂无风险提示。';
+
+      $('resultBadge').textContent = 'NO TRADE';
+      $('resultBadge').className = 'badge no';
+      $('terminalStatus').textContent = 'AWAITING INPUT';
+      $('scoreNumber').textContent = '0/6';
+      $('scoreSignalText').textContent = 'IDLE';
+      $('scoreProgressBar').style.width = '0%';
+      $('scoreLabel').textContent = '等待输入条件后自动评分';
+      $('checks').innerHTML = '';
+      $('analysisText').textContent = '请先完成左侧输入，再点击“计算评分”。';
+      $('adviceText').textContent = '暂无建议。';
+      $('riskList').innerHTML = '<li>没有触发，不要提前进场。</li><li>盘整市场默认偏保守。</li><li>方向与趋势冲突时，需要额外谨慎。</li>';
+
+      $('exportBadge').textContent = 'NO TRADE';
+      $('exportBadge').className = 'badge no';
+      $('exportScore').textContent = '0/6';
+      $('exportSignal').textContent = 'IDLE';
+      $('exportMeta').textContent = '未生成摘要';
+      $('exportSummary').textContent = '完成评分后，系统会自动生成适合分享的判断摘要。';
+      $('exportRisk').textContent = '暂无风险提示。';
     }
 
     async function copyExportSummary() {
       const text = [
-        'MI6 六分交易评分器 v2.1',
-        getEl('exportMeta').textContent,
-        `结果：${getEl('exportBadge').textContent}`,
-        `分数：${getEl('exportScore').textContent}`,
-        `信号：${getEl('exportSignal').textContent}`,
-        `摘要：${getEl('exportSummary').textContent}`,
-        `风险：${getEl('exportRisk').textContent}`
-      ].join('
-');
+        'MI6 六分交易评分器 v2.1 Stable',
+        $('exportMeta').textContent,
+        `结果：${$('exportBadge').textContent}`,
+        `分数：${$('exportScore').textContent}`,
+        `信号：${$('exportSignal').textContent}`,
+        `摘要：${$('exportSummary').textContent}`,
+        `风险：${$('exportRisk').textContent}`
+      ].join('\\n');
+
       try {
         await navigator.clipboard.writeText(text);
-        const btn = getEl('copyExportBtn');
+        const btn = $('copyExportBtn');
         const original = btn.textContent;
         btn.textContent = '已复制';
         setTimeout(() => { btn.textContent = original; }, 1200);
@@ -1294,7 +1121,7 @@
     }
 
     function downloadExportCardHtml() {
-      const cardHtml = getEl('exportCard').outerHTML;
+      const cardHtml = $('exportCard').outerHTML;
       const html = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1303,21 +1130,22 @@
 <style>
 body{background:#070b13;padding:24px;font-family:Inter,Arial,sans-serif;color:#fff}
 .badge{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;min-width:122px;border-radius:999px;font-weight:900;font-size:13px;border:1px solid transparent}
-.badge.strong{background:rgba(25,195,125,0.16);color:#dff8ee;border-color:rgba(25,195,125,0.5)}
-.badge.trade{background:rgba(61,174,255,0.15);color:#e2f3ff;border-color:rgba(61,174,255,0.45)}
-.badge.watch{background:rgba(245,185,66,0.16);color:#fff3d6;border-color:rgba(245,185,66,0.45)}
-.badge.no{background:rgba(239,68,68,0.16);color:#ffe7e7;border-color:rgba(239,68,68,0.45)}
-.export-card{max-width:860px;min-height:760px;aspect-ratio:4/5;border-radius:28px;padding:24px;border:1px solid rgba(141,167,255,0.22);background:radial-gradient(circle at 85% 10%, rgba(141,167,255,0.2), transparent 24%),radial-gradient(circle at 10% 90%, rgba(178,125,255,0.16), transparent 20%),linear-gradient(180deg, rgba(15,21,36,0.96), rgba(8,12,22,0.98));display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 40px rgba(0,0,0,0.24)}
+.badge.strong{background:rgba(25,195,125,.16);color:#dff8ee;border-color:rgba(25,195,125,.5)}
+.badge.trade{background:rgba(61,174,255,.15);color:#e2f3ff;border-color:rgba(61,174,255,.45)}
+.badge.watch{background:rgba(245,185,66,.16);color:#fff3d6;border-color:rgba(245,185,66,.45)}
+.badge.no{background:rgba(239,68,68,.16);color:#ffe7e7;border-color:rgba(239,68,68,.45)}
+.export-card{max-width:860px;min-height:760px;aspect-ratio:4/5;border-radius:28px;padding:24px;border:1px solid rgba(141,167,255,.22);background:radial-gradient(circle at 85% 10%, rgba(141,167,255,.2), transparent 24%),radial-gradient(circle at 10% 90%, rgba(178,125,255,.16), transparent 20%),linear-gradient(180deg, rgba(15,21,36,.96), rgba(8,12,22,.98));display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 40px rgba(0,0,0,.24)}
 .export-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:24px}.export-brand{font-weight:900;font-size:18px;line-height:1.3}.export-sub{color:#9fb0d1;font-size:12px;margin-top:4px}
 .export-hero{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end;margin-bottom:18px}.export-big-score{font-size:88px;line-height:.95;font-weight:900;letter-spacing:-3px}.export-big-label{margin-top:8px;font-size:11px;letter-spacing:1.4px;color:#8da7ff;font-family:ui-monospace,Menlo,Consolas,monospace}
-.export-hero-right{display:flex;flex-direction:column;gap:10px;align-items:flex-end;text-align:right}.export-signal-chip{display:inline-flex;flex-direction:column;align-items:flex-end;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)}
+.export-hero-right{display:flex;flex-direction:column;gap:10px;align-items:flex-end;text-align:right}.export-signal-chip{display:inline-flex;flex-direction:column;align-items:flex-end;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
 .export-signal-chip span,.export-footer-item small{display:block;color:#8ea0cb;font-size:10px;letter-spacing:1px;margin-bottom:6px}.export-signal-chip strong{display:block;font-size:20px;font-family:ui-monospace,Menlo,Consolas,monospace}.export-meta{color:#dbe5ff;font-size:12px;line-height:1.8;max-width:280px}
-.export-divider{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);margin:10px 0 18px}.export-section-grid{display:grid;grid-template-columns:1fr;gap:14px;flex:1}.export-panel{padding:16px;border-radius:18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)}.export-panel-risk{border-color:rgba(239,68,68,0.15);background:rgba(239,68,68,0.05)}
-.export-section-title{color:#8da7ff;font-size:11px;letter-spacing:1px;margin-bottom:8px;font-family:ui-monospace,Menlo,Consolas,monospace}.export-panel p{margin:0;color:#dfe7fb;font-size:14px;line-height:1.9}.export-footer{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.export-footer-item{padding:12px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)}.export-footer-item strong{display:block;font-size:12px;line-height:1.7;color:#eef3ff}
+.export-divider{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);margin:10px 0 18px}.export-section-grid{display:grid;grid-template-columns:1fr;gap:14px;flex:1}.export-panel{padding:16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}.export-panel-risk{border-color:rgba(239,68,68,.15);background:rgba(239,68,68,.05)}
+.export-section-title{color:#8da7ff;font-size:11px;letter-spacing:1px;margin-bottom:8px;font-family:ui-monospace,Menlo,Consolas,monospace}.export-panel p{margin:0;color:#dfe7fb;font-size:14px;line-height:1.9}.export-footer{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.export-footer-item{padding:12px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}.export-footer-item strong{display:block;font-size:12px;line-height:1.7;color:#eef3ff}
 </style>
 </head>
 <body>${cardHtml}</body>
 </html>`;
+
       const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1327,11 +1155,30 @@ body{background:#070b13;padding:24px;font-family:Inter,Arial,sans-serif;color:#f
       URL.revokeObjectURL(url);
     }
 
-    applyToggleEvents();
-    getEl('calculateBtn').addEventListener('click', calculateResult);
-    getEl('resetBtn').addEventListener('click', resetForm);
-    getEl('copyExportBtn').addEventListener('click', copyExportSummary);
-    getEl('downloadExportBtn').addEventListener('click', downloadExportCardHtml);
+    // Step 3: 事件委托，避免按钮再失灵
+    $('scoreGrid').addEventListener('click', (e) => {
+      const btn = e.target.closest('.toggle-btn');
+      if (!btn) return;
+
+      const key = btn.dataset.key;
+      const value = Number(btn.dataset.value);
+      state[key] = value;
+
+      const group = btn.closest('.toggle-group');
+      if (!group) return;
+
+      group.querySelectorAll('.toggle-btn').forEach((b) => {
+        b.classList.remove('active', 'yes', 'no');
+      });
+
+      btn.classList.add('active');
+      btn.classList.add(value === 1 ? 'yes' : 'no');
+    });
+
+    $('calculateBtn').addEventListener('click', calculateResult);
+    $('resetBtn').addEventListener('click', resetForm);
+    $('copyExportBtn').addEventListener('click', copyExportSummary);
+    $('downloadExportBtn').addEventListener('click', downloadExportCardHtml);
   </script>
 </body>
 </html>
