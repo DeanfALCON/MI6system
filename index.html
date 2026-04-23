@@ -23,7 +23,6 @@
     }
 
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: Inter, "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
@@ -72,17 +71,8 @@
       box-shadow: 0 12px 26px rgba(125, 120, 255, 0.32);
     }
 
-    .brand-text strong {
-      display: block;
-      font-size: 16px;
-    }
-
-    .brand-text span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 2px;
-    }
+    .brand-text strong { display: block; font-size: 16px; }
+    .brand-text span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
 
     .top-metrics {
       display: flex;
@@ -203,18 +193,8 @@
       background: rgba(255,255,255,0.03);
     }
 
-    .info-box small {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      margin-bottom: 6px;
-    }
-
-    .info-box strong {
-      display: block;
-      font-size: 16px;
-      line-height: 1.4;
-    }
+    .info-box small { display: block; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+    .info-box strong { display: block; font-size: 16px; line-height: 1.4; }
 
     .hero-side-note {
       padding: 14px;
@@ -237,10 +217,7 @@
       background: linear-gradient(180deg, rgba(12, 18, 31, 0.88), rgba(10, 15, 26, 0.92));
     }
 
-    .panel h2 {
-      margin: 0;
-      font-size: 20px;
-    }
+    .panel h2 { margin: 0; font-size: 20px; }
 
     .section-title {
       display: flex;
@@ -250,10 +227,7 @@
       margin-bottom: 14px;
     }
 
-    .hint {
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .hint { color: var(--muted); font-size: 13px; }
 
     .group-shell {
       padding: 18px;
@@ -271,17 +245,10 @@
       margin-bottom: 14px;
     }
 
-    .group-shell-head strong {
-      font-size: 16px;
-    }
+    .group-shell-head strong { font-size: 16px; }
+    .group-shell-head span { color: var(--muted); font-size: 12px; }
 
-    .group-shell-head span {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .grid-2,
-    .score-grid {
+    .grid-2, .score-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
@@ -299,9 +266,7 @@
       font-weight: 700;
     }
 
-    select,
-    input[type="text"],
-    textarea {
+    select, input[type="text"], textarea {
       width: 100%;
       background: var(--panel-2);
       border: 1px solid var(--line);
@@ -313,17 +278,12 @@
       transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
 
-    select:focus,
-    input[type="text"]:focus,
-    textarea:focus {
+    select:focus, input[type="text"]:focus, textarea:focus {
       border-color: var(--line-strong);
       box-shadow: 0 0 0 4px rgba(141,167,255,0.08);
     }
 
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
+    textarea { min-height: 110px; resize: vertical; }
 
     .score-item {
       padding: 18px;
@@ -332,18 +292,8 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.028), rgba(255,255,255,0.015));
     }
 
-    .score-item h3 {
-      margin: 0 0 6px;
-      font-size: 16px;
-    }
-
-    .score-item p {
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-      min-height: 40px;
-    }
+    .score-item h3 { margin: 0 0 6px; font-size: 16px; }
+    .score-item p { margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.7; min-height: 40px; }
 
     .toggle-group {
       display: grid;
@@ -387,8 +337,7 @@
       margin-top: 18px;
     }
 
-    button.primary,
-    button.secondary {
+    button.primary, button.secondary {
       border: none;
       border-radius: 14px;
       padding: 14px 18px;
@@ -422,9 +371,9 @@
     }
 
     .badge.strong { background: rgba(25,195,125,0.16); color: #dff8ee; border-color: rgba(25,195,125,0.5); }
-    .badge.trade  { background: rgba(61,174,255,0.15); color: #e2f3ff; border-color: rgba(61,174,255,0.45); }
-    .badge.watch  { background: rgba(245,185,66,0.16); color: #fff3d6; border-color: rgba(245,185,66,0.45); }
-    .badge.no     { background: rgba(239,68,68,0.16); color: #ffe7e7; border-color: rgba(239,68,68,0.45); }
+    .badge.trade { background: rgba(61,174,255,0.15); color: #e2f3ff; border-color: rgba(61,174,255,0.45); }
+    .badge.watch { background: rgba(245,185,66,0.16); color: #fff3d6; border-color: rgba(245,185,66,0.45); }
+    .badge.no { background: rgba(239,68,68,0.16); color: #ffe7e7; border-color: rgba(239,68,68,0.45); }
 
     .terminal-panel {
       background: linear-gradient(180deg, rgba(8, 13, 23, 0.96), rgba(6, 10, 18, 0.98));
@@ -448,9 +397,7 @@
 
     .terminal-shell {
       border: 1px solid rgba(86, 107, 255, 0.18);
-      background:
-        radial-gradient(circle at top right, rgba(64, 110, 255, 0.08), transparent 32%),
-        linear-gradient(180deg, rgba(6, 11, 20, 0.96), rgba(9, 14, 24, 0.98));
+      background: radial-gradient(circle at top right, rgba(64, 110, 255, 0.08), transparent 32%), linear-gradient(180deg, rgba(6, 11, 20, 0.96), rgba(9, 14, 24, 0.98));
       border-radius: 22px;
       padding: 16px;
     }
@@ -465,18 +412,8 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
-    .terminal-dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .terminal-dots span {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      display: inline-block;
-    }
-
+    .terminal-dots { display: flex; gap: 6px; }
+    .terminal-dots span { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
     .terminal-dots span:nth-child(1) { background: #ff5f57; }
     .terminal-dots span:nth-child(2) { background: #febc2e; }
     .terminal-dots span:nth-child(3) { background: #28c840; }
@@ -484,14 +421,14 @@
     .terminal-name,
     .terminal-block-title,
     .score-box-head,
-    .export-section-title {
+    .export-section-title,
+    .export-big-label,
+    .export-footer-item small,
+    .export-signal-chip span {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
-    .terminal-name {
-      color: #b9c7ea;
-      font-size: 12px;
-    }
+    .terminal-name { color: #b9c7ea; font-size: 12px; }
 
     .terminal-status-grid,
     .terminal-kpi-grid {
@@ -531,9 +468,7 @@
       padding: 20px;
       border-radius: 22px;
       border: 1px solid rgba(96, 122, 255, 0.24);
-      background:
-        radial-gradient(circle at top right, rgba(71, 120, 255, 0.18), transparent 30%),
-        linear-gradient(180deg, rgba(12, 20, 38, 0.96), rgba(10, 16, 30, 0.96));
+      background: radial-gradient(circle at top right, rgba(71, 120, 255, 0.18), transparent 30%), linear-gradient(180deg, rgba(12, 20, 38, 0.96), rgba(10, 16, 30, 0.96));
       margin-bottom: 14px;
     }
 
@@ -574,27 +509,12 @@
       transition: width 0.28s ease;
     }
 
-    .score-label {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
+    .score-label { color: var(--muted); font-size: 13px; line-height: 1.7; }
 
-    .terminal-block {
-      margin-bottom: 14px;
-    }
+    .terminal-block { margin-bottom: 14px; }
+    .terminal-block-title { margin-bottom: 8px; color: #8da7ff; font-size: 11px; letter-spacing: 1.2px; }
 
-    .terminal-block-title {
-      margin-bottom: 8px;
-      color: #8da7ff;
-      font-size: 11px;
-      letter-spacing: 1.2px;
-    }
-
-    .mini-list {
-      display: grid;
-      gap: 10px;
-    }
+    .mini-list { display: grid; gap: 10px; }
 
     .mini-row {
       display: flex;
@@ -608,10 +528,7 @@
       font-size: 14px;
     }
 
-    .mini-row span:last-child {
-      font-weight: 800;
-      text-align: right;
-    }
+    .mini-row span:last-child { font-weight: 800; text-align: right; }
 
     .ok { color: var(--good); }
     .warn { color: var(--warn); }
@@ -625,36 +542,28 @@
       background: rgba(255,255,255,0.02);
     }
 
-    .block h3 {
-      margin: 0 0 10px;
-      font-size: 15px;
-    }
+    .block h3 { margin: 0 0 10px; font-size: 15px; }
+    .block p, .block li { color: var(--muted); font-size: 14px; line-height: 1.8; margin: 0; }
+    .block ul { margin: 0; padding-left: 18px; }
 
-    .block p,
-    .block li {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.8;
-      margin: 0;
-    }
-
-    .block ul {
-      margin: 0;
-      padding-left: 18px;
-    }
-
-    .risk-block {
-      border-color: rgba(239, 68, 68, 0.18);
-      background: rgba(239, 68, 68, 0.04);
-    }
+    .risk-block { border-color: rgba(239, 68, 68, 0.18); background: rgba(239, 68, 68, 0.04); }
 
     .export-card {
-      border-radius: 20px;
-      padding: 18px;
-      border: 1px solid rgba(141, 167, 255, 0.18);
+      border-radius: 28px;
+      padding: 24px;
+      border: 1px solid rgba(141, 167, 255, 0.22);
       background:
-        radial-gradient(circle at top right, rgba(141,167,255,0.12), transparent 30%),
-        linear-gradient(180deg, rgba(15, 21, 36, 0.98), rgba(10, 15, 26, 0.98));
+        radial-gradient(circle at 85% 10%, rgba(141,167,255,0.2), transparent 24%),
+        radial-gradient(circle at 10% 90%, rgba(178,125,255,0.16), transparent 20%),
+        linear-gradient(180deg, rgba(15,21,36,0.96), rgba(8,12,22,0.98));
+      position: relative;
+      overflow: hidden;
+      min-height: 760px;
+      aspect-ratio: 4 / 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.24);
     }
 
     .export-card-head {
@@ -662,36 +571,54 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 24px;
     }
 
-    .export-brand {
-      font-weight: 900;
-      font-size: 16px;
-      line-height: 1.3;
-    }
+    .export-brand { font-weight: 900; font-size: 18px; line-height: 1.3; }
+    .export-sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
 
-    .export-sub {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .export-score-row {
+    .export-hero {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .export-big-score {
+      font-size: clamp(56px, 6vw, 88px);
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: -3px;
+    }
+
+    .export-big-label {
+      margin-top: 8px;
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      color: #8da7ff;
+    }
+
+    .export-hero-right {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
-      margin-bottom: 12px;
+      align-items: flex-end;
+      text-align: right;
     }
 
-    .export-score-box {
-      padding: 12px;
+    .export-signal-chip {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-end;
+      padding: 12px 14px;
       border-radius: 16px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .export-score-box small {
+    .export-signal-chip span,
+    .export-footer-item small {
       display: block;
       color: #8ea0cb;
       font-size: 10px;
@@ -699,23 +626,42 @@
       margin-bottom: 6px;
     }
 
-    .export-score-box strong {
+    .export-signal-chip strong {
       display: block;
-      font-size: 18px;
+      font-size: 20px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
     .export-meta {
-      margin-bottom: 12px;
       color: #dbe5ff;
       font-size: 12px;
-      line-height: 1.7;
+      line-height: 1.8;
+      max-width: 280px;
     }
 
-    .export-section {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.06);
+    .export-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      margin: 10px 0 18px;
+    }
+
+    .export-section-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .export-panel {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .export-panel-risk {
+      border-color: rgba(239, 68, 68, 0.15);
+      background: rgba(239, 68, 68, 0.05);
     }
 
     .export-section-title {
@@ -725,32 +671,39 @@
       margin-bottom: 8px;
     }
 
-    .export-section p {
+    .export-panel p {
       margin: 0;
       color: #dfe7fb;
-      font-size: 13px;
-      line-height: 1.8;
+      font-size: 14px;
+      line-height: 1.9;
     }
 
-    .export-actions {
-      display: flex;
+    .export-footer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
+      margin-top: 18px;
     }
 
-    .footer-note {
-      margin-top: 16px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
+    .export-footer-item {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
     }
+
+    .export-footer-item strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.7;
+      color: #eef3ff;
+    }
+
+    .export-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .footer-note { margin-top: 16px; color: var(--muted); font-size: 12px; line-height: 1.8; }
 
     @media (max-width: 1120px) {
-      .hero,
-      .layout {
-        grid-template-columns: 1fr;
-      }
+      .hero, .layout { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
@@ -759,27 +712,16 @@
       .hero-side-grid,
       .terminal-status-grid,
       .terminal-kpi-grid,
-      .export-score-row {
+      .export-hero,
+      .export-footer {
         grid-template-columns: 1fr;
       }
 
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .top-metrics {
-        justify-content: flex-start;
-      }
-
-      .terminal-shell-top {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .score-number {
-        font-size: 46px;
-      }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .top-metrics { justify-content: flex-start; }
+      .terminal-shell-top { flex-direction: column; align-items: flex-start; }
+      .score-number { font-size: 46px; }
+      .export-card { min-height: auto; }
     }
   </style>
 </head>
@@ -804,17 +746,14 @@
       <div class="card hero-main">
         <div class="eyebrow">Professional Decision Engine</div>
         <h1>MI6 交易评分 + 过滤 + 审计<br>完整稳定版</h1>
-        <p class="sub">
-          先完成六分评分，再通过高级过滤与执行审计，帮助用户减少垃圾单、降低冲动单，并生成可直接分享的摘要卡片。
-        </p>
+        <p class="sub">先完成六分评分，再通过高级过滤与执行审计，帮助用户减少垃圾单、降低冲动单，并生成可直接分享的 IG 风格摘要卡片。</p>
         <div class="hero-points">
           <div class="hero-point">6 项核心打分</div>
           <div class="hero-point">Trend / Session / ATR 过滤</div>
           <div class="hero-point">Trigger / Zone / Trap 审计</div>
-          <div class="hero-point">自动降级与 BLOCK</div>
+          <div class="hero-point">IG 导出卡</div>
         </div>
       </div>
-
       <div class="card hero-side">
         <div class="hero-side-grid">
           <div class="info-box"><small>结果层级</small><strong>Strong Trade / Trade / Watch / No Trade / Block</strong></div>
@@ -822,9 +761,7 @@
           <div class="info-box"><small>适用场景</small><strong>手动复盘、临盘判断、截图前自检</strong></div>
           <div class="info-box"><small>输出能力</small><strong>摘要复制 / 导出卡片</strong></div>
         </div>
-        <div class="hero-side-note">
-          这一版优先保证稳定性。等你跑顺之后，我们再继续上更高级的 IG 卡片版式或历史记录功能。
-        </div>
+        <div class="hero-side-note">这一版优先保证稳定性。等你跑顺之后，我们再继续上历史记录或自动截图功能。</div>
       </div>
     </section>
 
@@ -836,10 +773,7 @@
         </div>
 
         <div class="group-shell">
-          <div class="group-shell-head">
-            <strong>Step 1 · 市场背景</strong>
-            <span>定义交易前提</span>
-          </div>
+          <div class="group-shell-head"><strong>Step 1 · 市场背景</strong><span>定义交易前提</span></div>
           <div class="grid-2">
             <div class="field">
               <label for="direction">交易方向</label>
@@ -860,10 +794,7 @@
         </div>
 
         <div class="group-shell">
-          <div class="group-shell-head">
-            <strong>Step 2 · 交易标的</strong>
-            <span>记录品种与时间框架</span>
-          </div>
+          <div class="group-shell-head"><strong>Step 2 · 交易标的</strong><span>记录品种与时间框架</span></div>
           <div class="field">
             <label for="symbol">标的 / 时间框架（可选）</label>
             <input id="symbol" type="text" placeholder="例如：XAUUSD H1" />
@@ -871,11 +802,7 @@
         </div>
 
         <div class="group-shell">
-          <div class="group-shell-head">
-            <strong>Step 3 · MI6 六分评分</strong>
-            <span>从结构、位置到触发</span>
-          </div>
-
+          <div class="group-shell-head"><strong>Step 3 · MI6 六分评分</strong><span>从结构、位置到触发</span></div>
           <div class="score-grid">
             <div class="score-item">
               <h3>1. Candlestick Pattern</h3>
@@ -885,7 +812,6 @@
                 <button type="button" class="toggle-btn active no" data-key="candlestick" data-value="0">不符合 0</button>
               </div>
             </div>
-
             <div class="score-item">
               <h3>2. Chart Pattern</h3>
               <p>是否存在清晰结构，例如通道、三角、双顶双底、长方形、突破或回踩。</p>
@@ -894,7 +820,6 @@
                 <button type="button" class="toggle-btn active no" data-key="chartpattern" data-value="0">不符合 0</button>
               </div>
             </div>
-
             <div class="score-item">
               <h3>3. Wave</h3>
               <p>波浪阶段是否清晰，方向是否与当前交易想法一致。</p>
@@ -903,7 +828,6 @@
                 <button type="button" class="toggle-btn active no" data-key="wave" data-value="0">不符合 0</button>
               </div>
             </div>
-
             <div class="score-item">
               <h3>4. MA</h3>
               <p>均线是否支持当前方向，例如站上均线做多，跌破均线做空。</p>
@@ -912,7 +836,6 @@
                 <button type="button" class="toggle-btn active no" data-key="ma" data-value="0">不符合 0</button>
               </div>
             </div>
-
             <div class="score-item">
               <h3>5. Bollinger Band</h3>
               <p>布林带位置是否合理，例如上轨做空、下轨做多、中轨确认。</p>
@@ -921,7 +844,6 @@
                 <button type="button" class="toggle-btn active no" data-key="bb" data-value="0">不符合 0</button>
               </div>
             </div>
-
             <div class="score-item">
               <h3>6. Fibo</h3>
               <p>是否位于关键 Fibo 区，例如 38.2 / 50 / 61.8 / 76.4 等位置。</p>
@@ -934,108 +856,54 @@
         </div>
 
         <div class="group-shell">
-          <div class="group-shell-head">
-            <strong>高级过滤区（v2）</strong>
-            <span>过滤垃圾信号</span>
-          </div>
-
+          <div class="group-shell-head"><strong>高级过滤区（v2）</strong><span>过滤垃圾信号</span></div>
           <div class="score-grid">
             <div class="score-item">
               <h3>结构一致性</h3>
               <p>当前交易方向是否顺主趋势。逆势单会自动降级。</p>
-              <div class="field">
-                <select id="structuralConsistency">
-                  <option value="yes">顺主趋势</option>
-                  <option value="no">逆主趋势</option>
-                </select>
-              </div>
+              <div class="field"><select id="structuralConsistency"><option value="yes">顺主趋势</option><option value="no">逆主趋势</option></select></div>
             </div>
-
             <div class="score-item">
               <h3>形态完整性</h3>
               <p>信号是否有前后结构支撑，而不是单根 K 线孤立出现。</p>
-              <div class="field">
-                <select id="isolatedPattern">
-                  <option value="no">不是孤立形态</option>
-                  <option value="yes">是孤立形态</option>
-                </select>
-              </div>
+              <div class="field"><select id="isolatedPattern"><option value="no">不是孤立形态</option><option value="yes">是孤立形态</option></select></div>
             </div>
-
             <div class="score-item">
               <h3>Session Filter</h3>
               <p>重叠时段通常更强；亚洲盘默认偏保守。</p>
-              <div class="field">
-                <select id="sessionFilter">
-                  <option value="asia">亚洲盘</option>
-                  <option value="london">伦敦盘</option>
-                  <option value="newyork">纽约盘</option>
-                  <option value="overlap" selected>重叠时段</option>
-                </select>
-              </div>
+              <div class="field"><select id="sessionFilter"><option value="asia">亚洲盘</option><option value="london">伦敦盘</option><option value="newyork">纽约盘</option><option value="overlap" selected>重叠时段</option></select></div>
             </div>
-
             <div class="score-item">
               <h3>ATR 波动过滤</h3>
               <p>过低代表没量，过高代表过热，正常才是较优环境。</p>
-              <div class="field">
-                <select id="atrFilter">
-                  <option value="low">过低</option>
-                  <option value="normal" selected>正常</option>
-                  <option value="high">过高</option>
-                </select>
-              </div>
+              <div class="field"><select id="atrFilter"><option value="low">过低</option><option value="normal" selected>正常</option><option value="high">过高</option></select></div>
             </div>
           </div>
         </div>
 
         <div class="group-shell">
-          <div class="group-shell-head">
-            <strong>执行审计区（v2）</strong>
-            <span>关键失败直接 BLOCK</span>
-          </div>
-
+          <div class="group-shell-head"><strong>执行审计区（v2）</strong><span>关键失败直接 BLOCK</span></div>
           <div class="score-grid">
             <div class="score-item">
               <h3>Trigger Audit</h3>
               <p>是否真的出现明确触发，例如强阳、强阴、拒绝或吞没。</p>
-              <div class="field">
-                <select id="triggerAudit">
-                  <option value="yes" selected>有明确触发</option>
-                  <option value="no">没有明确触发</option>
-                </select>
-              </div>
+              <div class="field"><select id="triggerAudit"><option value="yes" selected>有明确触发</option><option value="no">没有明确触发</option></select></div>
             </div>
-
             <div class="score-item">
               <h3>Key Zone Audit</h3>
               <p>是否位于关键区域，例如 Fibo、支撑阻力、回踩区、突破确认区。</p>
-              <div class="field">
-                <select id="keyZoneAudit">
-                  <option value="yes" selected>在关键区</option>
-                  <option value="no">不在关键区</option>
-                </select>
-              </div>
+              <div class="field"><select id="keyZoneAudit"><option value="yes" selected>在关键区</option><option value="no">不在关键区</option></select></div>
             </div>
-
             <div class="score-item">
               <h3>Trap Zone Audit</h3>
               <p>是否接近高密度成交区、明显阻力位或诱多诱空陷阱。</p>
-              <div class="field">
-                <select id="trapZoneAudit">
-                  <option value="no" selected>不是陷阱区</option>
-                  <option value="yes">接近陷阱区</option>
-                </select>
-              </div>
+              <div class="field"><select id="trapZoneAudit"><option value="no" selected>不是陷阱区</option><option value="yes">接近陷阱区</option></select></div>
             </div>
           </div>
         </div>
 
         <div class="group-shell">
-          <div class="group-shell-head">
-            <strong>Step 4 · 交易备注</strong>
-            <span>记录主观判断</span>
-          </div>
+          <div class="group-shell-head"><strong>Step 4 · 交易备注</strong><span>记录主观判断</span></div>
           <div class="field">
             <label for="notes">备注（可选）</label>
             <textarea id="notes" placeholder="例如：接近 61.8，下降通道内，等待强阴确认"></textarea>
@@ -1053,10 +921,7 @@
           <h2>MI6 决策终端</h2>
           <div id="resultBadge" class="badge no">NO TRADE</div>
         </div>
-
-        <div class="result-sub">
-          实时整合评分、过滤、审计与执行建议。
-        </div>
+        <div class="result-sub">实时整合评分、过滤、审计与执行建议。</div>
 
         <div class="terminal-shell">
           <div class="terminal-shell-top">
@@ -1071,14 +936,9 @@
           </div>
 
           <div class="score-box">
-            <div class="score-box-head">
-              <span>SIGNAL STRENGTH</span>
-              <span id="scoreSignalText">IDLE</span>
-            </div>
+            <div class="score-box-head"><span>SIGNAL STRENGTH</span><span id="scoreSignalText">IDLE</span></div>
             <div id="scoreNumber" class="score-number">0/6</div>
-            <div class="score-progress-track">
-              <div id="scoreProgressBar" class="score-progress-bar"></div>
-            </div>
+            <div class="score-progress-track"><div id="scoreProgressBar" class="score-progress-bar"></div></div>
             <div id="scoreLabel" class="score-label">等待输入条件后自动评分</div>
           </div>
 
@@ -1095,30 +955,17 @@
 
           <div class="terminal-block">
             <div class="terminal-block-title">ANALYSIS LOG</div>
-            <div class="block">
-              <h3>系统分析</h3>
-              <p id="analysisText">请先完成左侧输入，再点击“计算评分”。</p>
-            </div>
+            <div class="block"><h3>系统分析</h3><p id="analysisText">请先完成左侧输入，再点击“计算评分”。</p></div>
           </div>
 
           <div class="terminal-block">
             <div class="terminal-block-title">EXECUTION OUTPUT</div>
-            <div class="block">
-              <h3>执行建议</h3>
-              <p id="adviceText">暂无建议。</p>
-            </div>
+            <div class="block"><h3>执行建议</h3><p id="adviceText">暂无建议。</p></div>
           </div>
 
           <div class="terminal-block">
             <div class="terminal-block-title">RISK CONTROL</div>
-            <div class="block risk-block">
-              <h3>风险提醒</h3>
-              <ul id="riskList">
-                <li>没有触发，不要提前进场。</li>
-                <li>盘整市场默认偏保守。</li>
-                <li>方向与趋势冲突时，需要额外谨慎。</li>
-              </ul>
-            </div>
+            <div class="block risk-block"><h3>风险提醒</h3><ul id="riskList"><li>没有触发，不要提前进场。</li><li>盘整市场默认偏保守。</li><li>方向与趋势冲突时，需要额外谨慎。</li></ul></div>
           </div>
 
           <div class="terminal-block">
@@ -1129,32 +976,47 @@
                 <div class="export-card-head">
                   <div>
                     <div class="export-brand">MI6 六分交易评分器 v2.1</div>
-                    <div class="export-sub">Trading Decision Summary</div>
+                    <div class="export-sub">Instagram Share Card · 1080 × 1350 Style</div>
                   </div>
                   <div id="exportBadge" class="badge no">NO TRADE</div>
                 </div>
 
-                <div class="export-score-row">
-                  <div class="export-score-box">
-                    <small>SCORE</small>
-                    <strong id="exportScore">0/6</strong>
+                <div class="export-hero">
+                  <div class="export-hero-left">
+                    <div class="export-big-score" id="exportScore">0/6</div>
+                    <div class="export-big-label">SCORE</div>
                   </div>
-                  <div class="export-score-box">
-                    <small>SIGNAL</small>
-                    <strong id="exportSignal">IDLE</strong>
+                  <div class="export-hero-right">
+                    <div class="export-signal-chip">
+                      <span>SIGNAL</span>
+                      <strong id="exportSignal">IDLE</strong>
+                    </div>
+                    <div class="export-meta" id="exportMeta">未生成摘要</div>
                   </div>
                 </div>
 
-                <div class="export-meta" id="exportMeta">未生成摘要</div>
+                <div class="export-divider"></div>
 
-                <div class="export-section">
-                  <div class="export-section-title">KEY SUMMARY</div>
-                  <p id="exportSummary">完成评分后，系统会自动生成适合分享的判断摘要。</p>
+                <div class="export-section-grid">
+                  <div class="export-panel">
+                    <div class="export-section-title">KEY SUMMARY</div>
+                    <p id="exportSummary">完成评分后，系统会自动生成适合分享的判断摘要。</p>
+                  </div>
+                  <div class="export-panel export-panel-risk">
+                    <div class="export-section-title">RISK NOTE</div>
+                    <p id="exportRisk">暂无风险提示。</p>
+                  </div>
                 </div>
 
-                <div class="export-section">
-                  <div class="export-section-title">RISK NOTE</div>
-                  <p id="exportRisk">暂无风险提示。</p>
+                <div class="export-footer">
+                  <div class="export-footer-item">
+                    <small>ENGINE</small>
+                    <strong>MI6 SCORE + FILTER + AUDIT</strong>
+                  </div>
+                  <div class="export-footer-item">
+                    <small>PURPOSE</small>
+                    <strong>Reduce Low Quality Trades</strong>
+                  </div>
                 </div>
               </div>
 
@@ -1166,9 +1028,7 @@
           </div>
         </div>
 
-        <div class="footer-note">
-          当前为完整稳定版，适合继续扩展 IG 卡片版、历史记录、截图上传与会员分析功能。
-        </div>
+        <div class="footer-note">当前为完整稳定版，适合继续扩展 IG 卡片版、历史记录、截图上传与会员分析功能。</div>
       </aside>
     </section>
   </div>
@@ -1192,66 +1052,33 @@
       fibo: 'Fibo'
     };
 
-    function getEl(id) {
-      return document.getElementById(id);
-    }
-
-    function getTrendText(value) {
-      if (value === 'up') return '上升趋势';
-      if (value === 'down') return '下跌趋势';
-      return '盘整';
-    }
-
-    function getSessionText(value) {
-      const map = {
-        asia: '亚洲盘',
-        london: '伦敦盘',
-        newyork: '纽约盘',
-        overlap: '重叠时段'
-      };
-      return map[value] || value;
-    }
-
-    function getAtrText(value) {
-      const map = {
-        low: '过低',
-        normal: '正常',
-        high: '过高'
-      };
-      return map[value] || value;
-    }
-
+    function getEl(id) { return document.getElementById(id); }
+    function getTrendText(value) { return value === 'up' ? '上升趋势' : value === 'down' ? '下跌趋势' : '盘整'; }
+    function getSessionText(value) { return ({ asia:'亚洲盘', london:'伦敦盘', newyork:'纽约盘', overlap:'重叠时段' })[value] || value; }
+    function getAtrText(value) { return ({ low:'过低', normal:'正常', high:'过高' })[value] || value; }
     function getDirectionWarning(direction, trend) {
-      if (trend === 'up' && direction === 'SELL') {
-        return '当前为上升趋势，但你选择 SELL，方向与趋势冲突。';
-      }
-      if (trend === 'down' && direction === 'BUY') {
-        return '当前为下跌趋势，但你选择 BUY，方向与趋势冲突。';
-      }
+      if (trend === 'up' && direction === 'SELL') return '当前为上升趋势，但你选择 SELL，方向与趋势冲突。';
+      if (trend === 'down' && direction === 'BUY') return '当前为下跌趋势，但你选择 BUY，方向与趋势冲突。';
       return '';
     }
-
     function downgradeResult(result) {
       if (result === 'STRONG TRADE') return 'TRADE';
       if (result === 'TRADE') return 'WATCH';
       if (result === 'WATCH') return 'NO TRADE';
       return 'NO TRADE';
     }
-
     function getBadgeClass(result) {
       if (result === 'STRONG TRADE') return 'strong';
       if (result === 'TRADE') return 'trade';
       if (result === 'WATCH') return 'watch';
       return 'no';
     }
-
     function getSignalLabel(score) {
       if (score >= 5) return 'HIGH';
       if (score === 4) return 'MEDIUM';
       if (score >= 2) return 'LOW';
       return 'IDLE';
     }
-
     function readAdvancedState() {
       return {
         structural: getEl('structuralConsistency').value,
@@ -1264,21 +1091,30 @@
       };
     }
 
+    function applyToggleEvents() {
+      document.querySelectorAll('.toggle-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.key;
+          const value = Number(btn.dataset.value);
+          state[key] = value;
+          const group = btn.closest('.toggle-group');
+          group.querySelectorAll('.toggle-btn').forEach((b) => b.classList.remove('active', 'yes', 'no'));
+          btn.classList.add('active');
+          btn.classList.add(value === 1 ? 'yes' : 'no');
+        });
+      });
+    }
+
     function buildChecks(score, advancedState) {
       const checks = getEl('checks');
       checks.innerHTML = '';
-
       Object.keys(state).forEach((key) => {
         const row = document.createElement('div');
         row.className = 'mini-row';
-        row.innerHTML = `
-          <span>${labels[key]}</span>
-          <span class="${state[key] === 1 ? 'ok' : 'bad'}">${state[key] === 1 ? '符合 +1' : '不符合 0'}</span>
-        `;
+        row.innerHTML = `<span>${labels[key]}</span><span class="${state[key] === 1 ? 'ok' : 'bad'}">${state[key] === 1 ? '符合 +1' : '不符合 0'}</span>`;
         checks.appendChild(row);
       });
-
-      const extraRows = [
+      [
         ['结构一致性', advancedState.structural === 'yes' ? '顺主趋势' : '逆主趋势', advancedState.structural === 'yes' ? 'ok' : 'bad'],
         ['形态完整性', advancedState.isolated === 'yes' ? '孤立形态' : '结构完整', advancedState.isolated === 'yes' ? 'bad' : 'ok'],
         ['Session', getSessionText(advancedState.session), advancedState.session === 'asia' ? 'warn' : 'ok'],
@@ -1287,31 +1123,11 @@
         ['Key Zone Audit', advancedState.keyzone === 'yes' ? '通过' : '失败', advancedState.keyzone === 'yes' ? 'ok' : 'bad'],
         ['Trap Zone Audit', advancedState.trapzone === 'yes' ? '危险' : '安全', advancedState.trapzone === 'yes' ? 'bad' : 'ok'],
         ['总分', `${score}/6`, score >= 5 ? 'ok' : score === 4 ? 'warn' : 'bad']
-      ];
-
-      extraRows.forEach(([label, text, cls]) => {
+      ].forEach(([label, text, cls]) => {
         const row = document.createElement('div');
         row.className = 'mini-row';
         row.innerHTML = `<span>${label}</span><span class="${cls}">${text}</span>`;
         checks.appendChild(row);
-      });
-    }
-
-    function applyToggleEvents() {
-      document.querySelectorAll('.toggle-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.key;
-          const value = Number(btn.dataset.value);
-          state[key] = value;
-
-          const group = btn.closest('.toggle-group');
-          group.querySelectorAll('.toggle-btn').forEach((b) => {
-            b.classList.remove('active', 'yes', 'no');
-          });
-
-          btn.classList.add('active');
-          btn.classList.add(value === 1 ? 'yes' : 'no');
-        });
       });
     }
 
@@ -1330,52 +1146,40 @@
 
       const warnings = [];
       const auditFails = [];
-
       const directionWarning = getDirectionWarning(direction, trend);
       if (directionWarning) {
         warnings.push(directionWarning);
         result = downgradeResult(result);
       }
-
       if (trend === 'sideways') {
         warnings.push('当前属于盘整市场，系统自动偏保守处理。');
         result = downgradeResult(result);
       }
-
       if (advancedState.structural === 'no') {
         warnings.push('当前方向与主趋势不一致，已自动降级。');
         result = downgradeResult(result);
       }
-
       if (advancedState.isolated === 'yes') {
         warnings.push('当前形态偏孤立，缺乏前后结构支撑。');
         result = downgradeResult(result);
       }
-
       if (advancedState.session === 'asia') {
         warnings.push('当前为亚洲盘，流动性与动能通常较弱，系统自动偏保守。');
         result = downgradeResult(result);
       }
-
       if (advancedState.atr !== 'normal') {
         warnings.push(`ATR 波动状态为${getAtrText(advancedState.atr)}，已自动降级。`);
         result = downgradeResult(result);
       }
-
       if (advancedState.trigger === 'no') auditFails.push('没有明确触发');
       if (advancedState.keyzone === 'no') auditFails.push('当前位置不在关键区');
       if (advancedState.trapzone === 'yes') auditFails.push('当前接近陷阱区或高阻力区');
-
-      if (auditFails.length > 0) {
-        result = 'BLOCK';
-      }
+      if (auditFails.length > 0) result = 'BLOCK';
 
       const badgeClass = getBadgeClass(result);
       const signalLabel = getSignalLabel(score);
-
       getEl('resultBadge').textContent = result;
       getEl('resultBadge').className = `badge ${badgeClass}`;
-
       getEl('terminalStatus').textContent = result;
       getEl('scoreNumber').textContent = `${score}/6`;
       getEl('scoreSignalText').textContent = signalLabel;
@@ -1386,11 +1190,7 @@
 
       const positives = [];
       const missing = [];
-
-      Object.keys(state).forEach((key) => {
-        if (state[key] === 1) positives.push(labels[key]);
-        else missing.push(labels[key]);
-      });
+      Object.keys(state).forEach((key) => { if (state[key] === 1) positives.push(labels[key]); else missing.push(labels[key]); });
 
       let analysis = `当前选择为 ${direction}，市场状态为 ${getTrendText(trend)}。六分基础得分为 ${score}/6。`;
       if (positives.length) analysis += ` 已满足：${positives.join('、')}。`;
@@ -1402,17 +1202,11 @@
       getEl('analysisText').textContent = analysis;
 
       let advice = '';
-      if (result === 'STRONG TRADE') {
-        advice = '基础评分与过滤、审计均通过，可进入执行阶段。下一步应补充 Entry、SL、TP 与仓位控制。';
-      } else if (result === 'TRADE') {
-        advice = '整体条件良好，可以准备执行，但仍要确认风险报酬比与进场时机。';
-      } else if (result === 'WATCH') {
-        advice = '当前更适合等待。建议继续观察更清晰的触发、结构突破或更优位置。';
-      } else if (result === 'BLOCK') {
-        advice = '当前被系统直接拦截。请先解决审计失败项，再考虑是否重新评估。';
-      } else {
-        advice = '当前不建议交易。先保护资金，等待更高质量的 setup。';
-      }
+      if (result === 'STRONG TRADE') advice = '基础评分与过滤、审计均通过，可进入执行阶段。下一步应补充 Entry、SL、TP 与仓位控制。';
+      else if (result === 'TRADE') advice = '整体条件良好，可以准备执行，但仍要确认风险报酬比与进场时机。';
+      else if (result === 'WATCH') advice = '当前更适合等待。建议继续观察更清晰的触发、结构突破或更优位置。';
+      else if (result === 'BLOCK') advice = '当前被系统直接拦截。请先解决审计失败项，再考虑是否重新评估。';
+      else advice = '当前不建议交易。先保护资金，等待更高质量的 setup。';
       getEl('adviceText').textContent = advice;
 
       const riskList = getEl('riskList');
@@ -1422,10 +1216,8 @@
         '任何结果都必须搭配止损、仓位和风险报酬比。',
         '没有触发，不要提前进场。'
       ];
-
       warnings.slice().reverse().forEach((w) => risks.unshift(w));
       auditFails.slice().reverse().forEach((a) => risks.unshift(`审计失败：${a}`));
-
       risks.forEach((item) => {
         const li = document.createElement('li');
         li.textContent = item;
@@ -1437,15 +1229,8 @@
       getEl('exportScore').textContent = `${score}/6`;
       getEl('exportSignal').textContent = signalLabel;
       getEl('exportMeta').textContent = `${symbol || '未填写标的'} · ${direction} · ${getTrendText(trend)} · ${getSessionText(advancedState.session)}`;
-      getEl('exportSummary').textContent =
-        `结果：${result}。基础评分 ${score}/6。` +
-        `${positives.length ? `已满足：${positives.join('、')}。` : ''}` +
-        `${missing.length ? `仍欠缺：${missing.join('、')}。` : ''}` +
-        `${warnings.length ? `过滤修正：${warnings.join(' ')}` : ''}` +
-        `${auditFails.length ? `审计失败：${auditFails.join('、')}。` : ''}`;
-      getEl('exportRisk').textContent = auditFails.length
-        ? `重点风险：${auditFails.join('、')}。`
-        : (warnings[0] || '请搭配止损、仓位管理与风险报酬比。');
+      getEl('exportSummary').textContent = `结果：${result}。基础评分 ${score}/6。${positives.length ? `已满足：${positives.join('、')}。` : ''}${missing.length ? `仍欠缺：${missing.join('、')}。` : ''}${warnings.length ? `过滤修正：${warnings.join(' ')}` : ''}${auditFails.length ? `审计失败：${auditFails.join('、')}。` : ''}`;
+      getEl('exportRisk').textContent = auditFails.length ? `重点风险：${auditFails.join('、')}。` : (warnings[0] || '请搭配止损、仓位管理与风险报酬比。');
     }
 
     function resetForm() {
@@ -1453,7 +1238,6 @@
       getEl('trend').value = 'up';
       getEl('symbol').value = '';
       getEl('notes').value = '';
-
       getEl('structuralConsistency').value = 'yes';
       getEl('isolatedPattern').value = 'no';
       getEl('sessionFilter').value = 'overlap';
@@ -1461,21 +1245,12 @@
       getEl('triggerAudit').value = 'yes';
       getEl('keyZoneAudit').value = 'yes';
       getEl('trapZoneAudit').value = 'no';
-
-      Object.keys(state).forEach((key) => {
-        state[key] = 0;
-      });
-
+      Object.keys(state).forEach((key) => { state[key] = 0; });
       document.querySelectorAll('.toggle-group').forEach((group) => {
-        group.querySelectorAll('.toggle-btn').forEach((btn) => {
-          btn.classList.remove('active', 'yes', 'no');
-        });
+        group.querySelectorAll('.toggle-btn').forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
         const noBtn = group.querySelector('.toggle-btn[data-value="0"]');
-        if (noBtn) {
-          noBtn.classList.add('active', 'no');
-        }
+        if (noBtn) noBtn.classList.add('active', 'no');
       });
-
       getEl('resultBadge').textContent = 'NO TRADE';
       getEl('resultBadge').className = 'badge no';
       getEl('terminalStatus').textContent = 'AWAITING INPUT';
@@ -1486,13 +1261,7 @@
       getEl('checks').innerHTML = '';
       getEl('analysisText').textContent = '请先完成左侧输入，再点击“计算评分”。';
       getEl('adviceText').textContent = '暂无建议。';
-
-      getEl('riskList').innerHTML = `
-        <li>没有触发，不要提前进场。</li>
-        <li>盘整市场默认偏保守。</li>
-        <li>方向与趋势冲突时，需要额外谨慎。</li>
-      `;
-
+      getEl('riskList').innerHTML = '<li>没有触发，不要提前进场。</li><li>盘整市场默认偏保守。</li><li>方向与趋势冲突时，需要额外谨慎。</li>';
       getEl('exportBadge').textContent = 'NO TRADE';
       getEl('exportBadge').className = 'badge no';
       getEl('exportScore').textContent = '0/6';
@@ -1511,16 +1280,14 @@
         `信号：${getEl('exportSignal').textContent}`,
         `摘要：${getEl('exportSummary').textContent}`,
         `风险：${getEl('exportRisk').textContent}`
-      ].join('\n');
-
+      ].join('
+');
       try {
         await navigator.clipboard.writeText(text);
         const btn = getEl('copyExportBtn');
         const original = btn.textContent;
         btn.textContent = '已复制';
-        setTimeout(() => {
-          btn.textContent = original;
-        }, 1200);
+        setTimeout(() => { btn.textContent = original; }, 1200);
       } catch (err) {
         alert('复制失败，请手动复制。');
       }
@@ -1528,8 +1295,7 @@
 
     function downloadExportCardHtml() {
       const cardHtml = getEl('exportCard').outerHTML;
-      const html = `
-<!DOCTYPE html>
+      const html = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -1541,23 +1307,17 @@ body{background:#070b13;padding:24px;font-family:Inter,Arial,sans-serif;color:#f
 .badge.trade{background:rgba(61,174,255,0.15);color:#e2f3ff;border-color:rgba(61,174,255,0.45)}
 .badge.watch{background:rgba(245,185,66,0.16);color:#fff3d6;border-color:rgba(245,185,66,0.45)}
 .badge.no{background:rgba(239,68,68,0.16);color:#ffe7e7;border-color:rgba(239,68,68,0.45)}
-.export-card{max-width:680px;border-radius:20px;padding:18px;border:1px solid rgba(141,167,255,0.18);background:radial-gradient(circle at top right, rgba(141,167,255,0.12), transparent 30%),linear-gradient(180deg, rgba(15,21,36,0.98), rgba(10,15,26,0.98))}
-.export-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
-.export-brand{font-weight:900;font-size:16px;line-height:1.3}
-.export-sub{color:#9fb0d1;font-size:12px;margin-top:4px}
-.export-score-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
-.export-score-box{padding:12px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)}
-.export-score-box small{display:block;color:#8ea0cb;font-size:10px;letter-spacing:1px;margin-bottom:6px}
-.export-score-box strong{display:block;font-size:18px;font-family:ui-monospace,Menlo,Consolas,monospace}
-.export-meta{margin-bottom:12px;color:#dbe5ff;font-size:12px;line-height:1.7}
-.export-section{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)}
-.export-section-title{color:#8da7ff;font-size:11px;letter-spacing:1px;font-family:ui-monospace,Menlo,Consolas,monospace;margin-bottom:8px}
-.export-section p{margin:0;color:#dfe7fb;font-size:13px;line-height:1.8}
+.export-card{max-width:860px;min-height:760px;aspect-ratio:4/5;border-radius:28px;padding:24px;border:1px solid rgba(141,167,255,0.22);background:radial-gradient(circle at 85% 10%, rgba(141,167,255,0.2), transparent 24%),radial-gradient(circle at 10% 90%, rgba(178,125,255,0.16), transparent 20%),linear-gradient(180deg, rgba(15,21,36,0.96), rgba(8,12,22,0.98));display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 40px rgba(0,0,0,0.24)}
+.export-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:24px}.export-brand{font-weight:900;font-size:18px;line-height:1.3}.export-sub{color:#9fb0d1;font-size:12px;margin-top:4px}
+.export-hero{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end;margin-bottom:18px}.export-big-score{font-size:88px;line-height:.95;font-weight:900;letter-spacing:-3px}.export-big-label{margin-top:8px;font-size:11px;letter-spacing:1.4px;color:#8da7ff;font-family:ui-monospace,Menlo,Consolas,monospace}
+.export-hero-right{display:flex;flex-direction:column;gap:10px;align-items:flex-end;text-align:right}.export-signal-chip{display:inline-flex;flex-direction:column;align-items:flex-end;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)}
+.export-signal-chip span,.export-footer-item small{display:block;color:#8ea0cb;font-size:10px;letter-spacing:1px;margin-bottom:6px}.export-signal-chip strong{display:block;font-size:20px;font-family:ui-monospace,Menlo,Consolas,monospace}.export-meta{color:#dbe5ff;font-size:12px;line-height:1.8;max-width:280px}
+.export-divider{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);margin:10px 0 18px}.export-section-grid{display:grid;grid-template-columns:1fr;gap:14px;flex:1}.export-panel{padding:16px;border-radius:18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)}.export-panel-risk{border-color:rgba(239,68,68,0.15);background:rgba(239,68,68,0.05)}
+.export-section-title{color:#8da7ff;font-size:11px;letter-spacing:1px;margin-bottom:8px;font-family:ui-monospace,Menlo,Consolas,monospace}.export-panel p{margin:0;color:#dfe7fb;font-size:14px;line-height:1.9}.export-footer{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.export-footer-item{padding:12px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)}.export-footer-item strong{display:block;font-size:12px;line-height:1.7;color:#eef3ff}
 </style>
 </head>
 <body>${cardHtml}</body>
 </html>`;
-
       const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1568,7 +1328,6 @@ body{background:#070b13;padding:24px;font-family:Inter,Arial,sans-serif;color:#f
     }
 
     applyToggleEvents();
-
     getEl('calculateBtn').addEventListener('click', calculateResult);
     getEl('resetBtn').addEventListener('click', resetForm);
     getEl('copyExportBtn').addEventListener('click', copyExportSummary);
