@@ -684,6 +684,7 @@
   </div>
 
   <script>
+  document.addEventListener('DOMContentLoaded', () => {
     const state = {
       direction: 'BUY',
       candlestick: 0,
@@ -705,8 +706,15 @@
 
     const $ = (id) => document.getElementById(id);
 
+    function safeText(id, text) {
+      const el = $(id);
+      if (el) el.textContent = text;
+    }
+
     function getTrendText(value) {
-      return value === 'up' ? '上升趋势' : value === 'down' ? '下跌趋势' : '盘整';
+      if (value === 'up') return '上升趋势';
+      if (value === 'down') return '下跌趋势';
+      return '盘整';
     }
 
     function getSessionText(value) {
@@ -744,43 +752,71 @@
       return 'IDLE';
     }
 
-    function readAdvancedState() {
-      return {
-        trend: $('trendSelect').value,
-        structural: $('structuralConsistency').value,
-        isolated: $('isolatedPattern').value,
-        session: $('sessionFilter').value,
-        atr: $('atrFilter').value,
-        trigger: $('triggerAudit').value,
-        keyzone: $('keyZoneAudit').value,
-        trapzone: $('trapZoneAudit').value
-      };
+    function setUiState(text) {
+      safeText('stateChip', `STATE: ${text}`);
+      safeText('terminalStatus', text);
     }
 
     function setDirection(direction) {
       state.direction = direction;
-      $('directionChip').textContent = `DIRECTION: ${direction}`;
-      $('buyBtn').classList.toggle('active', direction === 'BUY');
-      $('buyBtn').classList.toggle('buy', direction === 'BUY');
-      $('shortBtn').classList.toggle('active', direction === 'SHORT');
-      $('shortBtn').classList.toggle('short', direction === 'SHORT');
+      safeText('directionChip', `DIRECTION: ${direction}`);
+
+      const buyBtn = $('buyBtn');
+      const shortBtn = $('shortBtn');
+      if (!buyBtn || !shortBtn) return;
+
+      buyBtn.classList.remove('active', 'buy');
+      shortBtn.classList.remove('active', 'short');
+
+      if (direction === 'BUY') {
+        buyBtn.classList.add('active', 'buy');
+      } else {
+        shortBtn.classList.add('active', 'short');
+      }
     }
 
-    function setUiState(text) {
-      $('stateChip').textContent = `STATE: ${text}`;
-      $('terminalStatus').textContent = text;
+    function readAdvancedState() {
+      return {
+        trend: $('trendSelect')?.value || 'sideways',
+        structural: $('structuralConsistency')?.value || 'yes',
+        isolated: $('isolatedPattern')?.value || 'no',
+        session: $('sessionFilter')?.value || 'overlap',
+        atr: $('atrFilter')?.value || 'normal',
+        trigger: $('triggerAudit')?.value || 'yes',
+        keyzone: $('keyZoneAudit')?.value || 'yes',
+        trapzone: $('trapZoneAudit')?.value || 'no'
+      };
+    }
+
+    function syncToggleUI() {
+      document.querySelectorAll('.toggle-group').forEach((group) => {
+        const buttons = group.querySelectorAll('.toggle-btn');
+        const key = buttons[0]?.dataset.key;
+        if (!key) return;
+
+        buttons.forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
+
+        const target = group.querySelector(`.toggle-btn[data-value="${state[key]}"]`);
+        if (target) {
+          target.classList.add('active');
+          target.classList.add(state[key] === 1 ? 'yes' : 'no');
+        }
+      });
     }
 
     function buildChecks(score, advancedState) {
       const checks = $('checks');
+      if (!checks) return;
       checks.innerHTML = '';
+
       Object.keys(labels).forEach((key) => {
         const row = document.createElement('div');
         row.className = 'mini-row';
         row.innerHTML = `<span>${labels[key]}</span><span class="${state[key] === 1 ? 'ok' : 'bad'}">${state[key] === 1 ? 'YES' : 'NO'}</span>`;
         checks.appendChild(row);
       });
-      [
+
+      const rows = [
         ['趋势', getTrendText(advancedState.trend), advancedState.trend === 'sideways' ? 'warn' : 'ok'],
         ['结构一致性', advancedState.structural === 'yes' ? '顺主趋势' : '逆主趋势', advancedState.structural === 'yes' ? 'ok' : 'bad'],
         ['形态完整性', advancedState.isolated === 'yes' ? '孤立形态' : '结构完整', advancedState.isolated === 'yes' ? 'bad' : 'ok'],
@@ -790,7 +826,9 @@
         ['Key Zone Audit', advancedState.keyzone === 'yes' ? '通过' : '失败', advancedState.keyzone === 'yes' ? 'ok' : 'bad'],
         ['Trap Zone Audit', advancedState.trapzone === 'yes' ? '危险' : '安全', advancedState.trapzone === 'yes' ? 'bad' : 'ok'],
         ['总分', `${score}/6`, score >= 5 ? 'ok' : score === 4 ? 'warn' : 'bad']
-      ].forEach(([label, text, cls]) => {
+      ];
+
+      rows.forEach(([label, text, cls]) => {
         const row = document.createElement('div');
         row.className = 'mini-row';
         row.innerHTML = `<span>${label}</span><span class="${cls}">${text}</span>`;
@@ -801,10 +839,10 @@
     function renderDecision() {
       const advancedState = readAdvancedState();
       const direction = state.direction;
-      const symbol = $('symbol').value.trim();
-      const timeframe = $('timeframe').value;
-      const notes = $('notes').value.trim();
-      const score = Object.keys(labels).reduce((sum, key) => sum + state[key], 0);
+      const symbol = $('symbol')?.value.trim() || '';
+      const timeframe = $('timeframe')?.value || '';
+      const notes = $('notes')?.value.trim() || '';
+      const score = Object.keys(labels).reduce((sum, key) => sum + Number(state[key] || 0), 0);
 
       let result = 'NO TRADE';
       if (score === 6) result = 'STRONG TRADE';
@@ -813,31 +851,38 @@
 
       const warnings = [];
       const auditFails = [];
+
       const directionWarning = getDirectionWarning(direction, advancedState.trend);
       if (directionWarning) {
         warnings.push(directionWarning);
         result = downgradeResult(result);
       }
+
       if (advancedState.trend === 'sideways') {
         warnings.push('当前属于盘整市场，系统自动偏保守处理。');
         result = downgradeResult(result);
       }
+
       if (advancedState.structural === 'no') {
         warnings.push('当前方向与主趋势不一致，已自动降级。');
         result = downgradeResult(result);
       }
+
       if (advancedState.isolated === 'yes') {
         warnings.push('当前形态偏孤立，缺乏前后结构支撑。');
         result = downgradeResult(result);
       }
+
       if (advancedState.session === 'asia') {
         warnings.push('当前为亚洲盘，流动性与动能通常较弱，系统自动偏保守。');
         result = downgradeResult(result);
       }
+
       if (advancedState.atr !== 'normal') {
         warnings.push(`ATR 波动状态为${getAtrText(advancedState.atr)}，已自动降级。`);
         result = downgradeResult(result);
       }
+
       if (advancedState.trigger === 'no') auditFails.push('没有明确触发');
       if (advancedState.keyzone === 'no') auditFails.push('当前位置不在关键区');
       if (advancedState.trapzone === 'yes') auditFails.push('当前接近陷阱区或高阻力区');
@@ -845,28 +890,35 @@
 
       const badgeClass = getBadgeClass(result);
       const signalLabel = getSignalLabel(score);
-      $('resultBadge').textContent = result;
-      $('resultBadge').className = `badge ${badgeClass}`;
-      $('scoreNumber').textContent = `${score}/6`;
-      $('scoreSignalText').textContent = signalLabel;
-      $('scoreProgressBar').style.width = `${(score/6)*100}%`;
-      $('scoreLabel').textContent = `${symbol || '未填写标的'} ${timeframe ? `· ${timeframe}` : ''} · ${direction} · ${getTrendText(advancedState.trend)}`;
+
+      const resultBadge = $('resultBadge');
+      if (resultBadge) {
+        resultBadge.textContent = result;
+        resultBadge.className = `badge ${badgeClass}`;
+      }
+
+      safeText('scoreNumber', `${score}/6`);
+      safeText('scoreSignalText', signalLabel);
+      const bar = $('scoreProgressBar');
+      if (bar) bar.style.width = `${(score / 6) * 100}%`;
+      safeText('scoreLabel', `${symbol || '未填写标的'} ${timeframe ? `· ${timeframe}` : ''} · ${direction} · ${getTrendText(advancedState.trend)}`);
 
       buildChecks(score, advancedState);
 
       const positives = [];
       const missing = [];
       Object.keys(labels).forEach((key) => {
-        if (state[key] === 1) positives.push(labels[key]); else missing.push(labels[key]);
+        if (state[key] === 1) positives.push(labels[key]);
+        else missing.push(labels[key]);
       });
 
-      let analysis = `系统已完成一轮模拟图表分析。当前选择方向为 ${direction}，趋势判断为 ${getTrendText(advancedState.trend)}，六分得分为 ${score}/6。`;
+      let analysis = `系统已完成图表分析流程。当前选择方向为 ${direction}，趋势判断为 ${getTrendText(advancedState.trend)}，六分得分为 ${score}/6。`;
       if (positives.length) analysis += ` 已满足：${positives.join('、')}。`;
       if (missing.length) analysis += ` 欠缺：${missing.join('、')}。`;
       if (warnings.length) analysis += ` 过滤修正：${warnings.join(' ')}`;
       if (auditFails.length) analysis += ` 审计失败：${auditFails.join('、')}。`;
       if (notes) analysis += ` 用户备注：${notes}`;
-      $('analysisText').textContent = analysis;
+      safeText('analysisText', analysis);
 
       let advice = '';
       if (result === 'STRONG TRADE') advice = '当前符合高质量 setup。下一步可以进入执行阶段，但仍应补充 Entry、SL、TP。';
@@ -874,30 +926,35 @@
       else if (result === 'WATCH') advice = '当前更适合观察与等待，不建议太快进场。';
       else if (result === 'BLOCK') advice = '当前被系统拦截。建议先解决触发、关键区或陷阱区问题。';
       else advice = '当前不建议交易，等待更高质量的图表结构。';
-      $('adviceText').textContent = advice;
+      safeText('adviceText', advice);
 
       const riskList = $('riskList');
-      riskList.innerHTML = '';
-      const risks = [
-        '当前为原型，分析结果由 mock data 模拟，不代表真实识图能力。',
-        '正式版仍需接 AI 后端才能做到真正自动分析。',
-        '任何结果都必须搭配止损、仓位和风险报酬比。'
-      ];
-      warnings.slice().reverse().forEach((w) => risks.unshift(w));
-      auditFails.slice().reverse().forEach((a) => risks.unshift(`审计失败：${a}`));
-      risks.forEach((item) => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        riskList.appendChild(li);
-      });
+      if (riskList) {
+        riskList.innerHTML = '';
+        const risks = [
+          '当前分析仍需搭配真实交易经验判断。',
+          '任何结果都必须搭配止损、仓位和风险报酬比。',
+          '不要因为分数高就忽略风险。'
+        ];
+        warnings.slice().reverse().forEach((w) => risks.unshift(w));
+        auditFails.slice().reverse().forEach((a) => risks.unshift(`审计失败：${a}`));
+        risks.forEach((item) => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          riskList.appendChild(li);
+        });
+      }
 
-      $('exportBadge').textContent = result;
-      $('exportBadge').className = `badge ${badgeClass}`;
-      $('exportScore').textContent = `${score}/6`;
-      $('exportSignal').textContent = signalLabel;
-      $('exportMeta').textContent = `${symbol || '未填写标的'} ${timeframe ? `· ${timeframe}` : ''} · ${direction} · ${getTrendText(advancedState.trend)}`;
-      $('exportSummary').textContent = `结果：${result}。基础评分 ${score}/6。${positives.length ? `已满足：${positives.join('、')}。` : ''}${missing.length ? `仍欠缺：${missing.join('、')}。` : ''}${warnings.length ? `过滤修正：${warnings.join(' ')}` : ''}${auditFails.length ? `审计失败：${auditFails.join('、')}。` : ''}`;
-      $('exportRisk').textContent = auditFails.length ? `重点风险：${auditFails.join('、')}。` : (warnings[0] || '当前为 mock data 演示，请勿视为真实自动识图结论。');
+      const exportBadge = $('exportBadge');
+      if (exportBadge) {
+        exportBadge.textContent = result;
+        exportBadge.className = `badge ${badgeClass}`;
+      }
+      safeText('exportScore', `${score}/6`);
+      safeText('exportSignal', signalLabel);
+      safeText('exportMeta', `${symbol || '未填写标的'} ${timeframe ? `· ${timeframe}` : ''} · ${direction} · ${getTrendText(advancedState.trend)}`);
+      safeText('exportSummary', `结果：${result}。基础评分 ${score}/6。${positives.length ? `已满足：${positives.join('、')}。` : ''}${missing.length ? `仍欠缺：${missing.join('、')}。` : ''}${warnings.length ? `过滤修正：${warnings.join(' ')}` : ''}${auditFails.length ? `审计失败：${auditFails.join('、')}。` : ''}`);
+      safeText('exportRisk', auditFails.length ? `重点风险：${auditFails.join('、')}。` : (warnings[0] || '请搭配止损、仓位管理与风险报酬比。'));
     }
 
     function applyAnalysisData(data) {
@@ -909,14 +966,14 @@
         analysis_text: data.analysis_text || ''
       };
 
-      $('trendSelect').value = safeData.image_analysis.trend || 'sideways';
-      $('structuralConsistency').value = safeData.filters.structural || 'yes';
-      $('isolatedPattern').value = safeData.filters.isolated || 'no';
-      $('sessionFilter').value = safeData.filters.session || 'overlap';
-      $('atrFilter').value = safeData.filters.atr || 'normal';
-      $('triggerAudit').value = safeData.audit.trigger || 'yes';
-      $('keyZoneAudit').value = safeData.audit.keyzone || 'yes';
-      $('trapZoneAudit').value = safeData.audit.trapzone || 'no';
+      if ($('trendSelect')) $('trendSelect').value = safeData.image_analysis.trend || 'sideways';
+      if ($('structuralConsistency')) $('structuralConsistency').value = safeData.filters.structural || 'yes';
+      if ($('isolatedPattern')) $('isolatedPattern').value = safeData.filters.isolated || 'no';
+      if ($('sessionFilter')) $('sessionFilter').value = safeData.filters.session || 'overlap';
+      if ($('atrFilter')) $('atrFilter').value = safeData.filters.atr || 'normal';
+      if ($('triggerAudit')) $('triggerAudit').value = safeData.audit.trigger || 'yes';
+      if ($('keyZoneAudit')) $('keyZoneAudit').value = safeData.audit.keyzone || 'yes';
+      if ($('trapZoneAudit')) $('trapZoneAudit').value = safeData.audit.trapzone || 'no';
 
       Object.keys(labels).forEach((key) => {
         state[key] = Number(safeData.mi6[key] || 0);
@@ -927,34 +984,16 @@
       renderDecision();
 
       if (safeData.analysis_text) {
-        $('analysisText').textContent = safeData.analysis_text + '（你仍可手动修正 AI 判断。）';
+        safeText('analysisText', safeData.analysis_text + '（你仍可手动修正 AI 判断。）');
       }
     }
 
-    function syncToggleUI() {
-      document.querySelectorAll('.toggle-group').forEach((group) => {
-        const btns = group.querySelectorAll('.toggle-btn');
-        const key = btns[0]?.dataset.key;
-        if (!key) return;
-        btns.forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
-        const target = group.querySelector(`.toggle-btn[data-value="${state[key]}"]`);
-        if (target) {
-          target.classList.add('active');
-          target.classList.add(state[key] === 1 ? 'yes' : 'no');
-        }
-      });
-    }
-
     function getMockAiResponse() {
-      const direction = state.direction;
-      const isBuy = direction === 'BUY';
+      const isBuy = state.direction === 'BUY';
       return {
         success: true,
         image_analysis: {
-          trend: isBuy ? 'up' : 'down',
-          structure_summary: isBuy ? '回调后继续偏多' : '反弹后继续偏空',
-          pattern_detected: isBuy ? 'bullish_channel' : 'bearish_channel',
-          notes: isBuy ? '价格整体偏多，结构有延续机会。' : '价格整体偏空，结构有延续机会。'
+          trend: isBuy ? 'up' : 'down'
         },
         mi6: isBuy
           ? { candlestick: 1, chartpattern: 1, wave: 1, ma: 1, bb: 0, fibo: 1 }
@@ -971,46 +1010,44 @@
           trapzone: 'no'
         },
         analysis_text: isBuy
-          ? 'AI 模拟分析：当前图表偏向上升趋势中的回调结构，BUY 方向与趋势一致，MA 与 Wave 支持较强，但 BB 不完全理想。'
-          : 'AI 模拟分析：当前图表偏向下降趋势中的反弹结构，SHORT 方向与趋势一致，结构与触发较清晰，但 Fibo 不完全理想。',
+          ? 'AI 模拟分析：当前图表偏向上升趋势中的回调结构，BUY 方向与趋势一致。'
+          : 'AI 模拟分析：当前图表偏向下降趋势中的反弹结构，SHORT 方向与趋势一致。',
         suggested_result: 'TRADE'
       };
     }
 
     async function analyzeChartWithApi() {
-      const file = $('chartUpload').files?.[0];
+      const file = $('chartUpload')?.files?.[0];
       if (!file) {
         alert('请先上传图表图片');
         return;
       }
 
       setUiState('ANALYZING');
-      $('analysisText').textContent = 'Uploading chart... Reading trend... Checking structure... Running MI6 engine...';
-      $('adviceText').textContent = '系统正在请求 AI 分析。若后端还没接上，将自动使用 mock data 演示。';
+      safeText('analysisText', 'Uploading chart... Reading trend... Checking structure... Running MI6 engine...');
+      safeText('adviceText', '系统正在请求 AI 分析。若后端还没接上，将自动使用 mock data 演示。');
 
       const formData = new FormData();
       formData.append('image', file);
       formData.append('direction', state.direction);
-      formData.append('symbol', $('symbol').value || '');
-      formData.append('timeframe', $('timeframe').value || '');
-      formData.append('notes', $('notes').value || '');
+      formData.append('symbol', $('symbol')?.value || '');
+      formData.append('timeframe', $('timeframe')?.value || '');
+      formData.append('notes', $('notes')?.value || '');
 
       try {
-        const res = await fetch('https://mi6-backend.onrender.com', {
+        const res = await fetch('https://mi6-backend.onrender.com/api/analyze-chart', {
           method: 'POST',
           body: formData
         });
-
         if (!res.ok) throw new Error('API not available');
         const data = await res.json();
         if (!data.success) throw new Error(data.error || 'AI analysis failed');
-
         applyAnalysisData(data);
       } catch (err) {
         console.warn('Using mock AI response:', err.message);
         setTimeout(() => {
           applyAnalysisData(getMockAiResponse());
-          $('analysisText').textContent += ' 当前使用 mock data，因为 /api/analyze-chart 后端尚未接上。';
+          safeText('analysisText', $('analysisText').textContent + ' 当前使用 mock data，因为 API 暂时不可用。');
         }, 650);
       }
     }
@@ -1018,72 +1055,87 @@
     function resetAll() {
       state.direction = 'BUY';
       Object.keys(labels).forEach((key) => { state[key] = 0; });
-      $('symbol').value = '';
-      $('timeframe').value = '';
-      $('notes').value = '';
-      $('trendSelect').value = 'up';
-      $('structuralConsistency').value = 'yes';
-      $('isolatedPattern').value = 'no';
-      $('sessionFilter').value = 'overlap';
-      $('atrFilter').value = 'normal';
-      $('triggerAudit').value = 'yes';
-      $('keyZoneAudit').value = 'yes';
-      $('trapZoneAudit').value = 'no';
+      if ($('symbol')) $('symbol').value = '';
+      if ($('timeframe')) $('timeframe').value = '';
+      if ($('notes')) $('notes').value = '';
+      if ($('trendSelect')) $('trendSelect').value = 'up';
+      if ($('structuralConsistency')) $('structuralConsistency').value = 'yes';
+      if ($('isolatedPattern')) $('isolatedPattern').value = 'no';
+      if ($('sessionFilter')) $('sessionFilter').value = 'overlap';
+      if ($('atrFilter')) $('atrFilter').value = 'normal';
+      if ($('triggerAudit')) $('triggerAudit').value = 'yes';
+      if ($('keyZoneAudit')) $('keyZoneAudit').value = 'yes';
+      if ($('trapZoneAudit')) $('trapZoneAudit').value = 'no';
       setDirection('BUY');
       setUiState('IDLE');
-      $('uploadBox').classList.remove('has-image');
-      $('previewImage').style.display = 'none';
-      $('previewImage').src = '';
-      $('uploadPlaceholder').style.display = 'block';
-      document.querySelectorAll('.toggle-group').forEach((group) => {
-        group.querySelectorAll('.toggle-btn').forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
-        const noBtn = group.querySelector('.toggle-btn[data-value="0"]');
-        if (noBtn) noBtn.classList.add('active', 'no');
-      });
-      $('resultBadge').textContent = 'NO TRADE';
-      $('resultBadge').className = 'badge no';
-      $('scoreNumber').textContent = '0/6';
-      $('scoreSignalText').textContent = 'IDLE';
-      $('scoreProgressBar').style.width = '0%';
-      $('scoreLabel').textContent = '等待上传图表并开始分析';
-      $('checks').innerHTML = '';
-      $('analysisText').textContent = '请先上传图表并点击 Analyze Chart。';
-      $('adviceText').textContent = '暂无建议。';
-      $('riskList').innerHTML = '<li>当前版本为原型，分析结果使用模拟数据。</li><li>正式版需要接 AI 视觉分析接口。</li><li>最终仍需搭配止损和仓位管理。</li>';
-      $('exportBadge').textContent = 'NO TRADE';
-      $('exportBadge').className = 'badge no';
-      $('exportScore').textContent = '0/6';
-      $('exportSignal').textContent = 'IDLE';
-      $('exportMeta').textContent = '未生成摘要';
-      $('exportSummary').textContent = '上传图表后，系统会生成适合分享的判断摘要。';
-      $('exportRisk').textContent = '当前为原型演示，尚未接入真实识图。';
+
+      const uploadBox = $('uploadBox');
+      const previewImage = $('previewImage');
+      const uploadPlaceholder = $('uploadPlaceholder');
+      if (uploadBox) uploadBox.classList.remove('has-image');
+      if (previewImage) {
+        previewImage.style.display = 'none';
+        previewImage.src = '';
+      }
+      if (uploadPlaceholder) uploadPlaceholder.style.display = 'block';
+
+      syncToggleUI();
+      const resultBadge = $('resultBadge');
+      if (resultBadge) {
+        resultBadge.textContent = 'NO TRADE';
+        resultBadge.className = 'badge no';
+      }
+      safeText('scoreNumber', '0/6');
+      safeText('scoreSignalText', 'IDLE');
+      const bar = $('scoreProgressBar');
+      if (bar) bar.style.width = '0%';
+      safeText('scoreLabel', '等待上传图表并开始分析');
+      if ($('checks')) $('checks').innerHTML = '';
+      safeText('analysisText', '请先上传图表并点击 Analyze Chart。');
+      safeText('adviceText', '暂无建议。');
+      if ($('riskList')) $('riskList').innerHTML = '<li>当前分析仍需搭配真实交易经验判断。</li><li>最终仍需搭配止损和仓位管理。</li>';
+      const exportBadge = $('exportBadge');
+      if (exportBadge) {
+        exportBadge.textContent = 'NO TRADE';
+        exportBadge.className = 'badge no';
+      }
+      safeText('exportScore', '0/6');
+      safeText('exportSignal', 'IDLE');
+      safeText('exportMeta', '未生成摘要');
+      safeText('exportSummary', '上传图表后，系统会生成适合分享的判断摘要。');
+      safeText('exportRisk', '暂无风险提示。');
     }
 
     async function copyExportSummary() {
       const text = [
         'MI6 v3 Prototype',
-        $('exportMeta').textContent,
-        `结果：${$('exportBadge').textContent}`,
-        `分数：${$('exportScore').textContent}`,
-        `信号：${$('exportSignal').textContent}`,
-        `摘要：${$('exportSummary').textContent}`,
-        `风险：${$('exportRisk').textContent}`
+        $('exportMeta')?.textContent || '',
+        `结果：${$('exportBadge')?.textContent || ''}`,
+        `分数：${$('exportScore')?.textContent || ''}`,
+        `信号：${$('exportSignal')?.textContent || ''}`,
+        `摘要：${$('exportSummary')?.textContent || ''}`,
+        `风险：${$('exportRisk')?.textContent || ''}`
       ].join('
 ');
+
       try {
         await navigator.clipboard.writeText(text);
         const btn = $('copyExportBtn');
-        const original = btn.textContent;
-        btn.textContent = '已复制';
-        setTimeout(() => { btn.textContent = original; }, 1200);
+        if (btn) {
+          const original = btn.textContent;
+          btn.textContent = '已复制';
+          setTimeout(() => { btn.textContent = original; }, 1200);
+        }
       } catch (err) {
         alert('复制失败，请手动复制。');
       }
     }
 
     function downloadExportCardHtml() {
-      const cardHtml = $('exportCard').outerHTML;
-      const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>MI6 v3 Export Card</title><style>body{background:#070b13;padding:24px;font-family:Inter,Arial,sans-serif;color:#fff}.badge{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;min-width:122px;border-radius:999px;font-weight:900;font-size:13px;border:1px solid transparent}.badge.strong{background:rgba(25,195,125,.16);color:#dff8ee;border-color:rgba(25,195,125,.5)}.badge.trade{background:rgba(61,174,255,.15);color:#e2f3ff;border-color:rgba(61,174,255,.45)}.badge.watch{background:rgba(245,185,66,.16);color:#fff3d6;border-color:rgba(245,185,66,.45)}.badge.no{background:rgba(239,68,68,.16);color:#ffe7e7;border-color:rgba(239,68,68,.45)}.export-card{max-width:860px;min-height:760px;aspect-ratio:4/5;border-radius:28px;padding:24px;border:1px solid rgba(141,167,255,.22);background:radial-gradient(circle at 85% 10%, rgba(141,167,255,.2), transparent 24%),radial-gradient(circle at 10% 90%, rgba(178,125,255,.16), transparent 20%),linear-gradient(180deg, rgba(15,21,36,.96), rgba(8,12,22,.98));display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 40px rgba(0,0,0,.24)}.export-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:24px}.export-brand{font-weight:900;font-size:18px;line-height:1.3}.export-sub{color:#9fb0d1;font-size:12px;margin-top:4px}.export-hero{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end;margin-bottom:18px}.export-big-score{font-size:88px;line-height:.95;font-weight:900;letter-spacing:-3px}.export-big-label{margin-top:8px;font-size:11px;letter-spacing:1.4px;color:#8da7ff;font-family:ui-monospace,Menlo,Consolas,monospace}.export-hero-right{display:flex;flex-direction:column;gap:10px;align-items:flex-end;text-align:right}.export-signal-chip{display:inline-flex;flex-direction:column;align-items:flex-end;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}.export-signal-chip span,.export-footer-item small{display:block;color:#8ea0cb;font-size:10px;letter-spacing:1px;margin-bottom:6px}.export-signal-chip strong{display:block;font-size:20px;font-family:ui-monospace,Menlo,Consolas,monospace}.export-meta{color:#dbe5ff;font-size:12px;line-height:1.8;max-width:280px}.export-divider{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);margin:10px 0 18px}.export-section-grid{display:grid;grid-template-columns:1fr;gap:14px;flex:1}.export-panel{padding:16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}.export-panel-risk{border-color:rgba(239,68,68,.15);background:rgba(239,68,68,.05)}.export-section-title{color:#8da7ff;font-size:11px;letter-spacing:1px;margin-bottom:8px;font-family:ui-monospace,Menlo,Consolas,monospace}.export-panel p{margin:0;color:#dfe7fb;font-size:14px;line-height:1.9}.export-footer{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.export-footer-item{padding:12px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}.export-footer-item strong{display:block;font-size:12px;line-height:1.7;color:#eef3ff}</style></head><body>${cardHtml}</body></html>`;
+      const exportCard = $('exportCard');
+      if (!exportCard) return;
+      const cardHtml = exportCard.outerHTML;
+      const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>MI6 Export Card</title></head><body style="background:#070b13;padding:24px;color:white;font-family:Arial;">${cardHtml}</body></html>`;
       const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1093,57 +1145,77 @@
       URL.revokeObjectURL(url);
     }
 
-    $('buyBtn').addEventListener('click', () => setDirection('BUY'));
-    $('shortBtn').addEventListener('click', () => setDirection('SHORT'));
+    // Buy / Short 稳定点击
+    document.body.addEventListener('click', (e) => {
+      if (e.target.closest('#buyBtn')) {
+        setDirection('BUY');
+      }
+      if (e.target.closest('#shortBtn')) {
+        setDirection('SHORT');
+      }
 
-    $('uploadBox').addEventListener('click', () => $('chartUpload').click());
-    $('chartUpload').addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        $('previewImage').src = reader.result;
-        $('previewImage').style.display = 'block';
-        $('uploadPlaceholder').style.display = 'none';
-        $('uploadBox').classList.add('has-image');
-        setUiState('READY');
-      };
-      reader.readAsDataURL(file);
-    });
+      const toggleBtn = e.target.closest('.toggle-btn');
+      if (toggleBtn) {
+        const key = toggleBtn.dataset.key;
+        const value = Number(toggleBtn.dataset.value);
+        if (!key || Number.isNaN(value)) return;
 
-    document.querySelectorAll('.toggle-group').forEach((group) => {
-      group.addEventListener('click', (e) => {
-        const btn = e.target.closest('.toggle-btn');
-        if (!btn) return;
-        const key = btn.dataset.key;
-        const value = Number(btn.dataset.value);
         state[key] = value;
-        group.querySelectorAll('.toggle-btn').forEach((b) => b.classList.remove('active', 'yes', 'no'));
-        btn.classList.add('active');
-        btn.classList.add(value === 1 ? 'yes' : 'no');
-        if ($('stateChip').textContent.includes('REVIEW') || $('stateChip').textContent.includes('FINAL')) {
+        const group = toggleBtn.closest('.toggle-group');
+        if (group) {
+          group.querySelectorAll('.toggle-btn').forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
+          toggleBtn.classList.add('active');
+          toggleBtn.classList.add(value === 1 ? 'yes' : 'no');
+        }
+
+        const currentState = $('stateChip')?.textContent || '';
+        if (currentState.includes('REVIEW') || currentState.includes('FINAL')) {
           setUiState('FINAL');
           renderDecision();
         }
-      });
+      }
     });
+
+    // Upload image
+    if ($('uploadBox') && $('chartUpload')) {
+      $('uploadBox').addEventListener('click', () => $('chartUpload').click());
+      $('chartUpload').addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          if ($('previewImage')) {
+            $('previewImage').src = reader.result;
+            $('previewImage').style.display = 'block';
+          }
+          if ($('uploadPlaceholder')) $('uploadPlaceholder').style.display = 'none';
+          if ($('uploadBox')) $('uploadBox').classList.add('has-image');
+          setUiState('READY');
+        };
+        reader.readAsDataURL(file);
+      });
+    }
 
     ['trendSelect','structuralConsistency','isolatedPattern','sessionFilter','atrFilter','triggerAudit','keyZoneAudit','trapZoneAudit'].forEach((id) => {
-      $(id).addEventListener('change', () => {
-        if ($('stateChip').textContent.includes('REVIEW') || $('stateChip').textContent.includes('FINAL')) {
-          setUiState('FINAL');
-          renderDecision();
-        }
-      });
+      const el = $(id);
+      if (el) {
+        el.addEventListener('change', () => {
+          const currentState = $('stateChip')?.textContent || '';
+          if (currentState.includes('REVIEW') || currentState.includes('FINAL')) {
+            setUiState('FINAL');
+            renderDecision();
+          }
+        });
+      }
     });
 
-    $('analyzeBtn').addEventListener('click', analyzeChartWithApi);
-    $('resetBtn').addEventListener('click', resetAll);
-    $('copyExportBtn').addEventListener('click', copyExportSummary);
-    $('downloadExportBtn').addEventListener('click', downloadExportCardHtml);
+    if ($('analyzeBtn')) $('analyzeBtn').addEventListener('click', analyzeChartWithApi);
+    if ($('resetBtn')) $('resetBtn').addEventListener('click', resetAll);
+    if ($('copyExportBtn')) $('copyExportBtn').addEventListener('click', copyExportSummary);
+    if ($('downloadExportBtn')) $('downloadExportBtn').addEventListener('click', downloadExportCardHtml);
 
-    setDirection('BUY');
     resetAll();
-  </script>
+  });
+</script>
 </body>
 </html>
