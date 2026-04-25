@@ -3,1219 +3,171 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI6 v3 原型</title>
+  <title>MI6 v3 Stable</title>
   <style>
-    :root {
-      --bg: #070b13;
-      --panel: rgba(14, 20, 34, 0.94);
-      --panel-2: rgba(20, 28, 46, 0.95);
-      --line: rgba(138, 160, 255, 0.16);
-      --line-strong: rgba(138, 160, 255, 0.32);
-      --text: #eef3ff;
-      --muted: #9fb0d1;
-      --accent: #8da7ff;
-      --accent-2: #b27dff;
-      --good: #19c37d;
-      --warn: #f5b942;
-      --bad: #ef4444;
-      --shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
-      --radius: 24px;
+    :root{
+      --bg:#070b13;
+      --panel:#111827;
+      --panel2:#182235;
+      --line:rgba(138,160,255,.22);
+      --text:#eef3ff;
+      --muted:#9fb0d1;
+      --accent:#8da7ff;
+      --accent2:#b27dff;
+      --good:#19c37d;
+      --warn:#f5b942;
+      --bad:#ef4444;
     }
-
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
-      background:
-        radial-gradient(circle at 15% 15%, rgba(141,167,255,0.15), transparent 24%),
-        radial-gradient(circle at 85% 12%, rgba(178,125,255,0.12), transparent 20%),
-        linear-gradient(180deg, #060913 0%, #090e1a 45%, #070b13 100%);
-      color: var(--text);
-      min-height: 100vh;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,"Microsoft YaHei",sans-serif;
+      background:radial-gradient(circle at 15% 10%,rgba(141,167,255,.16),transparent 26%),linear-gradient(180deg,#060913,#070b13);
+      color:var(--text);
+      min-height:100vh;
     }
-
-    .wrap {
-      max-width: 1380px;
-      margin: 0 auto;
-      padding: 28px 20px 48px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-      padding: 14px 18px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(9, 14, 26, 0.72);
-      backdrop-filter: blur(16px);
-      box-shadow: var(--shadow);
-    }
-
-    .brand { display: flex; align-items: center; gap: 14px; }
-    .brand-mark {
-      width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-weight: 900;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 12px 26px rgba(125, 120, 255, 0.32);
-    }
-    .brand-text strong { display: block; font-size: 16px; }
-    .brand-text span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
-    .top-metrics { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-    .metric-pill {
-      padding: 10px 12px; border-radius: 999px; border: 1px solid var(--line);
-      background: rgba(255,255,255,0.03); color: #dfe8ff; font-size: 12px; white-space: nowrap;
-    }
-
-    .hero {
-      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 18px; margin-bottom: 18px;
-    }
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px);
-    }
-    .hero-main {
-      padding: 28px; position: relative; overflow: hidden; min-height: 240px;
-      background: linear-gradient(135deg, rgba(141,167,255,0.16), rgba(178,125,255,0.08)), rgba(10, 16, 28, 0.82);
-    }
-    .hero-main::before {
-      content: "MI6 v3"; position: absolute; right: 22px; top: 18px; font-size: 82px; line-height: 0.9;
-      font-weight: 900; color: rgba(255,255,255,0.05); pointer-events: none;
-    }
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e8eeff; font-size: 12px; margin-bottom: 14px;
-    }
-    h1 { margin: 0 0 10px; font-size: clamp(30px, 4vw, 46px); line-height: 1.06; letter-spacing: -1px; max-width: 780px; }
-    .sub { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; max-width: 760px; }
-    .hero-points { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
-    .hero-point {
-      padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: #e5edff;
-    }
-    .hero-side {
-      padding: 22px; display: flex; flex-direction: column; gap: 12px; justify-content: space-between;
-      background: linear-gradient(180deg, rgba(17,24,40,0.9), rgba(10,14,24,0.92));
-    }
-    .hero-side-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .info-box {
-      padding: 14px; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,0.03);
-    }
-    .info-box small { display: block; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
-    .info-box strong { display: block; font-size: 16px; line-height: 1.4; }
-    .hero-side-note {
-      padding: 14px; border-radius: 18px; border: 1px solid rgba(25,195,125,0.16);
-      background: rgba(25,195,125,0.08); color: #dcfff0; font-size: 13px; line-height: 1.7;
-    }
-
-    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 18px; }
-    .panel { padding: 24px; background: linear-gradient(180deg, rgba(12, 18, 31, 0.88), rgba(10, 15, 26, 0.92)); }
-    .panel h2 { margin: 0; font-size: 20px; }
-    .section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-    .hint { color: var(--muted); font-size: 13px; }
-    .group-shell {
-      padding: 18px; border-radius: 20px; border: 1px solid var(--line); background: rgba(255,255,255,0.025); margin-bottom: 18px;
-    }
-    .group-shell-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-    .group-shell-head strong { font-size: 16px; }
-    .group-shell-head span { color: var(--muted); font-size: 12px; }
-    .grid-2, .score-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-    .field { display: flex; flex-direction: column; gap: 8px; }
-    .field label { font-size: 13px; color: #dce6ff; font-weight: 700; }
-    select, input[type="text"], textarea {
-      width: 100%; background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px;
-      color: var(--text); padding: 13px 14px; outline: none; font-size: 14px;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
-    }
-    select:focus, input[type="text"]:focus, textarea:focus {
-      border-color: var(--line-strong); box-shadow: 0 0 0 4px rgba(141,167,255,0.08);
-    }
-    textarea { min-height: 110px; resize: vertical; }
-
-    .uploader {
-      display: grid; grid-template-columns: 1fr 280px; gap: 14px;
-    }
-    .upload-box {
-      border: 1.5px dashed rgba(141,167,255,0.28); border-radius: 20px; min-height: 280px;
-      background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 18px; position: relative; overflow: hidden;
-    }
-    .upload-box.has-image { padding: 0; border-style: solid; }
-    .upload-box img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .upload-placeholder strong { display: block; font-size: 18px; margin-bottom: 10px; }
-    .upload-placeholder span { color: var(--muted); font-size: 13px; line-height: 1.7; }
-    .upload-actions { display: flex; flex-direction: column; gap: 12px; }
-
-    .direction-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .direction-btn {
-      border: 1px solid var(--line); background: var(--panel-2); color: var(--text); border-radius: 16px;
-      padding: 16px 14px; font-weight: 900; cursor: pointer; text-align: center; transition: .18s ease;
-    }
-    .direction-btn.active.buy { border-color: rgba(25,195,125,0.55); background: rgba(25,195,125,0.14); color: #dff8ee; }
-    .direction-btn.active.short { border-color: rgba(239,68,68,0.55); background: rgba(239,68,68,0.14); color: #ffe7e7; }
-
-    .status-strip {
-      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;
-    }
-    .status-chip {
-      padding: 8px 10px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-      font-size: 12px; color: #e7eeff;
-    }
-
-    .mock-banner {
-      margin-top: 12px; padding: 10px 12px; border-radius: 14px; background: rgba(245,185,66,0.10);
-      border: 1px solid rgba(245,185,66,0.24); color: #fff3d6; font-size: 12px; line-height: 1.7;
-    }
-
-    .analysis-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-    .analysis-card {
-      padding: 16px; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,0.03);
-    }
-    .analysis-card h3 { margin: 0 0 6px; font-size: 15px; }
-    .analysis-card p { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.7; min-height: 34px; }
-
-    .toggle-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .toggle-btn {
-      border: 1px solid var(--line); background: var(--panel-2); color: var(--text); border-radius: 14px;
-      padding: 11px 12px; cursor: pointer; font-weight: 800; transition: 0.18s ease; user-select: none;
-    }
-    .toggle-btn:hover { border-color: var(--line-strong); transform: translateY(-1px); }
-    .toggle-btn.active.yes { background: rgba(25,195,125,0.16); border-color: rgba(25,195,125,0.55); color: #dff8ee; }
-    .toggle-btn.active.no { background: rgba(239,68,68,0.16); border-color: rgba(239,68,68,0.5); color: #ffe7e7; }
-
-    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
-    button.primary, button.secondary {
-      border: none; border-radius: 14px; padding: 14px 18px; font-size: 14px; font-weight: 900; cursor: pointer;
-    }
-    .primary {
-      background: linear-gradient(135deg, var(--accent), #6a82ff 60%, var(--accent-2));
-      color: white; box-shadow: 0 14px 32px rgba(106,130,255,0.3);
-    }
-    .secondary { background: #1c2538; color: #dce6ff; border: 1px solid var(--line); }
-
-    .badge {
-      display: inline-flex; align-items: center; justify-content: center; padding: 10px 14px; min-width: 122px;
-      border-radius: 999px; font-weight: 900; font-size: 13px; border: 1px solid transparent;
-    }
-    .badge.strong { background: rgba(25,195,125,0.16); color: #dff8ee; border-color: rgba(25,195,125,0.5); }
-    .badge.trade { background: rgba(61,174,255,0.15); color: #e2f3ff; border-color: rgba(61,174,255,0.45); }
-    .badge.watch { background: rgba(245,185,66,0.16); color: #fff3d6; border-color: rgba(245,185,66,0.45); }
-    .badge.no { background: rgba(239,68,68,0.16); color: #ffe7e7; border-color: rgba(239,68,68,0.45); }
-
-    .terminal-panel { background: linear-gradient(180deg, rgba(8, 13, 23, 0.96), rgba(6, 10, 18, 0.98)); border-color: rgba(92, 114, 255, 0.22); }
-    .result-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-    .result-sub { color: var(--muted); font-size: 12px; margin-bottom: 16px; line-height: 1.7; }
-    .terminal-shell {
-      border: 1px solid rgba(86, 107, 255, 0.18);
-      background: radial-gradient(circle at top right, rgba(64, 110, 255, 0.08), transparent 32%), linear-gradient(180deg, rgba(6, 11, 20, 0.96), rgba(9, 14, 24, 0.98));
-      border-radius: 22px; padding: 16px;
-    }
-    .terminal-shell-top {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .terminal-dots { display: flex; gap: 6px; }
-    .terminal-dots span { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
-    .terminal-dots span:nth-child(1) { background: #ff5f57; }
-    .terminal-dots span:nth-child(2) { background: #febc2e; }
-    .terminal-dots span:nth-child(3) { background: #28c840; }
-
-    .terminal-name, .terminal-block-title, .score-box-head, .export-section-title, .export-big-label, .export-footer-item small, .export-signal-chip span {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-    .terminal-name { color: #b9c7ea; font-size: 12px; }
-    .terminal-status-grid, .terminal-kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
-    .terminal-stat, .terminal-kpi-card {
-      padding: 12px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); border-radius: 16px;
-    }
-    .terminal-stat small, .terminal-kpi-card small {
-      display: block; color: #7f93bf; font-size: 10px; letter-spacing: 1px; margin-bottom: 6px;
-    }
-    .terminal-stat strong, .terminal-kpi-card strong {
-      display: block; font-size: 13px; color: #eff4ff; line-height: 1.4; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-    .score-box {
-      padding: 20px; border-radius: 22px; border: 1px solid rgba(96, 122, 255, 0.24);
-      background: radial-gradient(circle at top right, rgba(71, 120, 255, 0.18), transparent 30%), linear-gradient(180deg, rgba(12, 20, 38, 0.96), rgba(10, 16, 30, 0.96));
-      margin-bottom: 14px;
-    }
-    .score-box-head {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: #98aae0; font-size: 11px; letter-spacing: 1px;
-    }
-    .score-number { font-size: 58px; line-height: 1; font-weight: 900; margin-bottom: 10px; letter-spacing: -2px; }
-    .score-progress-track {
-      width: 100%; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);
-    }
-    .score-progress-bar {
-      height: 100%; width: 0%; border-radius: inherit; background: linear-gradient(90deg, #ef4444 0%, #f5b942 50%, #19c37d 100%); transition: width 0.28s ease;
-    }
-    .score-label { color: var(--muted); font-size: 13px; line-height: 1.7; }
-    .terminal-block { margin-bottom: 14px; }
-    .terminal-block-title { margin-bottom: 8px; color: #8da7ff; font-size: 11px; letter-spacing: 1.2px; }
-    .mini-list { display: grid; gap: 10px; }
-    .mini-row {
-      display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 12px; background: rgba(255,255,255,0.025); border: 1px solid var(--line); border-radius: 14px; font-size: 14px;
-    }
-    .mini-row span:last-child { font-weight: 800; text-align: right; }
-    .ok { color: var(--good); } .warn { color: var(--warn); } .bad { color: var(--bad); }
-    .block {
-      margin-top: 0; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02);
-    }
-    .block h3 { margin: 0 0 10px; font-size: 15px; }
-    .block p, .block li { color: var(--muted); font-size: 14px; line-height: 1.8; margin: 0; }
-    .block ul { margin: 0; padding-left: 18px; }
-    .risk-block { border-color: rgba(239, 68, 68, 0.18); background: rgba(239, 68, 68, 0.04); }
-
-    .export-card {
-      border-radius: 28px; padding: 24px; border: 1px solid rgba(141, 167, 255, 0.22);
-      background:
-        radial-gradient(circle at 85% 10%, rgba(141,167,255,0.2), transparent 24%),
-        radial-gradient(circle at 10% 90%, rgba(178,125,255,0.16), transparent 20%),
-        linear-gradient(180deg, rgba(15,21,36,0.96), rgba(8,12,22,0.98));
-      position: relative; overflow: hidden; min-height: 760px; aspect-ratio: 4 / 5; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 18px 40px rgba(0,0,0,0.24);
-    }
-    .export-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 24px; }
-    .export-brand { font-weight: 900; font-size: 18px; line-height: 1.3; }
-    .export-sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
-    .export-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end; margin-bottom: 18px; }
-    .export-big-score { font-size: clamp(56px, 6vw, 88px); line-height: 0.95; font-weight: 900; letter-spacing: -3px; }
-    .export-big-label { margin-top: 8px; font-size: 11px; letter-spacing: 1.4px; color: #8da7ff; }
-    .export-hero-right { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; text-align: right; }
-    .export-signal-chip {
-      display: inline-flex; flex-direction: column; align-items: flex-end; padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-    }
-    .export-signal-chip span, .export-footer-item small {
-      display: block; color: #8ea0cb; font-size: 10px; letter-spacing: 1px; margin-bottom: 6px;
-    }
-    .export-signal-chip strong { display: block; font-size: 20px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    .export-meta { color: #dbe5ff; font-size: 12px; line-height: 1.8; max-width: 280px; }
-    .export-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent); margin: 10px 0 18px; }
-    .export-section-grid { display: grid; grid-template-columns: 1fr; gap: 14px; flex: 1; }
-    .export-panel { padding: 16px; border-radius: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
-    .export-panel-risk { border-color: rgba(239, 68, 68, 0.15); background: rgba(239, 68, 68, 0.05); }
-    .export-section-title { color: #8da7ff; font-size: 11px; letter-spacing: 1px; margin-bottom: 8px; }
-    .export-panel p { margin: 0; color: #dfe7fb; font-size: 14px; line-height: 1.9; }
-    .export-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
-    .export-footer-item { padding: 12px; border-radius: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
-    .export-footer-item strong { display: block; font-size: 12px; line-height: 1.7; color: #eef3ff; }
-    .export-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-    .footer-note { margin-top: 16px; color: var(--muted); font-size: 12px; line-height: 1.8; }
-
-    @media (max-width: 1120px) {
-      .hero, .layout, .uploader { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 760px) {
-      .grid-2, .score-grid, .hero-side-grid, .analysis-grid, .terminal-status-grid, .terminal-kpi-grid, .export-hero, .export-footer { grid-template-columns: 1fr; }
-      .topbar { flex-direction: column; align-items: flex-start; }
-      .top-metrics { justify-content: flex-start; }
-      .terminal-shell-top { flex-direction: column; align-items: flex-start; }
-      .score-number { font-size: 46px; }
-      .export-card { min-height: auto; }
-    }
+    .wrap{max-width:1320px;margin:0 auto;padding:24px 18px 48px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 18px;border:1px solid var(--line);border-radius:18px;background:rgba(9,14,26,.8);margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .mark{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:900}
+    .brand strong{display:block;font-size:17px}.brand span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+    .pill{padding:9px 12px;border-radius:999px;border:1px solid var(--line);color:#dce6ff;font-size:12px;background:rgba(255,255,255,.04)}
+    .hero{padding:26px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,rgba(141,167,255,.16),rgba(178,125,255,.08));margin-bottom:18px}
+    h1{margin:0 0 10px;font-size:clamp(30px,4vw,46px);line-height:1.06}.sub{margin:0;color:var(--muted);line-height:1.75}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:18px}
+    .card{border:1px solid var(--line);border-radius:24px;background:rgba(14,20,34,.92);box-shadow:0 20px 50px rgba(0,0,0,.34)}
+    .panel{padding:22px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-title h2{margin:0;font-size:20px}.hint{font-size:13px;color:var(--muted)}
+    .group{padding:18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.025);margin-bottom:16px}
+    .group-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px}.group-head strong{font-size:16px}.group-head span{font-size:12px;color:var(--muted)}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:flex;flex-direction:column;gap:8px}.field label{font-size:13px;font-weight:700;color:#dce6ff}
+    input[type="text"],select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);color:var(--text);font-size:14px;outline:none}textarea{min-height:82px;resize:vertical}
+    .upload-box{border:1.5px dashed rgba(141,167,255,.35);border-radius:20px;padding:18px;background:rgba(255,255,255,.025)}
+    .file-input{display:block;width:100%;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);color:var(--text);cursor:pointer}
+    #previewImage{display:none;width:100%;max-height:330px;object-fit:contain;border-radius:16px;margin-top:12px;border:1px solid var(--line);background:#05070d}
+    .direction-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.direction-btn,.toggle-btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:14px;padding:12px;cursor:pointer;font-weight:900;user-select:none}.direction-btn.active.buy{background:rgba(25,195,125,.16);border-color:rgba(25,195,125,.55);color:#dff8ee}.direction-btn.active.short{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.55);color:#ffe7e7}
+    .toggle-group{display:grid;grid-template-columns:1fr 1fr;gap:8px}.toggle-btn.active.yes{background:rgba(25,195,125,.16);border-color:rgba(25,195,125,.55);color:#dff8ee}.toggle-btn.active.no{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.55);color:#ffe7e7}
+    .analysis-card{padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03)}.analysis-card h3{margin:0 0 7px;font-size:15px}.analysis-card p{margin:0 0 12px;font-size:12px;line-height:1.6;color:var(--muted)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}.primary,.secondary{border:0;border-radius:14px;padding:13px 17px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(135deg,var(--accent),#6a82ff 60%,var(--accent2));color:white}.secondary{background:#1c2538;color:#dce6ff;border:1px solid var(--line)}
+    .status-strip{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.status-chip{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:12px;color:#e7eeff}
+    .badge{display:inline-flex;align-items:center;justify-content:center;min-width:120px;padding:10px 14px;border-radius:999px;font-weight:900;font-size:13px;border:1px solid transparent}.badge.strong{background:rgba(25,195,125,.16);color:#dff8ee;border-color:rgba(25,195,125,.5)}.badge.trade{background:rgba(61,174,255,.15);color:#e2f3ff;border-color:rgba(61,174,255,.45)}.badge.watch{background:rgba(245,185,66,.16);color:#fff3d6;border-color:rgba(245,185,66,.45)}.badge.no{background:rgba(239,68,68,.16);color:#ffe7e7;border-color:rgba(239,68,68,.45)}
+    .terminal{background:linear-gradient(180deg,rgba(8,13,23,.96),rgba(6,10,18,.98))}.result-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.result-top h2{margin:0}.small{color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:14px}.score-box{padding:20px;border-radius:20px;border:1px solid rgba(96,122,255,.24);background:rgba(255,255,255,.03);margin-bottom:14px}.score-head{display:flex;justify-content:space-between;color:#98aae0;font-size:11px;letter-spacing:1px;margin-bottom:10px}.score-number{font-size:56px;font-weight:900;line-height:1;margin-bottom:10px}.track{height:10px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;margin-bottom:10px}.bar{height:100%;width:0;background:linear-gradient(90deg,#ef4444,#f5b942,#19c37d)}.score-label{font-size:13px;color:var(--muted);line-height:1.6}
+    .mini-list{display:grid;gap:9px}.mini-row{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);font-size:13px}.ok{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+    .block{padding:15px;border-radius:18px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);margin-bottom:14px}.block h3{margin:0 0 8px;font-size:15px}.block p,.block li{margin:0;color:var(--muted);font-size:14px;line-height:1.75}.block ul{margin:0;padding-left:18px}.risk{border-color:rgba(239,68,68,.18);background:rgba(239,68,68,.04)}
+    .export-card{border-radius:24px;padding:18px;border:1px solid rgba(141,167,255,.22);background:radial-gradient(circle at 85% 10%,rgba(141,167,255,.18),transparent 24%),linear-gradient(180deg,rgba(15,21,36,.98),rgba(8,12,22,.98));min-height:540px;display:flex;flex-direction:column;justify-content:space-between}.export-top{display:flex;justify-content:space-between;gap:12px}.export-brand{font-weight:900}.export-sub{color:var(--muted);font-size:12px;margin-top:4px}.export-score{font-size:70px;font-weight:900;letter-spacing:-3px}.export-label{font-size:11px;letter-spacing:1.4px;color:var(--accent)}.export-panel{padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);margin-top:12px}.export-panel-title{font-size:11px;letter-spacing:1px;color:var(--accent);margin-bottom:8px}.export-panel p{font-size:13px;line-height:1.75;color:#dfe7fb;margin:0}
+    @media(max-width:1120px){.layout,.hero{grid-template-columns:1fr}.grid2,.analysis-grid{grid-template-columns:1fr}}@media(max-width:760px){.topbar{flex-direction:column;align-items:flex-start}.grid3{grid-template-columns:1fr}.score-number{font-size:44px}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-mark">MI6</div>
-        <div class="brand-text">
-          <strong>MI6 v3 Prototype</strong>
-          <span>Upload Chart · Choose Direction · Get Decision</span>
-        </div>
-      </div>
-      <div class="top-metrics">
-        <div class="metric-pill">Chart Upload</div>
-        <div class="metric-pill">AI Mock Analysis</div>
-        <div class="metric-pill">User Review + Override</div>
-      </div>
-    </div>
-
-    <section class="hero">
-      <div class="card hero-main">
-        <div class="eyebrow">Prototype Experience Layer</div>
-        <h1>Upload Chart. Choose Direction.<br>Get Decision.</h1>
-        <p class="sub">这是一版 API 对接原型。用户上传图表并选择 Buy / Short 后，前端会优先请求后端 AI 分析；如果后端尚未上线，则自动使用 mock data 兜底演示流程。</p>
-        <div class="hero-points">
-          <div class="hero-point">用户输入最少</div>
-          <div class="hero-point">系统分析最多</div>
-          <div class="hero-point">允许用户修正 AI</div>
-          <div class="hero-point">保留终端 + IG 导出</div>
-        </div>
-      </div>
-      <div class="card hero-side">
-        <div class="hero-side-grid">
-          <div class="info-box"><small>输入</small><strong>Upload + Buy / Short</strong></div>
-          <div class="info-box"><small>中间层</small><strong>AI 先分析，用户再确认</strong></div>
-          <div class="info-box"><small>输出</small><strong>MI6 结果 + 风险 + 导出卡</strong></div>
-          <div class="info-box"><small>阶段</small><strong>当前为可演示原型</strong></div>
-        </div>
-        <div class="hero-side-note">这一版已经预留真实 AI 接口。后端只要提供 /api/analyze-chart，前端就能直接吃返回结果。</div>
-      </div>
-    </section>
-
-    <section class="layout">
-      <div class="card panel">
-        <div class="section-title">
-          <h2>v3 输入与分析台</h2>
-          <div class="hint">用户先上传图片并选择方向，系统再自动填入分析结果</div>
-        </div>
-
-        <div class="group-shell">
-          <div class="group-shell-head"><strong>Step 1 · 上传图表 + 交易方向</strong><span>未来这里将接 AI 视觉分析</span></div>
-          <div class="uploader">
-            <div>
-              <div id="uploadBox" class="upload-box">
-                <div id="uploadPlaceholder" class="upload-placeholder">
-                  <strong>拖拽图表到这里，或点击上传</strong>
-                  <span>支持 Chart 截图、K 线图、指标图。<br>当前版本会显示预览，并用 mock data 模拟 AI 分析结果。</span>
-                </div>
-                <img id="previewImage" alt="Chart Preview" style="display:none;" />
-              </div>
-              <input id="chartUpload" type="file" accept="image/*" style="display:none;" />
-              <div class="mock-banner">当前为 API 对接版：Analyze 会优先请求 /api/analyze-chart。如果后端还没接上，系统会自动使用 mock data 演示。</div>
-            </div>
-
-            <div class="upload-actions">
-              <div class="field">
-                <label>交易方向</label>
-                <div class="direction-grid">
-                  <button type="button" id="buyBtn" class="direction-btn active buy">BUY</button>
-                  <button type="button" id="shortBtn" class="direction-btn">SHORT</button>
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="symbol">标的（可选）</label>
-                <input id="symbol" type="text" placeholder="例如：XAUUSD" />
-              </div>
-
-              <div class="field">
-                <label for="timeframe">时间框架（可选）</label>
-                <select id="timeframe">
-                  <option value="">未选择</option>
-                  <option value="M15">M15</option>
-                  <option value="H1">H1</option>
-                  <option value="H4">H4</option>
-                  <option value="D1">D1</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="notes">备注（可选）</label>
-                <textarea id="notes" placeholder="例如：想抓回调做多 / 等待二次确认"></textarea>
-              </div>
-
-              <div class="actions" style="margin-top:0;">
-                <button class="primary" id="analyzeBtn" type="button">Analyze Chart</button>
-                <button class="secondary" id="resetBtn" type="button">重置</button>
-              </div>
-
-              <div class="status-strip">
-                <div class="status-chip" id="stateChip">STATE: IDLE</div>
-                <div class="status-chip" id="directionChip">DIRECTION: BUY</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="group-shell">
-          <div class="group-shell-head"><strong>Step 2 · AI 自动分析（可修正）</strong><span>系统先分析，用户可微调</span></div>
-          <div id="analysisGrid" class="analysis-grid">
-            <div class="analysis-card">
-              <h3>Market Trend</h3>
-              <p>AI 先判断整体趋势。这里决定你后面是顺势单还是逆势单。</p>
-              <div class="field">
-                <select id="trendSelect">
-                  <option value="up">上升趋势</option>
-                  <option value="down">下跌趋势</option>
-                  <option value="sideways">盘整</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>结构一致性</h3>
-              <p>当前交易方向是否顺主趋势。逆势单会自动降级。</p>
-              <div class="field">
-                <select id="structuralConsistency">
-                  <option value="yes">顺主趋势</option>
-                  <option value="no">逆主趋势</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>Candlestick Pattern</h3>
-              <p>AI 判断是否出现明确蜡烛触发。用户可手动修正。</p>
-              <div class="toggle-group">
-                <button type="button" class="toggle-btn" data-key="candlestick" data-value="1">符合 +1</button>
-                <button type="button" class="toggle-btn active no" data-key="candlestick" data-value="0">不符合 0</button>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>Chart Pattern</h3>
-              <p>AI 判断是否存在清晰结构，例如通道、三角、回踩、突破。</p>
-              <div class="toggle-group">
-                <button type="button" class="toggle-btn" data-key="chartpattern" data-value="1">符合 +1</button>
-                <button type="button" class="toggle-btn active no" data-key="chartpattern" data-value="0">不符合 0</button>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>Wave</h3>
-              <p>AI 判断当前波浪阶段是否清晰，方向是否支持当前想法。</p>
-              <div class="toggle-group">
-                <button type="button" class="toggle-btn" data-key="wave" data-value="1">符合 +1</button>
-                <button type="button" class="toggle-btn active no" data-key="wave" data-value="0">不符合 0</button>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>MA</h3>
-              <p>AI 判断均线环境是否支持当前方向，例如站上 / 跌破关键均线。</p>
-              <div class="toggle-group">
-                <button type="button" class="toggle-btn" data-key="ma" data-value="1">符合 +1</button>
-                <button type="button" class="toggle-btn active no" data-key="ma" data-value="0">不符合 0</button>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>Bollinger Band</h3>
-              <p>AI 判断布林带位置是否合理，例如上下轨或中轨环境。</p>
-              <div class="toggle-group">
-                <button type="button" class="toggle-btn" data-key="bb" data-value="1">符合 +1</button>
-                <button type="button" class="toggle-btn active no" data-key="bb" data-value="0">不符合 0</button>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>Fibo</h3>
-              <p>AI 判断是否位于关键回调 / 延伸区域，例如 38.2 / 50 / 61.8。</p>
-              <div class="toggle-group">
-                <button type="button" class="toggle-btn" data-key="fibo" data-value="1">符合 +1</button>
-                <button type="button" class="toggle-btn active no" data-key="fibo" data-value="0">不符合 0</button>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>形态完整性</h3>
-              <p>如果 AI 判断只是单根 K 线孤立出现，用户可以在这里修正。</p>
-              <div class="field">
-                <select id="isolatedPattern">
-                  <option value="no">不是孤立形态</option>
-                  <option value="yes">是孤立形态</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>Session Filter</h3>
-              <p>选择当前时段。重叠时段质量较高，亚洲盘默认偏保守。</p>
-              <div class="field">
-                <select id="sessionFilter">
-                  <option value="asia">亚洲盘</option>
-                  <option value="london">伦敦盘</option>
-                  <option value="newyork">纽约盘</option>
-                  <option value="overlap" selected>重叠时段</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>ATR 波动过滤</h3>
-              <p>过低代表没量，过高代表过热，正常才是较优环境。</p>
-              <div class="field">
-                <select id="atrFilter">
-                  <option value="low">过低</option>
-                  <option value="normal" selected>正常</option>
-                  <option value="high">过高</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>Trigger Audit</h3>
-              <p>关键审计项：如果没有触发，最终结果将被压低甚至 BLOCK。</p>
-              <div class="field">
-                <select id="triggerAudit">
-                  <option value="yes" selected>有明确触发</option>
-                  <option value="no">没有明确触发</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="analysis-card">
-              <h3>Key / Trap Zone Audit</h3>
-              <p>同时确认是否在关键区，以及是否接近高阻力陷阱区。</p>
-              <div class="field" style="margin-bottom:8px;">
-                <select id="keyZoneAudit">
-                  <option value="yes" selected>在关键区</option>
-                  <option value="no">不在关键区</option>
-                </select>
-              </div>
-              <div class="field">
-                <select id="trapZoneAudit">
-                  <option value="no" selected>不是陷阱区</option>
-                  <option value="yes">接近陷阱区</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <aside class="card panel terminal-panel">
-        <div class="result-top">
-          <h2>MI6 决策终端</h2>
-          <div id="resultBadge" class="badge no">NO TRADE</div>
-        </div>
-        <div class="result-sub">上传图表后，系统会先跑一轮模拟分析，再把结果送入 MI6 规则引擎。</div>
-
-        <div class="terminal-shell">
-          <div class="terminal-shell-top">
-            <div class="terminal-dots"><span></span><span></span><span></span></div>
-            <div class="terminal-name">MI6 v3 Prototype Terminal</div>
-          </div>
-
-          <div class="terminal-status-grid">
-            <div class="terminal-stat"><small>SYSTEM</small><strong>PROTOTYPE</strong></div>
-            <div class="terminal-stat"><small>STATUS</small><strong id="terminalStatus">IDLE</strong></div>
-            <div class="terminal-stat"><small>MODE</small><strong>UPLOAD → AI → REVIEW</strong></div>
-          </div>
-
-          <div class="score-box">
-            <div class="score-box-head"><span>SIGNAL STRENGTH</span><span id="scoreSignalText">IDLE</span></div>
-            <div id="scoreNumber" class="score-number">0/6</div>
-            <div class="score-progress-track"><div id="scoreProgressBar" class="score-progress-bar"></div></div>
-            <div id="scoreLabel" class="score-label">等待上传图表并开始分析</div>
-          </div>
-
-          <div class="terminal-kpi-grid">
-            <div class="terminal-kpi-card"><small>INPUT</small><strong>UPLOAD + DIRECTION</strong></div>
-            <div class="terminal-kpi-card"><small>ANALYSIS</small><strong>AI MOCK</strong></div>
-            <div class="terminal-kpi-card"><small>REVIEW</small><strong>USER OVERRIDE</strong></div>
-          </div>
-
-          <div class="terminal-block">
-            <div class="terminal-block-title">SYSTEM CHECKS</div>
-            <div class="mini-list" id="checks"></div>
-          </div>
-
-          <div class="terminal-block">
-            <div class="terminal-block-title">ANALYSIS LOG</div>
-            <div class="block"><h3>系统分析</h3><p id="analysisText">请先上传图表并点击 Analyze Chart。</p></div>
-          </div>
-
-          <div class="terminal-block">
-            <div class="terminal-block-title">EXECUTION OUTPUT</div>
-            <div class="block"><h3>执行建议</h3><p id="adviceText">暂无建议。</p></div>
-          </div>
-
-          <div class="terminal-block">
-            <div class="terminal-block-title">RISK CONTROL</div>
-            <div class="block risk-block"><h3>风险提醒</h3><ul id="riskList"><li>当前版本为原型，分析结果使用模拟数据。</li><li>正式版需要接 AI 视觉分析接口。</li><li>最终仍需搭配止损和仓位管理。</li></ul></div>
-          </div>
-
-          <div class="terminal-block">
-            <div class="terminal-block-title">EXPORT CARD</div>
-            <div class="block">
-              <h3>导出结果卡片</h3>
-              <div id="exportCard" class="export-card">
-                <div class="export-card-head">
-                  <div>
-                    <div class="export-brand">MI6 v3 Prototype</div>
-                    <div class="export-sub">Instagram Share Card · Upload → Analyze → Review</div>
-                  </div>
-                  <div id="exportBadge" class="badge no">NO TRADE</div>
-                </div>
-
-                <div class="export-hero">
-                  <div class="export-hero-left">
-                    <div class="export-big-score" id="exportScore">0/6</div>
-                    <div class="export-big-label">SCORE</div>
-                  </div>
-                  <div class="export-hero-right">
-                    <div class="export-signal-chip">
-                      <span>SIGNAL</span>
-                      <strong id="exportSignal">IDLE</strong>
-                    </div>
-                    <div class="export-meta" id="exportMeta">未生成摘要</div>
-                  </div>
-                </div>
-
-                <div class="export-divider"></div>
-
-                <div class="export-section-grid">
-                  <div class="export-panel">
-                    <div class="export-section-title">KEY SUMMARY</div>
-                    <p id="exportSummary">上传图表后，系统会生成适合分享的判断摘要。</p>
-                  </div>
-                  <div class="export-panel export-panel-risk">
-                    <div class="export-section-title">RISK NOTE</div>
-                    <p id="exportRisk">当前为原型演示，尚未接入真实识图。</p>
-                  </div>
-                </div>
-
-                <div class="export-footer">
-                  <div class="export-footer-item">
-                    <small>ENGINE</small>
-                    <strong>UPLOAD + AI MOCK + MI6 RULES</strong>
-                  </div>
-                  <div class="export-footer-item">
-                    <small>PURPOSE</small>
-                    <strong>Reduce Low Quality Trades Fast</strong>
-                  </div>
-                </div>
-              </div>
-
-              <div class="export-actions">
-                <button class="primary" id="copyExportBtn" type="button">复制摘要</button>
-                <button class="secondary" id="downloadExportBtn" type="button">下载卡片 HTML</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-note">这是一版 v3 原型。当前用模拟结果演示未来体验，下一步可以把 Analyze 按钮接到真正的 AI 图表分析后端。</div>
-      </aside>
-    </section>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="mark">MI6</div><div><strong>MI6 v3 Emergency Stable</strong><span>Upload Chart · Choose Buy/Short · API Analyze</span></div></div>
+    <div class="pill">Buttons Fixed Version</div>
   </div>
 
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const state = {
-      direction: 'BUY',
-      candlestick: 0,
-      chartpattern: 0,
-      wave: 0,
-      ma: 0,
-      bb: 0,
-      fibo: 0
-    };
-
-    const labels = {
-      candlestick: 'Candlestick',
-      chartpattern: 'Chart Pattern',
-      wave: 'Wave',
-      ma: 'MA',
-      bb: 'Bollinger Band',
-      fibo: 'Fibo'
-    };
-
-    const $ = (id) => document.getElementById(id);
-
-    function safeText(id, text) {
-      const el = $(id);
-      if (el) el.textContent = text;
-    }
-
-    function getTrendText(value) {
-      if (value === 'up') return '上升趋势';
-      if (value === 'down') return '下跌趋势';
-      return '盘整';
-    }
-
-    function getSessionText(value) {
-      return ({ asia:'亚洲盘', london:'伦敦盘', newyork:'纽约盘', overlap:'重叠时段' })[value] || value;
-    }
-
-    function getAtrText(value) {
-      return ({ low:'过低', normal:'正常', high:'过高' })[value] || value;
-    }
-
-    function getDirectionWarning(direction, trend) {
-      if (trend === 'up' && direction === 'SHORT') return '当前为上升趋势，但你选择 SHORT，方向与趋势冲突。';
-      if (trend === 'down' && direction === 'BUY') return '当前为下跌趋势，但你选择 BUY，方向与趋势冲突。';
-      return '';
-    }
-
-    function downgradeResult(result) {
-      if (result === 'STRONG TRADE') return 'TRADE';
-      if (result === 'TRADE') return 'WATCH';
-      if (result === 'WATCH') return 'NO TRADE';
-      return 'NO TRADE';
-    }
-
-    function getBadgeClass(result) {
-      if (result === 'STRONG TRADE') return 'strong';
-      if (result === 'TRADE') return 'trade';
-      if (result === 'WATCH') return 'watch';
-      return 'no';
-    }
-
-    function getSignalLabel(score) {
-      if (score >= 5) return 'HIGH';
-      if (score === 4) return 'MEDIUM';
-      if (score >= 2) return 'LOW';
-      return 'IDLE';
-    }
-
-    function setUiState(text) {
-      safeText('stateChip', `STATE: ${text}`);
-      safeText('terminalStatus', text);
-    }
-
-    function setDirection(direction) {
-      state.direction = direction;
-      safeText('directionChip', `DIRECTION: ${direction}`);
-
-      const buyBtn = $('buyBtn');
-      const shortBtn = $('shortBtn');
-      if (!buyBtn || !shortBtn) return;
-
-      buyBtn.classList.remove('active', 'buy');
-      shortBtn.classList.remove('active', 'short');
-
-      if (direction === 'BUY') {
-        buyBtn.classList.add('active', 'buy');
-      } else {
-        shortBtn.classList.add('active', 'short');
-      }
-    }
-
-    function readAdvancedState() {
-      return {
-        trend: $('trendSelect')?.value || 'sideways',
-        structural: $('structuralConsistency')?.value || 'yes',
-        isolated: $('isolatedPattern')?.value || 'no',
-        session: $('sessionFilter')?.value || 'overlap',
-        atr: $('atrFilter')?.value || 'normal',
-        trigger: $('triggerAudit')?.value || 'yes',
-        keyzone: $('keyZoneAudit')?.value || 'yes',
-        trapzone: $('trapZoneAudit')?.value || 'no'
-      };
-    }
-
-    function syncToggleUI() {
-      document.querySelectorAll('.toggle-group').forEach((group) => {
-        const buttons = group.querySelectorAll('.toggle-btn');
-        const key = buttons[0]?.dataset.key;
-        if (!key) return;
-
-        buttons.forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
-
-        const target = group.querySelector(`.toggle-btn[data-value="${state[key]}"]`);
-        if (target) {
-          target.classList.add('active');
-          target.classList.add(state[key] === 1 ? 'yes' : 'no');
-        }
-      });
-    }
-
-    function buildChecks(score, advancedState) {
-      const checks = $('checks');
-      if (!checks) return;
-      checks.innerHTML = '';
-
-      Object.keys(labels).forEach((key) => {
-        const row = document.createElement('div');
-        row.className = 'mini-row';
-        row.innerHTML = `<span>${labels[key]}</span><span class="${state[key] === 1 ? 'ok' : 'bad'}">${state[key] === 1 ? 'YES' : 'NO'}</span>`;
-        checks.appendChild(row);
-      });
-
-      const rows = [
-        ['趋势', getTrendText(advancedState.trend), advancedState.trend === 'sideways' ? 'warn' : 'ok'],
-        ['结构一致性', advancedState.structural === 'yes' ? '顺主趋势' : '逆主趋势', advancedState.structural === 'yes' ? 'ok' : 'bad'],
-        ['形态完整性', advancedState.isolated === 'yes' ? '孤立形态' : '结构完整', advancedState.isolated === 'yes' ? 'bad' : 'ok'],
-        ['Session', getSessionText(advancedState.session), advancedState.session === 'asia' ? 'warn' : 'ok'],
-        ['ATR', getAtrText(advancedState.atr), advancedState.atr === 'normal' ? 'ok' : 'warn'],
-        ['Trigger Audit', advancedState.trigger === 'yes' ? '通过' : '失败', advancedState.trigger === 'yes' ? 'ok' : 'bad'],
-        ['Key Zone Audit', advancedState.keyzone === 'yes' ? '通过' : '失败', advancedState.keyzone === 'yes' ? 'ok' : 'bad'],
-        ['Trap Zone Audit', advancedState.trapzone === 'yes' ? '危险' : '安全', advancedState.trapzone === 'yes' ? 'bad' : 'ok'],
-        ['总分', `${score}/6`, score >= 5 ? 'ok' : score === 4 ? 'warn' : 'bad']
-      ];
-
-      rows.forEach(([label, text, cls]) => {
-        const row = document.createElement('div');
-        row.className = 'mini-row';
-        row.innerHTML = `<span>${label}</span><span class="${cls}">${text}</span>`;
-        checks.appendChild(row);
-      });
-    }
-
-    function renderDecision() {
-      const advancedState = readAdvancedState();
-      const direction = state.direction;
-      const symbol = $('symbol')?.value.trim() || '';
-      const timeframe = $('timeframe')?.value || '';
-      const notes = $('notes')?.value.trim() || '';
-      const score = Object.keys(labels).reduce((sum, key) => sum + Number(state[key] || 0), 0);
-
-      let result = 'NO TRADE';
-      if (score === 6) result = 'STRONG TRADE';
-      else if (score === 5) result = 'TRADE';
-      else if (score === 4) result = 'WATCH';
-
-      const warnings = [];
-      const auditFails = [];
-
-      const directionWarning = getDirectionWarning(direction, advancedState.trend);
-      if (directionWarning) {
-        warnings.push(directionWarning);
-        result = downgradeResult(result);
-      }
-
-      if (advancedState.trend === 'sideways') {
-        warnings.push('当前属于盘整市场，系统自动偏保守处理。');
-        result = downgradeResult(result);
-      }
-
-      if (advancedState.structural === 'no') {
-        warnings.push('当前方向与主趋势不一致，已自动降级。');
-        result = downgradeResult(result);
-      }
-
-      if (advancedState.isolated === 'yes') {
-        warnings.push('当前形态偏孤立，缺乏前后结构支撑。');
-        result = downgradeResult(result);
-      }
-
-      if (advancedState.session === 'asia') {
-        warnings.push('当前为亚洲盘，流动性与动能通常较弱，系统自动偏保守。');
-        result = downgradeResult(result);
-      }
-
-      if (advancedState.atr !== 'normal') {
-        warnings.push(`ATR 波动状态为${getAtrText(advancedState.atr)}，已自动降级。`);
-        result = downgradeResult(result);
-      }
-
-      if (advancedState.trigger === 'no') auditFails.push('没有明确触发');
-      if (advancedState.keyzone === 'no') auditFails.push('当前位置不在关键区');
-      if (advancedState.trapzone === 'yes') auditFails.push('当前接近陷阱区或高阻力区');
-      if (auditFails.length > 0) result = 'BLOCK';
-
-      const badgeClass = getBadgeClass(result);
-      const signalLabel = getSignalLabel(score);
-
-      const resultBadge = $('resultBadge');
-      if (resultBadge) {
-        resultBadge.textContent = result;
-        resultBadge.className = `badge ${badgeClass}`;
-      }
-
-      safeText('scoreNumber', `${score}/6`);
-      safeText('scoreSignalText', signalLabel);
-      const bar = $('scoreProgressBar');
-      if (bar) bar.style.width = `${(score / 6) * 100}%`;
-      safeText('scoreLabel', `${symbol || '未填写标的'} ${timeframe ? `· ${timeframe}` : ''} · ${direction} · ${getTrendText(advancedState.trend)}`);
-
-      buildChecks(score, advancedState);
-
-      const positives = [];
-      const missing = [];
-      Object.keys(labels).forEach((key) => {
-        if (state[key] === 1) positives.push(labels[key]);
-        else missing.push(labels[key]);
-      });
-
-      let analysis = `系统已完成图表分析流程。当前选择方向为 ${direction}，趋势判断为 ${getTrendText(advancedState.trend)}，六分得分为 ${score}/6。`;
-      if (positives.length) analysis += ` 已满足：${positives.join('、')}。`;
-      if (missing.length) analysis += ` 欠缺：${missing.join('、')}。`;
-      if (warnings.length) analysis += ` 过滤修正：${warnings.join(' ')}`;
-      if (auditFails.length) analysis += ` 审计失败：${auditFails.join('、')}。`;
-      if (notes) analysis += ` 用户备注：${notes}`;
-      safeText('analysisText', analysis);
-
-      let advice = '';
-      if (result === 'STRONG TRADE') advice = '当前符合高质量 setup。下一步可以进入执行阶段，但仍应补充 Entry、SL、TP。';
-      else if (result === 'TRADE') advice = '整体条件良好，可以准备执行，但建议再次确认触发与风险报酬比。';
-      else if (result === 'WATCH') advice = '当前更适合观察与等待，不建议太快进场。';
-      else if (result === 'BLOCK') advice = '当前被系统拦截。建议先解决触发、关键区或陷阱区问题。';
-      else advice = '当前不建议交易，等待更高质量的图表结构。';
-      safeText('adviceText', advice);
-
-      const riskList = $('riskList');
-      if (riskList) {
-        riskList.innerHTML = '';
-        const risks = [
-          '当前分析仍需搭配真实交易经验判断。',
-          '任何结果都必须搭配止损、仓位和风险报酬比。',
-          '不要因为分数高就忽略风险。'
-        ];
-        warnings.slice().reverse().forEach((w) => risks.unshift(w));
-        auditFails.slice().reverse().forEach((a) => risks.unshift(`审计失败：${a}`));
-        risks.forEach((item) => {
-          const li = document.createElement('li');
-          li.textContent = item;
-          riskList.appendChild(li);
-        });
-      }
-
-      const exportBadge = $('exportBadge');
-      if (exportBadge) {
-        exportBadge.textContent = result;
-        exportBadge.className = `badge ${badgeClass}`;
-      }
-      safeText('exportScore', `${score}/6`);
-      safeText('exportSignal', signalLabel);
-      safeText('exportMeta', `${symbol || '未填写标的'} ${timeframe ? `· ${timeframe}` : ''} · ${direction} · ${getTrendText(advancedState.trend)}`);
-      safeText('exportSummary', `结果：${result}。基础评分 ${score}/6。${positives.length ? `已满足：${positives.join('、')}。` : ''}${missing.length ? `仍欠缺：${missing.join('、')}。` : ''}${warnings.length ? `过滤修正：${warnings.join(' ')}` : ''}${auditFails.length ? `审计失败：${auditFails.join('、')}。` : ''}`);
-      safeText('exportRisk', auditFails.length ? `重点风险：${auditFails.join('、')}。` : (warnings[0] || '请搭配止损、仓位管理与风险报酬比。'));
-    }
-
-    function applyAnalysisData(data) {
-      const safeData = {
-        image_analysis: data.image_analysis || {},
-        mi6: data.mi6 || {},
-        filters: data.filters || {},
-        audit: data.audit || {},
-        analysis_text: data.analysis_text || ''
-      };
-
-      if ($('trendSelect')) $('trendSelect').value = safeData.image_analysis.trend || 'sideways';
-      if ($('structuralConsistency')) $('structuralConsistency').value = safeData.filters.structural || 'yes';
-      if ($('isolatedPattern')) $('isolatedPattern').value = safeData.filters.isolated || 'no';
-      if ($('sessionFilter')) $('sessionFilter').value = safeData.filters.session || 'overlap';
-      if ($('atrFilter')) $('atrFilter').value = safeData.filters.atr || 'normal';
-      if ($('triggerAudit')) $('triggerAudit').value = safeData.audit.trigger || 'yes';
-      if ($('keyZoneAudit')) $('keyZoneAudit').value = safeData.audit.keyzone || 'yes';
-      if ($('trapZoneAudit')) $('trapZoneAudit').value = safeData.audit.trapzone || 'no';
-
-      Object.keys(labels).forEach((key) => {
-        state[key] = Number(safeData.mi6[key] || 0);
-      });
-
-      syncToggleUI();
-      setUiState('REVIEW');
-      renderDecision();
-
-      if (safeData.analysis_text) {
-        safeText('analysisText', safeData.analysis_text + '（你仍可手动修正 AI 判断。）');
-      }
-    }
-
-    function getMockAiResponse() {
-      const isBuy = state.direction === 'BUY';
-      return {
-        success: true,
-        image_analysis: {
-          trend: isBuy ? 'up' : 'down'
-        },
-        mi6: isBuy
-          ? { candlestick: 1, chartpattern: 1, wave: 1, ma: 1, bb: 0, fibo: 1 }
-          : { candlestick: 1, chartpattern: 1, wave: 1, ma: 1, bb: 1, fibo: 0 },
-        filters: {
-          structural: 'yes',
-          isolated: 'no',
-          session: isBuy ? 'overlap' : 'london',
-          atr: 'normal'
-        },
-        audit: {
-          trigger: 'yes',
-          keyzone: 'yes',
-          trapzone: 'no'
-        },
-        analysis_text: isBuy
-          ? 'AI 模拟分析：当前图表偏向上升趋势中的回调结构，BUY 方向与趋势一致。'
-          : 'AI 模拟分析：当前图表偏向下降趋势中的反弹结构，SHORT 方向与趋势一致。',
-        suggested_result: 'TRADE'
-      };
-    }
-
-    async function analyzeChartWithApi() {
-      const file = $('chartUpload')?.files?.[0];
-      if (!file) {
-        alert('请先上传图表图片');
-        return;
-      }
-
-      setUiState('ANALYZING');
-      safeText('analysisText', 'Uploading chart... Reading trend... Checking structure... Running MI6 engine...');
-      safeText('adviceText', '系统正在请求 AI 分析。若后端还没接上，将自动使用 mock data 演示。');
-
-      const formData = new FormData();
-      formData.append('image', file);
-      formData.append('direction', state.direction);
-      formData.append('symbol', $('symbol')?.value || '');
-      formData.append('timeframe', $('timeframe')?.value || '');
-      formData.append('notes', $('notes')?.value || '');
-
-      try {
-        const res = await fetch('https://mi6-backend.onrender.com/api/analyze-chart', {
-          method: 'POST',
-          body: formData
-        });
-        if (!res.ok) throw new Error('API not available');
-        const data = await res.json();
-        if (!data.success) throw new Error(data.error || 'AI analysis failed');
-        applyAnalysisData(data);
-      } catch (err) {
-        console.warn('Using mock AI response:', err.message);
-        setTimeout(() => {
-          applyAnalysisData(getMockAiResponse());
-          safeText('analysisText', $('analysisText').textContent + ' 当前使用 mock data，因为 API 暂时不可用。');
-        }, 650);
-      }
-    }
-
-    function resetAll() {
-      state.direction = 'BUY';
-      Object.keys(labels).forEach((key) => { state[key] = 0; });
-      if ($('symbol')) $('symbol').value = '';
-      if ($('timeframe')) $('timeframe').value = '';
-      if ($('notes')) $('notes').value = '';
-      if ($('trendSelect')) $('trendSelect').value = 'up';
-      if ($('structuralConsistency')) $('structuralConsistency').value = 'yes';
-      if ($('isolatedPattern')) $('isolatedPattern').value = 'no';
-      if ($('sessionFilter')) $('sessionFilter').value = 'overlap';
-      if ($('atrFilter')) $('atrFilter').value = 'normal';
-      if ($('triggerAudit')) $('triggerAudit').value = 'yes';
-      if ($('keyZoneAudit')) $('keyZoneAudit').value = 'yes';
-      if ($('trapZoneAudit')) $('trapZoneAudit').value = 'no';
-      setDirection('BUY');
-      setUiState('IDLE');
-
-      const uploadBox = $('uploadBox');
-      const previewImage = $('previewImage');
-      const uploadPlaceholder = $('uploadPlaceholder');
-      if (uploadBox) uploadBox.classList.remove('has-image');
-      if (previewImage) {
-        previewImage.style.display = 'none';
-        previewImage.src = '';
-      }
-      if (uploadPlaceholder) uploadPlaceholder.style.display = 'block';
-
-      syncToggleUI();
-      const resultBadge = $('resultBadge');
-      if (resultBadge) {
-        resultBadge.textContent = 'NO TRADE';
-        resultBadge.className = 'badge no';
-      }
-      safeText('scoreNumber', '0/6');
-      safeText('scoreSignalText', 'IDLE');
-      const bar = $('scoreProgressBar');
-      if (bar) bar.style.width = '0%';
-      safeText('scoreLabel', '等待上传图表并开始分析');
-      if ($('checks')) $('checks').innerHTML = '';
-      safeText('analysisText', '请先上传图表并点击 Analyze Chart。');
-      safeText('adviceText', '暂无建议。');
-      if ($('riskList')) $('riskList').innerHTML = '<li>当前分析仍需搭配真实交易经验判断。</li><li>最终仍需搭配止损和仓位管理。</li>';
-      const exportBadge = $('exportBadge');
-      if (exportBadge) {
-        exportBadge.textContent = 'NO TRADE';
-        exportBadge.className = 'badge no';
-      }
-      safeText('exportScore', '0/6');
-      safeText('exportSignal', 'IDLE');
-      safeText('exportMeta', '未生成摘要');
-      safeText('exportSummary', '上传图表后，系统会生成适合分享的判断摘要。');
-      safeText('exportRisk', '暂无风险提示。');
-    }
-
-    async function copyExportSummary() {
-      const text = [
-        'MI6 v3 Prototype',
-        $('exportMeta')?.textContent || '',
-        `结果：${$('exportBadge')?.textContent || ''}`,
-        `分数：${$('exportScore')?.textContent || ''}`,
-        `信号：${$('exportSignal')?.textContent || ''}`,
-        `摘要：${$('exportSummary')?.textContent || ''}`,
-        `风险：${$('exportRisk')?.textContent || ''}`
-      ].join('
-');
-
-      try {
-        await navigator.clipboard.writeText(text);
-        const btn = $('copyExportBtn');
-        if (btn) {
-          const original = btn.textContent;
-          btn.textContent = '已复制';
-          setTimeout(() => { btn.textContent = original; }, 1200);
-        }
-      } catch (err) {
-        alert('复制失败，请手动复制。');
-      }
-    }
-
-    function downloadExportCardHtml() {
-      const exportCard = $('exportCard');
-      if (!exportCard) return;
-      const cardHtml = exportCard.outerHTML;
-      const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>MI6 Export Card</title></head><body style="background:#070b13;padding:24px;color:white;font-family:Arial;">${cardHtml}</body></html>`;
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'mi6-v3-export-card.html';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // Buy / Short 稳定点击
-    document.body.addEventListener('click', (e) => {
-      if (e.target.closest('#buyBtn')) {
-        setDirection('BUY');
-      }
-      if (e.target.closest('#shortBtn')) {
-        setDirection('SHORT');
-      }
-
-      const toggleBtn = e.target.closest('.toggle-btn');
-      if (toggleBtn) {
-        const key = toggleBtn.dataset.key;
-        const value = Number(toggleBtn.dataset.value);
-        if (!key || Number.isNaN(value)) return;
-
-        state[key] = value;
-        const group = toggleBtn.closest('.toggle-group');
-        if (group) {
-          group.querySelectorAll('.toggle-btn').forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
-          toggleBtn.classList.add('active');
-          toggleBtn.classList.add(value === 1 ? 'yes' : 'no');
-        }
-
-        const currentState = $('stateChip')?.textContent || '';
-        if (currentState.includes('REVIEW') || currentState.includes('FINAL')) {
-          setUiState('FINAL');
-          renderDecision();
-        }
-      }
-    });
-
-    // Upload image
-    if ($('uploadBox') && $('chartUpload')) {
-      $('uploadBox').addEventListener('click', () => $('chartUpload').click());
-      $('chartUpload').addEventListener('change', (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-          if ($('previewImage')) {
-            $('previewImage').src = reader.result;
-            $('previewImage').style.display = 'block';
-          }
-          if ($('uploadPlaceholder')) $('uploadPlaceholder').style.display = 'none';
-          if ($('uploadBox')) $('uploadBox').classList.add('has-image');
-          setUiState('READY');
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    ['trendSelect','structuralConsistency','isolatedPattern','sessionFilter','atrFilter','triggerAudit','keyZoneAudit','trapZoneAudit'].forEach((id) => {
-      const el = $(id);
-      if (el) {
-        el.addEventListener('change', () => {
-          const currentState = $('stateChip')?.textContent || '';
-          if (currentState.includes('REVIEW') || currentState.includes('FINAL')) {
-            setUiState('FINAL');
-            renderDecision();
-          }
-        });
-      }
-    });
-
-    if ($('analyzeBtn')) $('analyzeBtn').addEventListener('click', analyzeChartWithApi);
-    if ($('resetBtn')) $('resetBtn').addEventListener('click', resetAll);
-    if ($('copyExportBtn')) $('copyExportBtn').addEventListener('click', copyExportSummary);
-    if ($('downloadExportBtn')) $('downloadExportBtn').addEventListener('click', downloadExportCardHtml);
-
-    resetAll();
-  });
+  <section class="hero card">
+    <h1>MI6 v3 图表上传分析系统</h1>
+    <p class="sub">这版先保证稳定：Buy / Short、上传图表、符合 / 不符合、Analyze 全部可点击。后端 API 已连接 Render。</p>
+  </section>
+
+  <section class="layout">
+    <main class="card panel">
+      <div class="section-title"><h2>输入与 AI 分析台</h2><div class="hint">上传图表 → 选择方向 → Analyze</div></div>
+
+      <div class="group">
+        <div class="group-head"><strong>Step 1 · 上传图表</strong><span>使用真实 file input，避免点不到</span></div>
+        <div class="grid2">
+          <div class="upload-box">
+            <label class="field">
+              <span style="font-weight:900;margin-bottom:8px;display:block;">选择图表图片</span>
+              <input id="chartUpload" class="file-input" type="file" accept="image/*" />
+            </label>
+            <img id="previewImage" alt="Chart Preview" />
+          </div>
+          <div>
+            <div class="field" style="margin-bottom:14px;">
+              <label>交易方向</label>
+              <div class="direction-grid">
+                <button type="button" id="buyBtn" class="direction-btn active buy">BUY</button>
+                <button type="button" id="shortBtn" class="direction-btn">SHORT</button>
+              </div>
+            </div>
+            <div class="grid2">
+              <div class="field"><label for="symbol">标的</label><input id="symbol" type="text" placeholder="XAUUSD" /></div>
+              <div class="field"><label for="timeframe">Timeframe</label><select id="timeframe"><option value="">未选择</option><option>M15</option><option>H1</option><option>H4</option><option>D1</option></select></div>
+            </div>
+            <div class="field" style="margin-top:14px;"><label for="notes">备注</label><textarea id="notes" placeholder="例如：想做多 / 等待确认"></textarea></div>
+            <div class="actions" style="margin-top:14px;"><button type="button" class="primary" id="analyzeBtn">Analyze Chart</button><button type="button" class="secondary" id="resetBtn">重置</button></div>
+            <div class="status-strip"><div class="status-chip" id="stateChip">STATE: IDLE</div><div class="status-chip" id="directionChip">DIRECTION: BUY</div><div class="status-chip" id="apiChip">API: Render</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-head"><strong>Step 2 · 系统分析结果（可修正）</strong><span>AI 回传后自动填入</span></div>
+        <div class="analysis-grid" id="analysisGrid">
+          <div class="analysis-card"><h3>Market Trend</h3><p>趋势判断</p><select id="trendSelect"><option value="up">上升趋势</option><option value="down">下跌趋势</option><option value="sideways">盘整</option></select></div>
+          <div class="analysis-card"><h3>结构一致性</h3><p>是否顺主趋势</p><select id="structuralConsistency"><option value="yes">顺主趋势</option><option value="no">逆主趋势</option></select></div>
+
+          <div class="analysis-card"><h3>1. Candlestick</h3><p>蜡烛触发</p><div class="toggle-group"><button type="button" class="toggle-btn" data-key="candlestick" data-value="1">符合 +1</button><button type="button" class="toggle-btn active no" data-key="candlestick" data-value="0">不符合 0</button></div></div>
+          <div class="analysis-card"><h3>2. Chart Pattern</h3><p>图表结构</p><div class="toggle-group"><button type="button" class="toggle-btn" data-key="chartpattern" data-value="1">符合 +1</button><button type="button" class="toggle-btn active no" data-key="chartpattern" data-value="0">不符合 0</button></div></div>
+          <div class="analysis-card"><h3>3. Wave</h3><p>波浪形态</p><div class="toggle-group"><button type="button" class="toggle-btn" data-key="wave" data-value="1">符合 +1</button><button type="button" class="toggle-btn active no" data-key="wave" data-value="0">不符合 0</button></div></div>
+          <div class="analysis-card"><h3>4. MA</h3><p>均线支持</p><div class="toggle-group"><button type="button" class="toggle-btn" data-key="ma" data-value="1">符合 +1</button><button type="button" class="toggle-btn active no" data-key="ma" data-value="0">不符合 0</button></div></div>
+          <div class="analysis-card"><h3>5. Bollinger Band</h3><p>布林带位置</p><div class="toggle-group"><button type="button" class="toggle-btn" data-key="bb" data-value="1">符合 +1</button><button type="button" class="toggle-btn active no" data-key="bb" data-value="0">不符合 0</button></div></div>
+          <div class="analysis-card"><h3>6. Fibo</h3><p>Fibo 区域</p><div class="toggle-group"><button type="button" class="toggle-btn" data-key="fibo" data-value="1">符合 +1</button><button type="button" class="toggle-btn active no" data-key="fibo" data-value="0">不符合 0</button></div></div>
+
+          <div class="analysis-card"><h3>形态完整性</h3><p>是否孤立形态</p><select id="isolatedPattern"><option value="no">不是孤立形态</option><option value="yes">是孤立形态</option></select></div>
+          <div class="analysis-card"><h3>Session</h3><p>交易时段</p><select id="sessionFilter"><option value="asia">亚洲盘</option><option value="london">伦敦盘</option><option value="newyork">纽约盘</option><option value="overlap" selected>重叠时段</option></select></div>
+          <div class="analysis-card"><h3>ATR</h3><p>波动状态</p><select id="atrFilter"><option value="low">过低</option><option value="normal" selected>正常</option><option value="high">过高</option></select></div>
+          <div class="analysis-card"><h3>Trigger Audit</h3><p>触发确认</p><select id="triggerAudit"><option value="yes" selected>有明确触发</option><option value="no">没有明确触发</option></select></div>
+          <div class="analysis-card"><h3>Key Zone</h3><p>关键区域</p><select id="keyZoneAudit"><option value="yes" selected>在关键区</option><option value="no">不在关键区</option></select></div>
+          <div class="analysis-card"><h3>Trap Zone</h3><p>陷阱区</p><select id="trapZoneAudit"><option value="no" selected>不是陷阱区</option><option value="yes">接近陷阱区</option></select></div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="card panel terminal">
+      <div class="result-top"><h2>MI6 决策终端</h2><div id="resultBadge" class="badge no">NO TRADE</div></div>
+      <div class="small">连接后端：https://mi6-backend.onrender.com/api/analyze-chart</div>
+      <div class="score-box"><div class="score-head"><span>SIGNAL</span><span id="scoreSignalText">IDLE</span></div><div id="scoreNumber" class="score-number">0/6</div><div class="track"><div id="scoreProgressBar" class="bar"></div></div><div id="scoreLabel" class="score-label">等待上传图表并开始分析</div></div>
+      <div class="grid3" style="margin-bottom:14px;"><div class="block"><h3>INPUT</h3><p>UPLOAD</p></div><div class="block"><h3>API</h3><p>RENDER</p></div><div class="block"><h3>MODE</h3><p>REVIEW</p></div></div>
+      <div class="block"><h3>System Checks</h3><div class="mini-list" id="checks"></div></div>
+      <div class="block"><h3>系统分析</h3><p id="analysisText">请先上传图表并点击 Analyze Chart。</p></div>
+      <div class="block"><h3>执行建议</h3><p id="adviceText">暂无建议。</p></div>
+      <div class="block risk"><h3>风险提醒</h3><ul id="riskList"><li>任何结果都必须搭配止损和仓位管理。</li></ul></div>
+      <div class="block"><h3>IG Export Card</h3><div id="exportCard" class="export-card"><div class="export-top"><div><div class="export-brand">MI6 v3</div><div class="export-sub">Trading Decision Summary</div></div><div id="exportBadge" class="badge no">NO TRADE</div></div><div><div id="exportScore" class="export-score">0/6</div><div class="export-label">SCORE</div></div><div class="export-panel"><div class="export-panel-title">META</div><p id="exportMeta">未生成摘要</p></div><div class="export-panel"><div class="export-panel-title">KEY SUMMARY</div><p id="exportSummary">上传图表后生成摘要。</p></div><div class="export-panel"><div class="export-panel-title">RISK NOTE</div><p id="exportRisk">暂无风险提示。</p></div></div><div class="actions" style="margin-top:12px;"><button type="button" class="primary" id="copyExportBtn">复制摘要</button></div></div>
+    </aside>
+  </section>
+</div>
+
+<script>
+(function(){
+  const state={direction:'BUY',candlestick:0,chartpattern:0,wave:0,ma:0,bb:0,fibo:0};
+  const labels={candlestick:'Candlestick',chartpattern:'Chart Pattern',wave:'Wave',ma:'MA',bb:'Bollinger Band',fibo:'Fibo'};
+  const $=id=>document.getElementById(id);
+  const setText=(id,t)=>{const el=$(id);if(el)el.textContent=t;};
+  const trendText=v=>v==='up'?'上升趋势':v==='down'?'下跌趋势':'盘整';
+  const sessionText=v=>({asia:'亚洲盘',london:'伦敦盘',newyork:'纽约盘',overlap:'重叠时段'}[v]||v);
+  const atrText=v=>({low:'过低',normal:'正常',high:'过高'}[v]||v);
+  const badgeClass=r=>r==='STRONG TRADE'?'strong':r==='TRADE'?'trade':r==='WATCH'?'watch':'no';
+  const signal=s=>s>=5?'HIGH':s===4?'MEDIUM':s>=2?'LOW':'IDLE';
+  function setUi(status){setText('stateChip','STATE: '+status);}
+  function setDirection(d){state.direction=d;setText('directionChip','DIRECTION: '+d);$('buyBtn').className='direction-btn'+(d==='BUY'?' active buy':'');$('shortBtn').className='direction-btn'+(d==='SHORT'?' active short':'');}
+  function readAdv(){return{trend:$('trendSelect').value,structural:$('structuralConsistency').value,isolated:$('isolatedPattern').value,session:$('sessionFilter').value,atr:$('atrFilter').value,trigger:$('triggerAudit').value,keyzone:$('keyZoneAudit').value,trapzone:$('trapZoneAudit').value};}
+  function downgrade(r){if(r==='STRONG TRADE')return'TRADE';if(r==='TRADE')return'WATCH';if(r==='WATCH')return'NO TRADE';return'NO TRADE';}
+  function syncToggles(){document.querySelectorAll('.toggle-group').forEach(g=>{const bs=g.querySelectorAll('.toggle-btn');const key=bs[0]&&bs[0].dataset.key;if(!key)return;bs.forEach(b=>b.classList.remove('active','yes','no'));const t=g.querySelector('.toggle-btn[data-value="'+state[key]+'"]');if(t){t.classList.add('active',state[key]===1?'yes':'no');}});}
+  function buildChecks(score,a){const c=$('checks');if(!c)return;c.innerHTML='';Object.keys(labels).forEach(k=>{const row=document.createElement('div');row.className='mini-row';row.innerHTML='<span>'+labels[k]+'</span><span class="'+(state[k]?'ok':'bad')+'">'+(state[k]?'YES':'NO')+'</span>';c.appendChild(row);});[['趋势',trendText(a.trend),a.trend==='sideways'?'warn':'ok'],['结构',a.structural==='yes'?'顺主趋势':'逆主趋势',a.structural==='yes'?'ok':'bad'],['Session',sessionText(a.session),a.session==='asia'?'warn':'ok'],['ATR',atrText(a.atr),a.atr==='normal'?'ok':'warn'],['总分',score+'/6',score>=5?'ok':score===4?'warn':'bad']].forEach(x=>{const row=document.createElement('div');row.className='mini-row';row.innerHTML='<span>'+x[0]+'</span><span class="'+x[2]+'">'+x[1]+'</span>';c.appendChild(row);});}
+  function render(){const a=readAdv();const score=Object.keys(labels).reduce((s,k)=>s+Number(state[k]||0),0);let result='NO TRADE';if(score===6)result='STRONG TRADE';else if(score===5)result='TRADE';else if(score===4)result='WATCH';const warnings=[],fails=[];if(a.trend==='up'&&state.direction==='SHORT'){warnings.push('上升趋势选择 SHORT，方向冲突。');result=downgrade(result);}if(a.trend==='down'&&state.direction==='BUY'){warnings.push('下跌趋势选择 BUY，方向冲突。');result=downgrade(result);}if(a.trend==='sideways'){warnings.push('盘整市场，自动保守。');result=downgrade(result);}if(a.structural==='no'){warnings.push('结构不顺势。');result=downgrade(result);}if(a.isolated==='yes'){warnings.push('形态偏孤立。');result=downgrade(result);}if(a.session==='asia'){warnings.push('亚洲盘偏保守。');result=downgrade(result);}if(a.atr!=='normal'){warnings.push('ATR '+atrText(a.atr)+'。');result=downgrade(result);}if(a.trigger==='no')fails.push('没有明确触发');if(a.keyzone==='no')fails.push('不在关键区');if(a.trapzone==='yes')fails.push('接近陷阱区');if(fails.length)result='BLOCK';const cls=badgeClass(result);$('resultBadge').textContent=result;$('resultBadge').className='badge '+cls;setText('scoreNumber',score+'/6');setText('scoreSignalText',signal(score));$('scoreProgressBar').style.width=(score/6*100)+'%';const meta=($('symbol').value||'未填写标的')+($('timeframe').value?' · '+$('timeframe').value:'')+' · '+state.direction+' · '+trendText(a.trend);setText('scoreLabel',meta);buildChecks(score,a);const pos=[],miss=[];Object.keys(labels).forEach(k=>state[k]?pos.push(labels[k]):miss.push(labels[k]));let analysis='当前方向 '+state.direction+'，趋势 '+trendText(a.trend)+'，MI6 得分 '+score+'/6。';if(pos.length)analysis+=' 已满足：'+pos.join('、')+'。';if(miss.length)analysis+=' 欠缺：'+miss.join('、')+'。';if(warnings.length)analysis+=' 风险修正：'+warnings.join(' ');if(fails.length)analysis+=' 审计失败：'+fails.join('、')+'。';if($('notes').value)analysis+=' 备注：'+$('notes').value;setText('analysisText',analysis);setText('adviceText',result==='TRADE'||result==='STRONG TRADE'?'条件较好，但仍需确认 Entry / SL / TP。':result==='WATCH'?'建议等待更清晰触发。':result==='BLOCK'?'系统拦截，先解决审计失败项。':'当前不建议交易。');$('riskList').innerHTML='';['分数高不等于必胜。','必须搭配止损和仓位管理。'].concat(warnings).concat(fails.map(f=>'审计失败：'+f)).forEach(t=>{const li=document.createElement('li');li.textContent=t;$('riskList').appendChild(li);});$('exportBadge').textContent=result;$('exportBadge').className='badge '+cls;setText('exportScore',score+'/6');setText('exportMeta',meta);setText('exportSummary',analysis);setText('exportRisk',fails.length?'重点风险：'+fails.join('、'):'请搭配止损、仓位管理与风险报酬比。');}
+  function applyData(data){const d=data||{};const ia=d.image_analysis||{},m=d.mi6||{},f=d.filters||{},au=d.audit||{};$('trendSelect').value=ia.trend||'sideways';$('structuralConsistency').value=f.structural||'yes';$('isolatedPattern').value=f.isolated||'no';$('sessionFilter').value=f.session||'overlap';$('atrFilter').value=f.atr||'normal';$('triggerAudit').value=au.trigger||'yes';$('keyZoneAudit').value=au.keyzone||'yes';$('trapZoneAudit').value=au.trapzone||'no';Object.keys(labels).forEach(k=>state[k]=Number(m[k]||0));syncToggles();setUi('REVIEW');render();if(d.analysis_text)setText('analysisText',d.analysis_text+'（可手动修正。）');}
+  function mock(){const buy=state.direction==='BUY';return{success:true,image_analysis:{trend:buy?'up':'down'},mi6:buy?{candlestick:1,chartpattern:1,wave:1,ma:1,bb:0,fibo:1}:{candlestick:1,chartpattern:1,wave:1,ma:1,bb:1,fibo:0},filters:{structural:'yes',isolated:'no',session:buy?'overlap':'london',atr:'normal'},audit:{trigger:'yes',keyzone:'yes',trapzone:'no'},analysis_text:buy?'AI 分析：偏向上升回调结构，BUY 顺势。':'AI 分析：偏向下降反弹结构，SHORT 顺势。'};}
+  async function analyze(){const file=$('chartUpload').files[0];if(!file){alert('请先选择图表图片');return;}setUi('ANALYZING');setText('analysisText','Uploading chart... Running API...');const fd=new FormData();fd.append('image',file);fd.append('direction',state.direction);fd.append('symbol',$('symbol').value||'');fd.append('timeframe',$('timeframe').value||'');try{const res=await fetch('https://mi6-backend.onrender.com/api/analyze-chart',{method:'POST',body:fd});if(!res.ok)throw new Error('api');const data=await res.json();if(!data.success)throw new Error('fail');applyData(data);}catch(e){applyData(mock());setText('analysisText',$('analysisText').textContent+' 当前使用 mock fallback。');}}
+  function reset(){state.direction='BUY';Object.keys(labels).forEach(k=>state[k]=0);['symbol','notes'].forEach(id=>$(id).value='');$('timeframe').value='';$('chartUpload').value='';$('previewImage').style.display='none';$('previewImage').src='';$('trendSelect').value='up';$('structuralConsistency').value='yes';$('isolatedPattern').value='no';$('sessionFilter').value='overlap';$('atrFilter').value='normal';$('triggerAudit').value='yes';$('keyZoneAudit').value='yes';$('trapZoneAudit').value='no';setDirection('BUY');setUi('IDLE');syncToggles();$('resultBadge').textContent='NO TRADE';$('resultBadge').className='badge no';setText('scoreNumber','0/6');setText('scoreSignalText','IDLE');$('scoreProgressBar').style.width='0%';setText('scoreLabel','等待上传图表并开始分析');$('checks').innerHTML='';setText('analysisText','请先上传图表并点击 Analyze Chart。');setText('adviceText','暂无建议。');$('riskList').innerHTML='<li>任何结果都必须搭配止损和仓位管理。</li>';$('exportBadge').textContent='NO TRADE';$('exportBadge').className='badge no';setText('exportScore','0/6');setText('exportMeta','未生成摘要');setText('exportSummary','上传图表后生成摘要。');setText('exportRisk','暂无风险提示。');}
+  document.addEventListener('click',e=>{if(e.target.closest('#buyBtn'))setDirection('BUY');if(e.target.closest('#shortBtn'))setDirection('SHORT');const btn=e.target.closest('.toggle-btn');if(btn){const k=btn.dataset.key,v=Number(btn.dataset.value);state[k]=v;const g=btn.closest('.toggle-group');g.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active','yes','no'));btn.classList.add('active',v===1?'yes':'no');render();}});
+  document.addEventListener('change',e=>{if(e.target.id==='chartUpload'){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{$('previewImage').src=reader.result;$('previewImage').style.display='block';setUi('READY');};reader.readAsDataURL(file);}if(['trendSelect','structuralConsistency','isolatedPattern','sessionFilter','atrFilter','triggerAudit','keyZoneAudit','trapZoneAudit'].includes(e.target.id)){render();}});
+  $('analyzeBtn').addEventListener('click',analyze);$('resetBtn').addEventListener('click',reset);$('copyExportBtn').addEventListener('click',async()=>{const text=['MI6 v3',$('exportMeta').textContent,$('exportSummary').textContent,$('exportRisk').textContent].join('
+');try{await navigator.clipboard.writeText(text);$('copyExportBtn').textContent='已复制';setTimeout(()=>$('copyExportBtn').textContent='复制摘要',1000);}catch(e){alert('复制失败');}});
+  reset();
+})();
 </script>
 </body>
 </html>
