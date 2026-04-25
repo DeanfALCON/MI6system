@@ -1345,5 +1345,9 @@
   reset();
 })();
 </script>
-</body>
+<script>
+document.addEventListener('click', function(e) {
+  alert('你点到了：' + e.target.tagName + ' / ' + (e.target.id || e.target.className));
+}, true);
+</script></body>
 </html>
