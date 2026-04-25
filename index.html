@@ -1346,8 +1346,19 @@
 })();
 </script>
 <script>
-document.addEventListener('click', function(e) {
-  alert('你点到了：' + e.target.tagName + ' / ' + (e.target.id || e.target.className));
-}, true);
+<script>
+window.addEventListener('load', function () {
+  document.getElementById('buyBtn').onclick = function () {
+    alert('BUY OK');
+  };
+
+  document.getElementById('shortBtn').onclick = function () {
+    alert('SHORT OK');
+  };
+
+  document.getElementById('analyzeBtn').onclick = function () {
+    alert('ANALYZE OK');
+  };
+});
 </script></body>
 </html>
