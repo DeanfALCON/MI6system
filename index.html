@@ -1159,13 +1159,10 @@
     }
 
     async function copySummary() {
-      const text = [
-        'MI6 v3.1',
-        el('exportMeta').textContent,
-        el('exportSummary').textContent,
-        el('exportRisk').textContent
-      ].join('
-');
+      var text = 'MI6 v3.1' + String.fromCharCode(10) +
+        el('exportMeta').textContent + String.fromCharCode(10) +
+        el('exportSummary').textContent + String.fromCharCode(10) +
+        el('exportRisk').textContent;
 
       try {
         await navigator.clipboard.writeText(text);
