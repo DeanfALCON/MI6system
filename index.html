@@ -335,7 +335,7 @@
       <div class="card hero-main">
         <div class="eyebrow">Prototype Experience Layer</div>
         <h1>Upload Chart. Choose Direction.<br>Get Decision.</h1>
-        <p class="sub">这是一版产品原型。用户只需要上传图表并选择 Buy / Short，系统会先跑一轮 AI 模拟分析，再套用 MI6 规则引擎输出结果。当前版本使用 mock data 演示未来流程。</p>
+        <p class="sub">这是一版 API 对接原型。用户上传图表并选择 Buy / Short 后，前端会优先请求后端 AI 分析；如果后端尚未上线，则自动使用 mock data 兜底演示流程。</p>
         <div class="hero-points">
           <div class="hero-point">用户输入最少</div>
           <div class="hero-point">系统分析最多</div>
@@ -350,7 +350,7 @@
           <div class="info-box"><small>输出</small><strong>MI6 结果 + 风险 + 导出卡</strong></div>
           <div class="info-box"><small>阶段</small><strong>当前为可演示原型</strong></div>
         </div>
-        <div class="hero-side-note">下一阶段可以把 mock data 换成真正的 AI 接口回传。现在先把产品交互与页面架构定下来。</div>
+        <div class="hero-side-note">这一版已经预留真实 AI 接口。后端只要提供 /api/analyze-chart，前端就能直接吃返回结果。</div>
       </div>
     </section>
 
@@ -373,7 +373,7 @@
                 <img id="previewImage" alt="Chart Preview" style="display:none;" />
               </div>
               <input id="chartUpload" type="file" accept="image/*" style="display:none;" />
-              <div class="mock-banner">当前为原型：上传图片后不会真的识图，但会触发一套模拟分析流程，让你先确认产品体验。</div>
+              <div class="mock-banner">当前为 API 对接版：Analyze 会优先请求 /api/analyze-chart。如果后端还没接上，系统会自动使用 mock data 演示。</div>
             </div>
 
             <div class="upload-actions">
@@ -900,50 +900,119 @@
       $('exportRisk').textContent = auditFails.length ? `重点风险：${auditFails.join('、')}。` : (warnings[0] || '当前为 mock data 演示，请勿视为真实自动识图结论。');
     }
 
-    function runMockAnalysis() {
+    function applyAnalysisData(data) {
+      const safeData = {
+        image_analysis: data.image_analysis || {},
+        mi6: data.mi6 || {},
+        filters: data.filters || {},
+        audit: data.audit || {},
+        analysis_text: data.analysis_text || ''
+      };
+
+      $('trendSelect').value = safeData.image_analysis.trend || 'sideways';
+      $('structuralConsistency').value = safeData.filters.structural || 'yes';
+      $('isolatedPattern').value = safeData.filters.isolated || 'no';
+      $('sessionFilter').value = safeData.filters.session || 'overlap';
+      $('atrFilter').value = safeData.filters.atr || 'normal';
+      $('triggerAudit').value = safeData.audit.trigger || 'yes';
+      $('keyZoneAudit').value = safeData.audit.keyzone || 'yes';
+      $('trapZoneAudit').value = safeData.audit.trapzone || 'no';
+
+      Object.keys(labels).forEach((key) => {
+        state[key] = Number(safeData.mi6[key] || 0);
+      });
+
+      syncToggleUI();
+      setUiState('REVIEW');
+      renderDecision();
+
+      if (safeData.analysis_text) {
+        $('analysisText').textContent = safeData.analysis_text + '（你仍可手动修正 AI 判断。）';
+      }
+    }
+
+    function syncToggleUI() {
+      document.querySelectorAll('.toggle-group').forEach((group) => {
+        const btns = group.querySelectorAll('.toggle-btn');
+        const key = btns[0]?.dataset.key;
+        if (!key) return;
+        btns.forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
+        const target = group.querySelector(`.toggle-btn[data-value="${state[key]}"]`);
+        if (target) {
+          target.classList.add('active');
+          target.classList.add(state[key] === 1 ? 'yes' : 'no');
+        }
+      });
+    }
+
+    function getMockAiResponse() {
       const direction = state.direction;
+      const isBuy = direction === 'BUY';
+      return {
+        success: true,
+        image_analysis: {
+          trend: isBuy ? 'up' : 'down',
+          structure_summary: isBuy ? '回调后继续偏多' : '反弹后继续偏空',
+          pattern_detected: isBuy ? 'bullish_channel' : 'bearish_channel',
+          notes: isBuy ? '价格整体偏多，结构有延续机会。' : '价格整体偏空，结构有延续机会。'
+        },
+        mi6: isBuy
+          ? { candlestick: 1, chartpattern: 1, wave: 1, ma: 1, bb: 0, fibo: 1 }
+          : { candlestick: 1, chartpattern: 1, wave: 1, ma: 1, bb: 1, fibo: 0 },
+        filters: {
+          structural: 'yes',
+          isolated: 'no',
+          session: isBuy ? 'overlap' : 'london',
+          atr: 'normal'
+        },
+        audit: {
+          trigger: 'yes',
+          keyzone: 'yes',
+          trapzone: 'no'
+        },
+        analysis_text: isBuy
+          ? 'AI 模拟分析：当前图表偏向上升趋势中的回调结构，BUY 方向与趋势一致，MA 与 Wave 支持较强，但 BB 不完全理想。'
+          : 'AI 模拟分析：当前图表偏向下降趋势中的反弹结构，SHORT 方向与趋势一致，结构与触发较清晰，但 Fibo 不完全理想。',
+        suggested_result: 'TRADE'
+      };
+    }
+
+    async function analyzeChartWithApi() {
+      const file = $('chartUpload').files?.[0];
+      if (!file) {
+        alert('请先上传图表图片');
+        return;
+      }
+
       setUiState('ANALYZING');
-      $('analysisText').textContent = 'Reading trend... Checking structure... Evaluating MI6... Running filters... Running audit...';
-      $('adviceText').textContent = '系统正在模拟分析，请稍候。';
+      $('analysisText').textContent = 'Uploading chart... Reading trend... Checking structure... Running MI6 engine...';
+      $('adviceText').textContent = '系统正在请求 AI 分析。若后端还没接上，将自动使用 mock data 演示。';
 
-      setTimeout(() => {
-        const mock = direction === 'BUY'
-          ? {
-              trend: 'up', candlestick: 1, chartpattern: 1, wave: 1, ma: 1, bb: 0, fibo: 1,
-              structural: 'yes', isolated: 'no', session: 'overlap', atr: 'normal', trigger: 'yes', keyzone: 'yes', trapzone: 'no'
-            }
-          : {
-              trend: 'down', candlestick: 1, chartpattern: 1, wave: 1, ma: 1, bb: 1, fibo: 0,
-              structural: 'yes', isolated: 'no', session: 'london', atr: 'normal', trigger: 'yes', keyzone: 'yes', trapzone: 'no'
-            };
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('direction', state.direction);
+      formData.append('symbol', $('symbol').value || '');
+      formData.append('timeframe', $('timeframe').value || '');
+      formData.append('notes', $('notes').value || '');
 
-        $('trendSelect').value = mock.trend;
-        $('structuralConsistency').value = mock.structural;
-        $('isolatedPattern').value = mock.isolated;
-        $('sessionFilter').value = mock.session;
-        $('atrFilter').value = mock.atr;
-        $('triggerAudit').value = mock.trigger;
-        $('keyZoneAudit').value = mock.keyzone;
-        $('trapZoneAudit').value = mock.trapzone;
-
-        Object.keys(labels).forEach((key) => {
-          state[key] = mock[key];
+      try {
+        const res = await fetch('/api/analyze-chart', {
+          method: 'POST',
+          body: formData
         });
 
-        document.querySelectorAll('.toggle-group').forEach((group) => {
-          const btns = group.querySelectorAll('.toggle-btn');
-          const key = btns[0]?.dataset.key;
-          btns.forEach((btn) => btn.classList.remove('active', 'yes', 'no'));
-          const match = group.querySelector(`.toggle-btn[data-value="${state[key]}"]`);
-          if (match) {
-            match.classList.add('active');
-            match.classList.add(state[key] === 1 ? 'yes' : 'no');
-          }
-        });
+        if (!res.ok) throw new Error('API not available');
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'AI analysis failed');
 
-        setUiState('REVIEW');
-        renderDecision();
-      }, 1200);
+        applyAnalysisData(data);
+      } catch (err) {
+        console.warn('Using mock AI response:', err.message);
+        setTimeout(() => {
+          applyAnalysisData(getMockAiResponse());
+          $('analysisText').textContent += ' 当前使用 mock data，因为 /api/analyze-chart 后端尚未接上。';
+        }, 650);
+      }
     }
 
     function resetAll() {
@@ -1068,7 +1137,7 @@
       });
     });
 
-    $('analyzeBtn').addEventListener('click', runMockAnalysis);
+    $('analyzeBtn').addEventListener('click', analyzeChartWithApi);
     $('resetBtn').addEventListener('click', resetAll);
     $('copyExportBtn').addEventListener('click', copyExportSummary);
     $('downloadExportBtn').addEventListener('click', downloadExportCardHtml);
