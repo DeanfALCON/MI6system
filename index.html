@@ -996,7 +996,7 @@
       formData.append('notes', $('notes').value || '');
 
       try {
-        const res = await fetch('/api/analyze-chart', {
+        const res = await fetch('https://mi6-backend.onrender.com', {
           method: 'POST',
           body: formData
         });
