@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI6 v3.2 AI Sync</title>
+  <title>MI6 v3.3 No-AI Stable</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -484,16 +484,16 @@
       <div class="brand">
         <div class="logo">MI6</div>
         <div>
-          <div class="brand-title">MI6 v3.2 AI Sync</div>
-          <div class="brand-sub">AI result sync · Manual override · Stable fallback</div>
+          <div class="brand-title">MI6 v3.3 No-AI Stable</div>
+          <div class="brand-sub">Manual MI6 scoring · Zero API cost · Stable product mode</div>
         </div>
       </div>
       <div class="debug" id="debugBox">DEBUG: READY</div>
     </div>
 
     <div class="hero">
-      <h1>MI6 v3.2 图表上传分析系统</h1>
-      <p class="sub">这版修复 AI 回传后前端不更新的问题。AI 成功会显示 AI MODE；AI失败会显示 FALLBACK MODE。</p>
+      <h1>MI6 v3.3 无 AI 六分交易评分器</h1>
+      <p class="sub">这版暂时关闭 AI。用户上传图表后，手动选择 BUY / SHORT，并用 MI6 六分制、过滤项和审计项完成判断。完全本地运行，不需要 API 额度。</p>
     </div>
 
     <div class="layout">
@@ -543,7 +543,7 @@
               </div>
 
               <div class="btn-row" style="margin-top:14px;">
-                <button id="analyzeBtn" type="button" class="primary" onclick="analyzeChart()">Analyze Chart</button>
+                <button id="analyzeBtn" type="button" class="primary" onclick="runManualAnalysis()">Generate MI6 Result</button>
                 <button id="resetBtn" type="button" class="secondary" onclick="resetAll()">重置</button>
               </div>
 
@@ -701,7 +701,7 @@
           <h2>MI6 决策终端</h2>
           <div id="resultBadge" class="badge">NO TRADE</div>
         </div>
-        <div class="small">API: https://mi6-backend.onrender.com/api/analyze-chart</div>
+        <div class="small">MODE: No-AI Local Engine · No API Cost</div>
 
         <div class="score-box">
           <div class="score-head">
@@ -715,7 +715,7 @@
 
         <div class="grid3" style="margin-bottom:14px;">
           <div class="box"><h3>INPUT</h3><p>UPLOAD</p></div>
-          <div class="box"><h3>API</h3><p>RENDER</p></div>
+          <div class="box"><h3>ENGINE</h3><p>LOCAL</p></div>
           <div class="box"><h3>MODE</h3><p>REVIEW</p></div>
         </div>
 
@@ -744,7 +744,7 @@
           <div class="export-card">
             <div class="export-top">
               <div>
-                <div class="export-title">MI6 v3.2</div>
+                <div class="export-title">MI6 v3.3</div>
                 <div class="export-sub">Trading Decision Summary</div>
               </div>
               <div id="exportBadge" class="badge">NO TRADE</div>
@@ -762,8 +762,6 @@
   </div>
 
   <script>
-    const API_URL = "https://mi6-backend.onrender.com/api/analyze-chart";
-
     const state = {
       direction: "BUY",
       candlestick: 0,
@@ -797,7 +795,7 @@
       el("directionChip").textContent = "DIRECTION: " + direction;
       el("buyBtn").className = direction === "BUY" ? "active-buy" : "";
       el("shortBtn").className = direction === "SHORT" ? "active-short" : "";
-      setDebug(direction + " clicked");
+      setDebug(direction + " selected");
       renderDecision();
     }
 
@@ -816,6 +814,7 @@
         }
       }
 
+      setDebug(key + " = " + value);
       renderDecision();
     }
 
@@ -925,17 +924,17 @@
       }
 
       if (adv.isolated === "yes") {
-        warnings.push("形态偏孤立。");
+        warnings.push("形态偏孤立，缺乏前后结构支撑。");
         result = downgrade(result);
       }
 
       if (adv.session === "asia") {
-        warnings.push("亚洲盘流动性偏弱。");
+        warnings.push("亚洲盘流动性偏弱，系统自动保守。");
         result = downgrade(result);
       }
 
       if (adv.atr !== "normal") {
-        warnings.push("ATR " + getAtrText(adv.atr) + "。");
+        warnings.push("ATR " + getAtrText(adv.atr) + "，风险需要降低。" );
         result = downgrade(result);
       }
 
@@ -1033,113 +1032,10 @@
       el("exportRisk").textContent = fails.length ? "重点风险：" + fails.join("、") : "请搭配止损、仓位管理与风险报酬比。";
     }
 
-    function applyData(data) {
-      console.log("API RESULT:", data);
-
-      if (!data || !data.success) {
-        setDebug("BAD DATA");
-        return;
-      }
-
-      if (data.image_analysis) {
-        el("trendSelect").value = data.image_analysis.trend || "sideways";
-      }
-
-      if (data.filters) {
-        el("structuralConsistency").value = data.filters.structural || "no";
-        el("isolatedPattern").value = data.filters.isolated || "yes";
-        el("sessionFilter").value = data.filters.session || "overlap";
-        el("atrFilter").value = data.filters.atr || "normal";
-      }
-
-      if (data.audit) {
-        el("triggerAudit").value = data.audit.trigger || "no";
-        el("keyZoneAudit").value = data.audit.keyzone || "no";
-        el("trapZoneAudit").value = data.audit.trapzone || "yes";
-      }
-
-      if (data.mi6) {
-        Object.keys(labels).forEach(function (key) {
-          setScore(key, Number(data.mi6[key] || 0));
-        });
-      }
-
-      el("stateChip").textContent = "STATE: REVIEW";
-      setDebug(data.fallback ? "FALLBACK MODE" : "AI MODE");
+    function runManualAnalysis() {
+      el("stateChip").textContent = "STATE: FINAL";
+      setDebug("LOCAL MODE");
       renderDecision();
-
-      if (data.analysis_text) {
-        el("analysisText").textContent = data.analysis_text + (data.fallback ? "（Fallback）" : "（AI）");
-      }
-    }
-
-    function getFallbackData(reason) {
-      return {
-        success: true,
-        fallback: true,
-        image_analysis: {
-          trend: "sideways",
-          structure_summary: "Fallback mode",
-          pattern_detected: "unknown",
-          notes: reason || "AI unavailable"
-        },
-        mi6: {
-          candlestick: 0,
-          chartpattern: 0,
-          wave: 0,
-          ma: 0,
-          bb: 0,
-          fibo: 0
-        },
-        filters: {
-          structural: "no",
-          isolated: "yes",
-          session: "overlap",
-          atr: "normal"
-        },
-        audit: {
-          trigger: "no",
-          keyzone: "no",
-          trapzone: "yes"
-        },
-        analysis_text: reason || "AI暂时不可用，系统已进入保底模式。",
-        suggested_result: "NO TRADE"
-      };
-    }
-
-    async function analyzeChart() {
-      const file = el("chartUpload").files[0];
-
-      if (!file) {
-        alert("请先选择图表图片");
-        return;
-      }
-
-      el("stateChip").textContent = "STATE: ANALYZING";
-      el("analysisText").textContent = "Uploading chart... Running API...";
-      setDebug("Analyze clicked");
-
-      const fd = new FormData();
-      fd.append("image", file);
-      fd.append("direction", state.direction);
-      fd.append("symbol", el("symbol").value || "");
-      fd.append("timeframe", el("timeframe").value || "");
-
-      try {
-        const res = await fetch(API_URL, { method: "POST", body: fd });
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
-          console.warn("API returned error:", data);
-          applyData(getFallbackData("API返回错误，系统进入保底模式。"));
-          return;
-        }
-
-        applyData(data);
-      } catch (err) {
-        console.error("Analyze failed:", err);
-        applyData(getFallbackData("API连接失败，系统进入保底模式。"));
-      }
     }
 
     function resetAll() {
@@ -1185,7 +1081,7 @@
       el("exportBadge").textContent = "NO TRADE";
       el("exportBadge").className = "badge";
       el("checks").innerHTML = "";
-      el("analysisText").textContent = "请先上传图表并点击 Analyze Chart。";
+      el("analysisText").textContent = "请先上传图表并点击 Generate MI6 Result。";
       el("adviceText").textContent = "暂无建议。";
       el("riskList").innerHTML = "<li>任何结果都必须搭配止损和仓位管理。</li>";
       el("exportScore").textContent = "0/6";
@@ -1197,7 +1093,7 @@
 
     async function copySummary() {
       const text =
-        "MI6 v3.2" + String.fromCharCode(10) +
+        "MI6 v3.3" + String.fromCharCode(10) +
         el("exportMeta").textContent + String.fromCharCode(10) +
         el("exportSummary").textContent + String.fromCharCode(10) +
         el("exportRisk").textContent;
