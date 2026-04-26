@@ -1,172 +1,140 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 v3.7 商业版</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MI6 v3.8 PRO 六分制交易系统</title>
 <style>
-body{margin:0;font-family:Arial;background:#020617;color:#fff}
-.container{max-width:1200px;margin:auto;padding:20px}
-
-.card{
-  background:rgba(255,255,255,0.05);
-  padding:20px;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,0.1);
-  margin-bottom:20px;
-}
-
-.layout{display:grid;grid-template-columns:1fr 380px;gap:20px}
-
-.btn{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;margin:5px}
-.buy{background:#22c55e}
-.short{background:#ef4444}
-.active{outline:2px solid white}
-
-.score-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;margin:10px 0}
-.yes{background:#22c55e}
-.no{background:#ef4444}
-
-.score{
-  font-size:60px;
-  font-weight:bold;
-  transition:0.3s;
-}
-
-.glow{
-  box-shadow:0 0 20px #22c55e,0 0 40px #22c55e;
-}
-
-.danger{
-  animation:blink 1s infinite;
-}
-
-@keyframes blink{
-  0%{box-shadow:0 0 5px #ef4444}
-  50%{box-shadow:0 0 20px #ef4444}
-  100%{box-shadow:0 0 5px #ef4444}
-}
-
-.badge{padding:10px 20px;border-radius:20px;margin-top:10px;display:inline-block}
-.trade{background:#22c55e}
-.watch{background:#f59e0b}
-.noTrade{background:#ef4444}
-
-.export{
-  margin-top:20px;
-  padding:10px;
-  background:#6366f1;
-  border-radius:10px;
-  cursor:pointer;
-}
-
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Microsoft YaHei",sans-serif;background:radial-gradient(circle at top,#111b38 0,#050812 48%,#02040a 100%);color:#eef3ff}.wrap{max-width:1280px;margin:0 auto;padding:24px 16px 70px}.topbar,.hero,.panel,.terminal,.score-card,.box,.ig-card{border:1px solid rgba(141,167,255,.22);background:linear-gradient(180deg,rgba(17,27,48,.94),rgba(10,16,31,.96));box-shadow:0 0 28px rgba(64,97,255,.12);border-radius:22px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 18px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#89a6ff,#b77cff);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;box-shadow:0 0 22px rgba(137,166,255,.35)}.brand-title{font-size:20px;font-weight:900}.brand-sub{font-size:13px;color:#9fb0d1;margin-top:4px}.debug{padding:10px 14px;border-radius:999px;background:#151f35;border:1px solid rgba(141,167,255,.28);font-size:13px;color:#dce6ff}.hero{padding:30px;margin-bottom:18px}h1{margin:0 0 10px;font-size:44px;line-height:1.08}.sub{margin:0;color:#aab8d8;line-height:1.7}.layout{display:grid;grid-template-columns:minmax(0,1fr)420px;gap:18px}.panel,.terminal{padding:18px}.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.section-title h2{margin:0}.pill{padding:7px 11px;border-radius:999px;font-size:12px;color:#bcd0ff;background:rgba(141,167,255,.1);border:1px solid rgba(141,167,255,.22)}.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}.field{padding:15px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08)}label{display:block;font-weight:800;margin-bottom:8px;color:#dce6ff}input,select,textarea,button{font-family:inherit}input,select,textarea{width:100%;padding:13px;border-radius:14px;border:1px solid rgba(141,167,255,.25);background:#121b2e;color:#eef3ff;font-size:15px}textarea{min-height:70px;resize:vertical}.direction-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{border:0;border-radius:14px;padding:13px 16px;font-weight:900;cursor:pointer;color:#061019;transition:.18s ease}.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.buy{background:#2de58d}.short{background:#ff5757}.active-buy{outline:2px solid #dff8ee;box-shadow:0 0 22px rgba(45,229,141,.32)}.active-short{outline:2px solid #ffe7e7;box-shadow:0 0 22px rgba(255,87,87,.32)}.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}.score-card{padding:16px;position:relative;overflow:hidden}.score-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 100% 0,rgba(141,167,255,.13),transparent 38%);pointer-events:none}.score-head{display:flex;justify-content:space-between;gap:12px;align-items:start;margin-bottom:8px;position:relative}.score-name{font-size:17px;font-weight:900}.weight{font-size:12px;color:#8da7ff;background:rgba(141,167,255,.1);border:1px solid rgba(141,167,255,.2);padding:5px 9px;border-radius:999px;white-space:nowrap}.desc{color:#aab8d8;font-size:13px;line-height:1.5;margin:0 0 8px;position:relative}.hint{color:#f3d184;font-size:12px;line-height:1.45;margin-bottom:12px;position:relative}.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative}.yes,.no{color:#fff}.yes{background:rgba(45,229,141,.18);border:1px solid rgba(45,229,141,.38)}.no{background:rgba(255,87,87,.16);border:1px solid rgba(255,87,87,.35)}.selected-yes{background:#2de58d!important;color:#04130d!important;box-shadow:0 0 20px rgba(45,229,141,.35)}.selected-no{background:#ff5757!important;color:#160404!important;box-shadow:0 0 20px rgba(255,87,87,.28)}.terminal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.terminal h2{margin:0}.badge{display:inline-flex;align-items:center;justify-content:center;min-width:122px;padding:10px 14px;border-radius:999px;font-weight:900;font-size:13px}.badge.trade{background:rgba(45,229,141,.18);border:1px solid #2de58d;color:#dff8ee;box-shadow:0 0 22px rgba(45,229,141,.22)}.badge.watch{background:rgba(245,185,66,.18);border:1px solid #f5b942;color:#fff3d6}.badge.no{background:rgba(255,87,87,.18);border:1px solid #ff5757;color:#ffe7e7;animation:pulseRed 1.4s infinite}@keyframes pulseRed{0%,100%{box-shadow:0 0 8px rgba(255,87,87,.18)}50%{box-shadow:0 0 25px rgba(255,87,87,.48)}}.scorebox{padding:18px;border-radius:18px;background:#0d1425;border:1px solid rgba(141,167,255,.2);margin-bottom:14px}.score-top{display:flex;justify-content:space-between;color:#9fb0d1;font-size:12px;margin-bottom:10px}.score-number{font-size:62px;font-weight:900;line-height:1;background:linear-gradient(90deg,#ff5757,#f5b942,#2de58d);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.track{height:11px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin:12px 0}.bar{height:100%;width:0%;background:linear-gradient(90deg,#ff5757,#f5b942,#2de58d);transition:.35s}.meta{font-size:13px;color:#aab8d8;line-height:1.6}.box{padding:15px;margin-bottom:12px}.box h3{margin:0 0 9px;font-size:15px}.box p,.box li{color:#aab8d8;line-height:1.65;font-size:14px;margin:0}.box ul{margin:0;padding-left:18px}.mini-list{display:grid;gap:8px}.mini-row{display:flex;justify-content:space-between;gap:10px;background:#101827;border:1px solid rgba(141,167,255,.17);border-radius:12px;padding:10px;font-size:13px}.ok{color:#2de58d}.bad{color:#ff5757}.warn{color:#f5b942}.ig-card{padding:18px;background:linear-gradient(160deg,#101827,#080c18);position:relative;overflow:hidden}.ig-card:before{content:"";position:absolute;width:210px;height:210px;border-radius:50%;right:-90px;top:-90px;background:rgba(141,167,255,.18);filter:blur(4px)}.ig-top,.ig-content{position:relative}.ig-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:18px}.ig-title{font-weight:900;font-size:18px}.ig-sub{color:#9fb0d1;font-size:12px;margin-top:4px}.ig-score{font-size:54px;font-weight:900;margin-bottom:4px}.ig-label{font-size:11px;color:#8da7ff;letter-spacing:.08em;margin-bottom:12px}.ig-block{border:1px solid rgba(141,167,255,.19);background:rgba(255,255,255,.04);border-radius:14px;padding:12px;margin-top:10px}.ig-block-title{font-size:11px;color:#8da7ff;letter-spacing:.08em;margin-bottom:6px}.ig-block p{font-size:13px;line-height:1.55;color:#e8efff}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.primary{background:linear-gradient(135deg,#8da7ff,#b77cff);color:#fff}.secondary{background:#172236;color:#dce6ff;border:1px solid rgba(141,167,255,.25)}.footer-note{font-size:12px;color:#8393b8;margin-top:10px;line-height:1.5}@media(max-width:980px){.layout,.cards,.setup-grid{grid-template-columns:1fr}h1{font-size:34px}.score-number{font-size:52px}}
 </style>
 </head>
-
 <body>
-<div class="container">
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">MI6</div>
+      <div>
+        <div class="brand-title">MI6 v3.8 PRO</div>
+        <div class="brand-sub">Based on Vernon Tee · Discipline Execution Tool</div>
+      </div>
+    </div>
+    <div class="debug" id="debugBox">READY</div>
+  </div>
 
-<div class="card">
-<h2>MI6 v3.7 商业级系统</h2>
-</div>
+  <div class="hero">
+    <h1>MI6 v3.8 PRO 六分制交易系统</h1>
+    <p class="sub">专业版保留高级交易终端 UI，加入评分解释、策略提示、风险控制提醒与 IG 字卡输出。系统不代替你交易，只帮助你执行纪律。</p>
+  </div>
 
-<div class="layout">
+  <div class="layout">
+    <main class="panel">
+      <div class="section-title"><h2>交易评分台</h2><span class="pill">No AI · No Upload · Pure Discipline</span></div>
 
-<div class="card">
-<button id="buyBtn" class="btn buy active">BUY</button>
-<button id="shortBtn" class="btn short">SHORT</button>
-<div id="scores"></div>
-</div>
+      <div class="setup-grid">
+        <div class="field">
+          <label>交易方向</label>
+          <div class="direction-row">
+            <button id="buyBtn" class="btn buy active-buy" onclick="setDirection('BUY')">BUY</button>
+            <button id="shortBtn" class="btn short" onclick="setDirection('SHORT')">SHORT</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>标的 / Timeframe</label>
+          <div style="display:grid;grid-template-columns:1fr 110px;gap:10px">
+            <input id="symbol" placeholder="XAUUSD" oninput="render()" />
+            <select id="timeframe" onchange="render()"><option value="">TF</option><option>M15</option><option>H1</option><option>H4</option><option>D1</option></select>
+          </div>
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>交易备注</label>
+          <textarea id="notes" placeholder="例如：等待回踩确认 / 左侧轻仓 / 目标前高" oninput="render()"></textarea>
+        </div>
+      </div>
 
-<div class="card" id="decisionCard">
-<div class="score" id="score">0/6</div>
-<div id="decision"></div>
-<div id="missing"></div>
-<div class="export" onclick="exportIG()">导出 IG 字卡</div>
-</div>
+      <div class="cards" id="scoreCards"></div>
+    </main>
 
-</div>
+    <aside class="terminal">
+      <div class="terminal-head"><h2>MI6 决策终端</h2><div id="resultBadge" class="badge no">NO TRADE</div></div>
+      <div class="scorebox">
+        <div class="score-top"><span>SIGNAL QUALITY</span><span id="qualityText">IDLE</span></div>
+        <div id="scoreNumber" class="score-number">0/6</div>
+        <div class="track"><div id="scoreBar" class="bar"></div></div>
+        <div id="metaText" class="meta">等待评分</div>
+      </div>
 
+      <div class="box"><h3>System Checks</h3><div class="mini-list" id="checks"></div></div>
+      <div class="box"><h3>策略提示</h3><p id="strategyText">请先完成六项评分。</p></div>
+      <div class="box"><h3>风险控制提醒</h3><ul id="riskList"><li>任何 setup 都必须先定义止损。</li></ul></div>
+      <div class="box"><h3>最缺项</h3><p id="missingText">暂无。</p></div>
+
+      <div class="ig-card" id="igCard">
+        <div class="ig-top">
+          <div><div class="ig-title">MI6 SYSTEM</div><div class="ig-sub">Trading Discipline Summary</div></div>
+          <div id="igBadge" class="badge no">NO TRADE</div>
+        </div>
+        <div class="ig-content">
+          <div id="igScore" class="ig-score">0/6</div>
+          <div class="ig-label">SCORE</div>
+          <div class="ig-block"><div class="ig-block-title">META</div><p id="igMeta">未填写标的 · BUY</p></div>
+          <div class="ig-block"><div class="ig-block-title">SUMMARY</div><p id="igSummary">完成评分后生成摘要。</p></div>
+          <div class="ig-block"><div class="ig-block-title">RISK NOTE</div><p id="igRisk">请搭配止损、仓位管理与风险报酬比。</p></div>
+        </div>
+      </div>
+      <div class="actions"><button class="btn primary" onclick="copyIG()">复制 IG 文案</button><button class="btn secondary" onclick="resetAll()">Reset</button></div>
+      <div class="footer-note">Framework by Vernon Tee · Systemized by MI6 for discipline execution.</div>
+    </aside>
+  </div>
 </div>
 
 <script>
 let direction="BUY";
-let currentScore=0;
+let score={candlestick:0,chartpattern:0,wave:0,ma:0,bb:0,fibo:0};
+let animatedScore=0;
 
-let scoreData={candlestick:0,chartpattern:0,wave:0,ma:0,bb:0,fibo:0};
+const items={
+ candlestick:{name:"Candlestick Pattern",desc:"K线是否出现明确触发，例如吞没、Pin Bar、强势收线、扫损反转。",hint:"没有触发就不要硬给分。",weight:"Trigger"},
+ chartpattern:{name:"Chart Pattern",desc:"图表是否有清楚结构，例如趋势通道、突破回踩、三角形、支撑阻力。",hint:"结构越清楚，交易理由越完整。",weight:"Structure"},
+ wave:{name:"Wave",desc:"波段是否顺方向推进，BUY 看 HH/HL，SHORT 看 LH/LL。",hint:"Wave 是方向判断核心，不清楚就保守。",weight:"Core"},
+ ma:{name:"Moving Average",desc:"价格与均线关系是否支持方向，例如站上、压制、支撑或顺势排列。",hint:"MA 是辅助，不应单独决定进场。",weight:"Filter"},
+ bb:{name:"Bollinger Band",desc:"布林带位置是否支持方向，例如边界反应、扩张、回归或 squeeze。",hint:"BB 信号容易失真，需搭配结构。",weight:"Filter"},
+ fibo:{name:"Fibonacci",desc:"价格是否接近关键回调或延伸区域，例如 38.2、50、61.8。",hint:"Fibo 是区域工具，不是单独进场理由。",weight:"Zone"}
+};
+const priority=["wave","chartpattern","candlestick","fibo","ma","bb"];
 
-const labels={candlestick:"Candlestick",chartpattern:"Chart Pattern",wave:"Wave",ma:"MA",bb:"BB",fibo:"Fibo"};
+function el(id){return document.getElementById(id)}
+function setDebug(t){el("debugBox").textContent=t}
+function setDirection(d){direction=d;el("buyBtn").className="btn buy"+(d==="BUY"?" active-buy":"");el("shortBtn").className="btn short"+(d==="SHORT"?" active-short":"");setDebug("Direction: "+d);render()}
+function setScore(k,v){score[k]=v;const y=el(k+"Yes"),n=el(k+"No");y.className="btn yes"+(v?" selected-yes":"");n.className="btn no"+(!v?" selected-no":"");setDebug(items[k].name+" = "+(v?"YES":"NO"));render()}
+function total(){return Object.values(score).reduce((a,b)=>a+b,0)}
+function decision(s){if(s>=5)return"TRADE";if(s===4)return"WATCH";return"NO TRADE"}
+function badgeClass(d){if(d==="TRADE")return"badge trade";if(d==="WATCH")return"badge watch";return"badge no"}
+function quality(s){if(s>=5)return"HIGH";if(s===4)return"MEDIUM";if(s>=2)return"LOW";return"IDLE"}
+function missing(){return priority.filter(k=>!score[k])}
 
-const scoresDiv=document.getElementById("scores");
+function buildCards(){const wrap=el("scoreCards");wrap.innerHTML="";Object.keys(items).forEach(k=>{const it=items[k];const div=document.createElement("div");div.className="score-card";div.innerHTML=`<div class="score-head"><div class="score-name">${it.name}</div><div class="weight">${it.weight}</div></div><p class="desc">${it.desc}</p><div class="hint">${it.hint}</div><div class="choice"><button id="${k}Yes" class="btn yes" onclick="setScore('${k}',1)">YES +1</button><button id="${k}No" class="btn no selected-no" onclick="setScore('${k}',0)">NO 0</button></div>`;wrap.appendChild(div)})}
 
-Object.keys(scoreData).forEach(key=>{
- let div=document.createElement("div");
- div.className="score-row";
+function animateScore(target){let start=animatedScore;if(start===target){el("scoreNumber").textContent=target+"/6";return}const step=start<target?1:-1;const timer=setInterval(()=>{start+=step;el("scoreNumber").textContent=start+"/6";if(start===target){clearInterval(timer)}},70);animatedScore=target}
 
- let label=document.createElement("span");
- label.innerText=labels[key];
+function strategyText(s,d,miss){if(s>=5)return`条件足够完整，${direction} setup 可进入交易计划阶段。下一步只确认 Entry、SL、TP 与 RR。`;if(s===4)return`目前属于观察级别，不建议急着进场。优先等待 ${miss.slice(0,2).map(k=>items[k].name).join(" / ")} 补齐。`;return`当前分数不足，不适合正式交易。先补齐结构、触发或关键区域，不要用情绪单填补缺口。`}
+function riskItems(s,miss){let arr=["分数高不等于必胜，必须设置止损。","每次交易先确认风险报酬比，不要只看方向。"];if(s<5)arr.push("未达5分，不建议正式进场。");if(miss.includes("candlestick"))arr.push("缺少 Candlestick：可能没有明确触发。");if(miss.includes("wave"))arr.push("缺少 Wave：方向结构不够清楚。");if(miss.includes("chartpattern"))arr.push("缺少 Chart Pattern：交易理由不完整。");return arr}
 
- let yes=document.createElement("button");
- yes.innerText="YES";
- yes.className="btn yes";
- yes.onclick=()=>{scoreData[key]=1;update();}
+function render(){const s=total();const d=decision(s);const miss=missing();const meta=(el("symbol").value||"未填写标的")+(el("timeframe").value?" · "+el("timeframe").value:"")+" · "+direction;animateScore(s);el("scoreBar").style.width=(s/6*100)+"%";el("qualityText").textContent=quality(s);el("metaText").textContent=meta;el("resultBadge").textContent=d;el("resultBadge").className=badgeClass(d);el("igBadge").textContent=d;el("igBadge").className=badgeClass(d);el("igScore").textContent=s+"/6";el("igMeta").textContent=meta;
+ const checks=el("checks");checks.innerHTML="";Object.keys(items).forEach(k=>{const row=document.createElement("div");row.className="mini-row";row.innerHTML=`<span>${items[k].name}</span><span class="${score[k]?"ok":"bad"}">${score[k]?"YES":"NO"}</span>`;checks.appendChild(row)});
+ const missingText=miss.length?"目前最缺："+miss.slice(0,3).map(k=>items[k].name).join("、")+"。":"六项完整，重点转向 Entry / SL / TP。";el("missingText").textContent=missingText;const strat=strategyText(s,d,miss);el("strategyText").textContent=strat;el("igSummary").textContent=`${direction} · MI6 ${s}/6 · ${d}。${strat}`;el("igRisk").textContent=s<5?"未达5分，不建议正式进场。":"请搭配止损、仓位管理与风险报酬比。";
+ const risks=riskItems(s,miss);el("riskList").innerHTML="";risks.forEach(r=>{const li=document.createElement("li");li.textContent=r;li.className=r.includes("未达")||r.includes("缺少")?"warn":"";el("riskList").appendChild(li)})}
 
- let no=document.createElement("button");
- no.innerText="NO";
- no.className="btn no";
- no.onclick=()=>{scoreData[key]=0;update();}
+async function copyIG(){const text=`MI6 SYSTEM
+${el("igMeta").textContent}
+Score: ${el("igScore").textContent}
+Decision: ${el("igBadge").textContent}
+${el("igSummary").textContent}
+Risk: ${el("igRisk").textContent}
 
- div.appendChild(label);
- div.appendChild(yes);
- div.appendChild(no);
- scoresDiv.appendChild(div);
-});
+Framework by Vernon Tee · Systemized by MI6`;try{await navigator.clipboard.writeText(text);setDebug("IG copied")}catch(e){alert("复制失败")}}
+function resetAll(){direction="BUY";score={candlestick:0,chartpattern:0,wave:0,ma:0,bb:0,fibo:0};animatedScore=0;el("symbol").value="";el("timeframe").value="";el("notes").value="";setDirection("BUY");Object.keys(items).forEach(k=>setScore(k,0));setDebug("READY");render()}
 
-buyBtn.onclick=()=>{direction="BUY";buyBtn.classList.add("active");shortBtn.classList.remove("active");update();}
-shortBtn.onclick=()=>{direction="SHORT";shortBtn.classList.add("active");buyBtn.classList.remove("active");update();}
-
-function animateScore(target){
- let start=currentScore;
- let step=setInterval(()=>{
-   if(start===target){clearInterval(step);return}
-   start+= start<target?1:-1;
-   score.innerText=start+"/6";
- },80);
- currentScore=target;
-}
-
-function update(){
- let total=Object.values(scoreData).reduce((a,b)=>a+b,0);
- animateScore(total);
-
- let decision="";
- let cls="";
-
- let card=document.getElementById("decisionCard");
- card.classList.remove("glow","danger");
-
- if(total>=5){decision="TRADE";cls="trade";card.classList.add("glow")}
- else if(total===4){decision="WATCH";cls="watch"}
- else{decision="NO TRADE";cls="noTrade";card.classList.add("danger")}
-
- decisionDiv.innerHTML=`<div class="badge ${cls}">${decision} (${direction})</div>`;
-
- let missing=Object.keys(scoreData).filter(k=>scoreData[k]===0);
- missingDiv.innerText="缺少: "+missing.map(k=>labels[k]).join(", ");
-}
-
-function exportIG(){
- let text=`MI6 SYSTEM\n方向: ${direction}\n分数: ${currentScore}/6`;
- navigator.clipboard.writeText(text);
- alert("已复制 IG 文案");
-}
-
-const decisionDiv=document.getElementById("decision");
-const missingDiv=document.getElementById("missing");
-
-update();
+buildCards();render();
 </script>
-
 </body>
 </html>
