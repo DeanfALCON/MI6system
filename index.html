@@ -3,83 +3,188 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 v3.5 六分制交易系统</title>
+<title>MI6 v3.5 PRO</title>
+
 <style>
-body{font-family:sans-serif;background:#0b1220;color:#fff;margin:0;padding:20px}
-.container{max-width:900px;margin:auto}
-.card{background:#111a2e;padding:20px;border-radius:12px;margin-bottom:20px}
-button{padding:10px 20px;border-radius:8px;border:none;margin:5px;cursor:pointer}
+body{
+  margin:0;
+  font-family: "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top,#0f172a,#020617);
+  color:#fff;
+}
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:30px;
+}
+.card{
+  background:rgba(255,255,255,0.05);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:20px;
+  backdrop-filter: blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+}
+h1{font-size:32px;margin-bottom:10px}
+p{opacity:.7}
+
+button{
+  padding:12px 20px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  margin:5px;
+  font-weight:bold;
+}
 .buy{background:#16a34a}
 .short{background:#dc2626}
-.active{outline:3px solid #fff}
-.result{font-size:24px;margin-top:10px}
+.active{outline:2px solid #fff}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.score-box{
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
+}
+
+.score-btn{
+  flex:1;
+  margin:0 5px;
+}
+
+.yes{background:#16a34a}
+.no{background:#dc2626}
+
+.result{
+  font-size:40px;
+  font-weight:bold;
+}
+
+.tag{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:20px;
+  margin-top:10px;
+}
+.trade{background:#16a34a}
+.watch{background:#f59e0b}
+.noTrade{background:#dc2626}
 </style>
 </head>
+
 <body>
 <div class="container">
 
 <div class="card">
 <h1>MI6 v3.5 六分制交易系统</h1>
-<p>基于 Vernon Tee 交易理念构建 · 用于执行六分制交易纪律判断</p>
+<p>Based on Vernon Tee · Discipline Execution Tool</p>
 </div>
 
+<div class="grid">
+
+<!-- LEFT -->
 <div class="card">
-<h3>方向选择</h3>
+<h3>方向</h3>
 <button id="buyBtn" class="buy">BUY</button>
 <button id="shortBtn" class="short">SHORT</button>
 
-<h3>六分制评分</h3>
-<label><input type="checkbox" class="score" value="1"> Candlestick</label><br>
-<label><input type="checkbox" class="score" value="1"> Chart Pattern</label><br>
-<label><input type="checkbox" class="score" value="1"> Wave</label><br>
-<label><input type="checkbox" class="score" value="1"> MA</label><br>
-<label><input type="checkbox" class="score" value="1"> Bollinger Band</label><br>
-<label><input type="checkbox" class="score" value="1"> Fibo</label><br>
+<h3>六分评分</h3>
+<div id="scores"></div>
+</div>
 
-<button onclick="calculate()">Calculate</button>
-
-<div class="result" id="result">Score: 0/6</div>
+<!-- RIGHT -->
+<div class="card">
+<h3>MI6 Decision</h3>
+<div class="result" id="score">0/6</div>
 <div id="decision"></div>
+<div id="missing"></div>
+</div>
+
 </div>
 
 </div>
 
 <script>
 let direction = null;
+let scoreData = {
+  candlestick:0,
+  chartpattern:0,
+  wave:0,
+  ma:0,
+  bb:0,
+  fibo:0
+};
 
-document.getElementById('buyBtn').onclick = () => {
-  direction = 'BUY';
-  document.getElementById('buyBtn').classList.add('active');
-  document.getElementById('shortBtn').classList.remove('active');
+const labels = {
+  candlestick:"Candlestick",
+  chartpattern:"Chart Pattern",
+  wave:"Wave",
+  ma:"MA",
+  bb:"Bollinger Band",
+  fibo:"Fibo"
+};
+
+const scoresDiv = document.getElementById("scores");
+
+Object.keys(scoreData).forEach(key=>{
+  const div=document.createElement("div");
+  div.className="score-box";
+
+  const label=document.createElement("span");
+  label.innerText=labels[key];
+
+  const yes=document.createElement("button");
+  yes.innerText="YES";
+  yes.className="score-btn yes";
+  yes.onclick=()=>{scoreData[key]=1;update();}
+
+  const no=document.createElement("button");
+  no.innerText="NO";
+  no.className="score-btn no";
+  no.onclick=()=>{scoreData[key]=0;update();}
+
+  div.appendChild(label);
+  div.appendChild(yes);
+  div.appendChild(no);
+  scoresDiv.appendChild(div);
+});
+
+// direction
+document.getElementById("buyBtn").onclick=()=>{
+  direction="BUY";
+  buyBtn.classList.add("active");
+  shortBtn.classList.remove("active");
 }
 
-document.getElementById('shortBtn').onclick = () => {
-  direction = 'SHORT';
-  document.getElementById('shortBtn').classList.add('active');
-  document.getElementById('buyBtn').classList.remove('active');
+document.getElementById("shortBtn").onclick=()=>{
+  direction="SHORT";
+  shortBtn.classList.add("active");
+  buyBtn.classList.remove("active");
 }
 
-function calculate(){
-  const scores = document.querySelectorAll('.score');
-  let total = 0;
+function update(){
+  const total=Object.values(scoreData).reduce((a,b)=>a+b,0);
+  document.getElementById("score").innerText=total+"/6";
 
-  scores.forEach(s => {
-    if(s.checked) total += 1;
-  });
+  let decision="";
+  let className="";
 
-  document.getElementById('result').innerText = `Score: ${total}/6`;
+  if(total>=5){decision="TRADE";className="trade"}
+  else if(total===4){decision="WATCH";className="watch"}
+  else{decision="NO TRADE";className="noTrade"}
 
-  let decision = "";
+  document.getElementById("decision").innerHTML=
+    `<div class="tag ${className}">${decision} (${direction||"No Direction"})</div>`;
 
-  if(total >= 5){
-    decision = "TRADE";
-  } else if(total === 4){
-    decision = "WATCH";
-  } else {
-    decision = "NO TRADE";
-  }
-
-  document.getElementById('decision').innerText = `Decision: ${decision} (${direction || 'No Direction'})`;
+  // missing
+  const missing=Object.keys(scoreData).filter(k=>scoreData[k]===0);
+  document.getElementById("missing").innerText=
+    "缺少: "+missing.map(k=>labels[k]).join(", ");
 }
 </script>
 
