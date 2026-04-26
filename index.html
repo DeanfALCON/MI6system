@@ -1,639 +1,814 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MI6 Trading System v3.9.4 Premium Export Card</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-<style>
-:root{
-  --bg:#050816;
-  --panel:#0b1025;
-  --card:#0f172a;
-  --gold:#facc15;
-  --blue:#38bdf8;
-  --green:#22c55e;
-  --red:#ef4444;
-  --muted:#94a3b8;
-  --white:#f8fafc;
-}
-
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,"Microsoft YaHei",sans-serif;
-  background:radial-gradient(circle at top,#172554,#020617 60%);
-  color:var(--white);
-  padding:18px;
-}
-
-.app{
-  max-width:1200px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:1fr 430px;
-  gap:18px;
-}
-
-.panel{
-  background:rgba(15,23,42,.92);
-  border:1px solid rgba(148,163,184,.22);
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
-
-h1{
-  margin:0 0 6px;
-  font-size:26px;
-}
-
-.sub{
-  color:var(--muted);
-  margin-bottom:18px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-label{
-  font-size:13px;
-  color:#cbd5e1;
-  margin-bottom:6px;
-  display:block;
-}
-
-input,select,textarea{
-  width:100%;
-  background:#020617;
-  border:1px solid #334155;
-  color:white;
-  border-radius:14px;
-  padding:12px;
-  outline:none;
-}
-
-textarea{
-  min-height:80px;
-  resize:vertical;
-}
-
-.section-title{
-  margin:22px 0 12px;
-  font-weight:700;
-  color:var(--gold);
-}
-
-.score-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#020617;
-  border:1px solid #1e293b;
-  padding:12px;
-  border-radius:16px;
-  margin-bottom:10px;
-}
-
-.score-row span{
-  font-weight:600;
-}
-
-.toggle{
-  display:flex;
-  gap:8px;
-}
-
-.toggle button{
-  border:0;
-  padding:8px 14px;
-  border-radius:999px;
-  cursor:pointer;
-  font-weight:700;
-  background:#1e293b;
-  color:#94a3b8;
-}
-
-.toggle button.active.yes{
-  background:var(--green);
-  color:white;
-}
-
-.toggle button.active.no{
-  background:var(--red);
-  color:white;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:18px;
-  flex-wrap:wrap;
-}
-
-button.main{
-  border:0;
-  border-radius:16px;
-  padding:13px 18px;
-  cursor:pointer;
-  font-weight:800;
-  background:linear-gradient(135deg,var(--gold),#fb923c);
-  color:#111827;
-}
-
-button.secondary{
-  border:1px solid #334155;
-  border-radius:16px;
-  padding:13px 18px;
-  cursor:pointer;
-  font-weight:700;
-  background:#020617;
-  color:white;
-}
-
-.preview-wrap{
-  overflow:auto;
-}
-
-.export-card{
-  width:360px;
-  height:450px;
-  background:
-    radial-gradient(circle at top right,rgba(250,204,21,.28),transparent 35%),
-    radial-gradient(circle at bottom left,rgba(56,189,248,.22),transparent 35%),
-    linear-gradient(160deg,#020617,#0f172a 55%,#111827);
-  border-radius:26px;
-  padding:20px;
-  position:relative;
-  overflow:hidden;
-  border:1px solid rgba(250,204,21,.35);
-}
-
-.export-card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.035) 1px, transparent 1px);
-  background-size:24px 24px;
-  pointer-events:none;
-}
-
-.card-content{
-  position:relative;
-  z-index:2;
-  height:100%;
-  display:flex;
-  flex-direction:column;
-}
-
-.brand{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.logo{
-  font-weight:900;
-  letter-spacing:1px;
-  color:var(--gold);
-  font-size:18px;
-}
-
-.version{
-  font-size:10px;
-  color:#cbd5e1;
-  border:1px solid #475569;
-  padding:4px 8px;
-  border-radius:999px;
-}
-
-.big-verdict{
-  margin-top:22px;
-  font-size:34px;
-  font-weight:950;
-  line-height:1;
-}
-
-.direction{
-  margin-top:8px;
-  display:inline-block;
-  padding:7px 12px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:900;
-  width:max-content;
-}
-
-.buy{background:rgba(34,197,94,.18);color:#4ade80;border:1px solid rgba(34,197,94,.5)}
-.sell{background:rgba(239,68,68,.18);color:#f87171;border:1px solid rgba(239,68,68,.5)}
-.wait{background:rgba(250,204,21,.15);color:#fde047;border:1px solid rgba(250,204,21,.45)}
-
-.market{
-  margin-top:18px;
-  font-size:15px;
-  color:#cbd5e1;
-}
-
-.symbol{
-  font-size:25px;
-  font-weight:950;
-  color:white;
-}
-
-.price-box{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
-  margin-top:18px;
-}
-
-.price-item{
-  background:rgba(2,6,23,.78);
-  border:1px solid #334155;
-  border-radius:16px;
-  padding:10px;
-}
-
-.price-label{
-  font-size:10px;
-  color:#94a3b8;
-}
-
-.price-value{
-  font-size:15px;
-  font-weight:900;
-  margin-top:4px;
-}
-
-.score-box{
-  margin-top:18px;
-  background:rgba(2,6,23,.78);
-  border:1px solid rgba(250,204,21,.32);
-  border-radius:18px;
-  padding:14px;
-}
-
-.score-main{
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-}
-
-.score-num{
-  font-size:36px;
-  font-weight:950;
-  color:var(--gold);
-}
-
-.score-text{
-  color:#cbd5e1;
-  font-size:12px;
-}
-
-.mini-list{
-  margin-top:10px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
-}
-
-.mini{
-  font-size:10px;
-  color:#cbd5e1;
-  background:rgba(15,23,42,.8);
-  padding:6px 8px;
-  border-radius:10px;
-  border:1px solid #1e293b;
-}
-
-.mini.ok{color:#86efac}
-.mini.bad{color:#fca5a5}
-
-.note{
-  margin-top:14px;
-  color:#cbd5e1;
-  font-size:12px;
-  line-height:1.45;
-}
-
-.footer{
-  margin-top:auto;
-  border-top:1px solid rgba(148,163,184,.25);
-  padding-top:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  gap:10px;
-}
-
-.hashtag{
-  font-size:9px;
-  color:#94a3b8;
-  line-height:1.4;
-}
-
-.watermark{
-  font-size:12px;
-  color:var(--gold);
-  font-weight:900;
-}
-
-@media(max-width:900px){
-  .app{grid-template-columns:1fr}
-  .export-card{margin:auto}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MI6 Trading System v3.9.4 Premium Export Card</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    :root{
+      --bg:#050816;
+      --panel:#0b1024;
+      --panel2:#111936;
+      --text:#eaf1ff;
+      --muted:#8fa2d0;
+      --cyan:#38f4ff;
+      --green:#35ff9a;
+      --yellow:#ffd166;
+      --red:#ff4d6d;
+      --purple:#9d4edd;
+      --shadow:0 0 30px rgba(53,167,255,.22);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,"Microsoft YaHei",sans-serif;
+      background:
+        radial-gradient(circle at 15% 0%,rgba(53,167,255,.25),transparent 26%),
+        radial-gradient(circle at 85% 10%,rgba(157,78,221,.18),transparent 30%),
+        linear-gradient(180deg,#040613 0%,#080d20 55%,#03040b 100%);
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+      background-size:42px 42px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.85),transparent 85%);
+    }
+    .app{max-width:1280px;margin:0 auto;padding:28px 18px 70px;position:relative;z-index:1}
+    .hero{
+      border:1px solid rgba(56,244,255,.18);
+      background:linear-gradient(135deg,rgba(13,23,54,.82),rgba(5,8,22,.86));
+      border-radius:28px;
+      padding:26px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero:after{
+      content:"v3.9.3";
+      position:absolute;
+      right:20px;
+      top:-20px;
+      font-size:96px;
+      font-weight:950;
+      letter-spacing:-8px;
+      color:rgba(255,255,255,.035);
+    }
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid rgba(56,244,255,.25);border-radius:999px;color:var(--cyan);font-size:12px;letter-spacing:.14em;text-transform:uppercase;background:rgba(56,244,255,.06)}
+    h1{margin:14px 0 8px;font-size:clamp(32px,5vw,58px);line-height:.95;letter-spacing:-.04em}
+    .subtitle{color:var(--muted);max-width:800px;line-height:1.7;margin:0;font-size:15px}
+    .layout{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-top:18px}
+    @media(max-width:920px){.layout,.creator-grid{grid-template-columns:1fr!important}}
+    .panel{
+      border:1px solid rgba(143,162,208,.16);
+      background:linear-gradient(180deg,rgba(15,23,51,.8),rgba(8,13,32,.88));
+      border-radius:24px;
+      padding:18px;
+      box-shadow:0 14px 35px rgba(0,0,0,.25);
+      backdrop-filter:blur(14px);
+    }
+    .panel-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .panel-title h2{margin:0;font-size:18px;letter-spacing:-.02em}
+    .mini{font-size:12px;color:var(--muted)}
+    .direction-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .dir-btn,.choice-btn,.action-btn{
+      border:1px solid rgba(143,162,208,.22);
+      background:linear-gradient(180deg,rgba(17,25,54,.95),rgba(7,12,30,.92));
+      color:var(--text);
+      border-radius:18px;
+      padding:14px;
+      cursor:pointer;
+      transition:.22s ease;
+      position:relative;
+      overflow:hidden;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    .dir-btn:before,.choice-btn:before,.action-btn:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      transform:translateX(-120%);
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
+      transition:.45s ease;
+    }
+    .dir-btn:hover:before,.choice-btn:hover:before,.action-btn:hover:before{transform:translateX(120%)}
+    .dir-btn:hover,.choice-btn:hover,.action-btn:hover{transform:translateY(-2px);border-color:rgba(56,244,255,.5);box-shadow:0 0 22px rgba(56,244,255,.12)}
+    .dir-btn.active.buy{border-color:rgba(53,255,154,.75);box-shadow:0 0 22px rgba(53,255,154,.2);color:var(--green)}
+    .dir-btn.active.sell{border-color:rgba(255,77,109,.75);box-shadow:0 0 22px rgba(255,77,109,.2);color:var(--red)}
+    .criteria{display:grid;gap:12px;min-height:200px}
+    .criterion{
+      border:1px solid rgba(143,162,208,.16);
+      background:rgba(5,8,22,.44);
+      border-radius:20px;
+      padding:14px;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:14px;
+      align-items:center;
+      transition:.25s ease;
+    }
+    .criterion.yes{border-color:rgba(53,255,154,.5);box-shadow:inset 0 0 22px rgba(53,255,154,.045)}
+    .criterion.no{border-color:rgba(255,77,109,.35);opacity:.9}
+    .c-name{font-weight:900;margin-bottom:4px}
+    .c-desc{font-size:12px;color:var(--muted);line-height:1.5}
+    .choices{display:flex;gap:8px}
+    .choice-btn{padding:10px 13px;border-radius:14px;font-size:12px;min-width:54px}
+    .choice-btn.yes.active{border-color:var(--green);color:var(--green);animation:pop .22s ease}
+    .choice-btn.no.active{border-color:var(--red);color:var(--red);animation:pop .22s ease}
+    @keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+    .score-card{text-align:center;position:relative;overflow:hidden}
+    .score-ring{
+      width:260px;
+      height:260px;
+      margin:10px auto 18px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:conic-gradient(var(--cyan) calc(var(--scorePct)*1%),rgba(143,162,208,.12) 0);
+      box-shadow:0 0 42px rgba(56,244,255,.17);
+      transition:background .7s cubic-bezier(.22,1,.36,1);
+      position:relative;
+    }
+    .score-ring:after{content:"";position:absolute;inset:16px;border-radius:50%;background:linear-gradient(180deg,#0d1533,#050816);border:1px solid rgba(143,162,208,.16)}
+    .score-inner{position:relative;z-index:2}
+    .score-number{font-size:68px;font-weight:950;letter-spacing:-.08em;line-height:1}
+    .score-total{color:var(--muted);font-weight:800}
+    .verdict{display:inline-flex;align-items:center;justify-content:center;min-width:210px;padding:12px 18px;border-radius:999px;font-weight:950;letter-spacing:.08em;border:1px solid rgba(143,162,208,.2);background:rgba(255,255,255,.04);transition:.25s ease}
+    .verdict.trade{color:var(--green);border-color:rgba(53,255,154,.65);box-shadow:0 0 28px rgba(53,255,154,.22);animation:shake .35s ease}
+    .verdict.wait{color:var(--yellow);border-color:rgba(255,209,102,.5)}
+    .verdict.no{color:var(--red);border-color:rgba(255,77,109,.5)}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+    .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+    .stat{border:1px solid rgba(143,162,208,.14);background:rgba(255,255,255,.035);border-radius:18px;padding:13px;text-align:left}
+    .stat b{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.stat span{font-weight:900}
+    textarea,input{width:100%;border:1px solid rgba(143,162,208,.2);background:rgba(5,8,22,.65);color:var(--text);border-radius:18px;padding:13px;outline:none;font:inherit;resize:vertical}
+    textarea:focus,input:focus{border-color:rgba(56,244,255,.6);box-shadow:0 0 0 4px rgba(56,244,255,.08)}
+    label{display:block;font-size:12px;color:var(--muted);margin:12px 0 7px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+    .buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .action-btn.primary{border-color:rgba(56,244,255,.45);color:var(--cyan)}
+    .action-btn.danger{border-color:rgba(255,77,109,.35);color:var(--red)}
+    .action-btn.copy{border-color:rgba(53,255,154,.36);color:var(--green)}
+    .creator-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+    .caption-box{min-height:270px;white-space:pre-wrap;line-height:1.65;font-size:14px}
+    .ig-preview-wrap{margin-top:18px;display:grid;grid-template-columns:1fr;gap:12px}
+    #igCard{
+      width:360px;
+      height:450px;
+      max-width:100%;
+      margin:0 auto;
+      background:
+        radial-gradient(circle at 8% 8%,rgba(56,244,255,.28),transparent 30%),
+        radial-gradient(circle at 92% 2%,rgba(157,78,221,.28),transparent 32%),
+        linear-gradient(180deg,#07112c 0%,#050816 58%,#02030a 100%);
+      border:1px solid rgba(56,244,255,.28);
+      border-radius:24px;
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 18px 50px rgba(0,0,0,.38),0 0 28px rgba(56,244,255,.08);
+    }
+    #igCard:before{
+      content:"";
+      position:absolute;
+      inset:12px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      pointer-events:none;
+      z-index:1;
+    }
+    #igCard.trade-theme{border-color:rgba(53,255,154,.42);box-shadow:0 18px 50px rgba(0,0,0,.38),0 0 30px rgba(53,255,154,.12)}
+    #igCard.wait-theme{border-color:rgba(255,209,102,.42);box-shadow:0 18px 50px rgba(0,0,0,.38),0 0 30px rgba(255,209,102,.10)}
+    #igCard.no-theme{border-color:rgba(255,77,109,.38);box-shadow:0 18px 50px rgba(0,0,0,.38),0 0 30px rgba(255,77,109,.10)}
+    .ig-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.050) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.050) 1px,transparent 1px);background-size:28px 28px;opacity:.68;z-index:0}
+    .ig-bg-grid:after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 28%,transparent 70%,rgba(56,244,255,.06));}
+    .ig-bg-glow{position:absolute;border-radius:999px;filter:blur(10px);z-index:0;pointer-events:none}
+    .glow-a{width:360px;height:360px;left:-120px;top:-120px;background:radial-gradient(circle,rgba(56,244,255,.42),transparent 68%)}
+    .glow-b{width:360px;height:360px;right:-110px;top:-80px;background:radial-gradient(circle,rgba(157,78,221,.34),transparent 68%)}
+    .ig-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column}
+    .pro-card{gap:8px}
+    .ig-top{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-size:10px;font-weight:950;letter-spacing:.13em;text-transform:uppercase}
+    .ig-market-strip{display:grid;grid-template-columns:1.1fr .9fr;gap:8px;margin-top:2px}
+    .ig-market-box{border:1px solid rgba(143,162,208,.18);background:rgba(255,255,255,.035);border-radius:13px;padding:7px 9px;min-height:38px}
+    .ig-market-box small{display:block;color:var(--muted);font-size:7px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+    .ig-market-box b{display:block;color:#fff;font-size:13px;font-weight:950;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ig-hero-row{display:grid;grid-template-columns:.9fr 1.1fr;gap:11px;align-items:stretch;margin-top:3px}
+    .ig-title{font-size:25px;font-weight:950;letter-spacing:-.06em;line-height:.9;color:#eef4ff;text-transform:uppercase}
+    .ig-score{font-size:52px;font-weight:950;letter-spacing:-.08em;line-height:.82;margin-top:9px;color:#eaf1ff;text-shadow:0 0 18px rgba(56,244,255,.18)}
+    .ig-score small{font-size:.45em;color:var(--muted);letter-spacing:-.04em}
+    .ig-summary-box{border:1px solid rgba(56,244,255,.26);background:linear-gradient(180deg,rgba(4,8,22,.68),rgba(255,255,255,.035));border-radius:17px;padding:11px;min-height:122px;box-shadow:0 0 22px rgba(56,244,255,.08);display:flex;flex-direction:column;justify-content:center}
+    .ig-summary-label{font-size:8px;font-weight:950;color:var(--cyan);letter-spacing:.12em;margin-bottom:6px;text-transform:uppercase}
+    .ig-verdict{font-size:23px;font-weight:950;margin:0 0 7px;color:var(--green);line-height:.95;text-transform:uppercase;word-break:break-word}
+    .ig-desc{font-size:10px;color:#d7e4ff;line-height:1.36;background:transparent;border:none;padding:0;margin:0;min-height:auto;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+    .ig-section-title{border:1px solid rgba(56,244,255,.24);background:rgba(56,244,255,.055);border-radius:12px;padding:6px 9px;color:var(--cyan);font-size:9px;font-weight:950;letter-spacing:.08em;margin-top:1px;text-transform:uppercase}
+    .ig-sop-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:0}
+    .ig-pill{border:1px solid rgba(143,162,208,.22);background:rgba(255,255,255,.045);border-radius:13px;padding:8px 6px;font-size:8px;font-weight:950;color:var(--muted);text-align:center;letter-spacing:.04em;min-height:38px;display:grid;place-items:center;line-height:1.1;text-transform:uppercase}
+    .ig-pill.on{color:var(--green);border-color:rgba(53,255,154,.65);box-shadow:0 0 16px rgba(53,255,154,.15);background:rgba(53,255,154,.055)}
+    .ig-pill.off{color:rgba(255,77,109,.88);border-color:rgba(255,77,109,.42);background:rgba(255,77,109,.035)}
+    .ig-plan-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:1px}
+    .ig-plan-card{border:1px solid rgba(56,244,255,.23);background:rgba(255,255,255,.035);border-radius:15px;padding:10px;min-height:78px;overflow:hidden}
+    .ig-plan-card b,.ig-notes-card b{display:block;color:var(--cyan);font-size:9px;font-weight:950;letter-spacing:.09em;margin-bottom:7px;text-transform:uppercase}
+    .ig-plan-card small{display:block;color:var(--muted);font-size:7px;font-weight:900;text-transform:uppercase;letter-spacing:.09em;margin-bottom:3px}
+    .ig-plan-card span{display:block;color:#fff;font-size:17px;font-weight:950;line-height:1.02;word-break:break-word;overflow-wrap:anywhere}
+    .risk-card{border-color:rgba(157,78,221,.38)}
+    .risk-card b{color:#c77dff}
+    .risk-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .ig-notes-card{border:1px solid rgba(255,209,102,.34);background:rgba(255,209,102,.035);border-radius:15px;padding:10px;margin-top:0;min-height:54px;overflow:hidden}
+    .ig-notes-card b{color:var(--yellow);margin-bottom:5px}
+    .ig-notes-card span{display:block;color:#eaf1ff;font-size:10px;line-height:1.28;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .ig-warning{border:1px solid rgba(143,162,208,.16);background:rgba(255,255,255,.025);border-radius:12px;padding:6px 8px;color:var(--muted);font-size:7px;line-height:1.25;font-weight:700;text-align:center;margin-top:0}
+    .ig-signature{margin-top:auto;border-top:1px solid rgba(143,162,208,.22);border-bottom:1px solid rgba(143,162,208,.22);padding:6px 0;color:var(--cyan);font-size:7px;font-weight:950;letter-spacing:.07em;text-align:center;text-transform:uppercase}
+    .ig-footer{margin-top:6px;display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+    .debug-box{margin-top:18px;border:1px solid rgba(56,244,255,.18);background:rgba(5,8,22,.55);border-radius:18px;padding:13px;color:var(--muted);font-size:12px;line-height:1.6;display:none}
+    .debug-box.show{display:block}
+    .footer-note{text-align:center;color:var(--muted);font-size:12px;margin-top:20px;line-height:1.6}
+  </style>
 </head>
-
 <body>
+  <main class="app">
+    <section class="hero">
+      <div class="badge">MI6 PRO CREATOR · v3.9.4 PREMIUM EXPORT CARD</div>
+      <h1>Six-Point Trading Content Engine</h1>
+      <p class="subtitle">Dean & Buddy MI6 稳定终极版：评分核心保持稳定，重点升级 Premium IG Export Card。Inspired by VernonTee — 我只是把老师教的逻辑产品化。</p>
+    </section>
 
-<div class="app">
-
-  <div class="panel">
-    <h1>MI6 Trading System</h1>
-    <div class="sub">v3.9.4 Premium Export Card · No Chart Upload Version</div>
-
-    <div class="grid">
-      <div>
-        <label>Symbol / 产品</label>
-        <input id="symbol" value="XAUUSD">
-      </div>
-      <div>
-        <label>Timeframe / 周期</label>
-        <input id="timeframe" value="H1">
-      </div>
-
-      <div>
-        <label>Direction / 方向</label>
-        <select id="direction">
-          <option value="BUY">BUY 看多</option>
-          <option value="SELL">SELL 看空</option>
-          <option value="WAIT">WAIT 等待</option>
-        </select>
-      </div>
-      <div>
-        <label>Setup Name / 策略名称</label>
-        <input id="setup" value="MI6 SOP Setup">
-      </div>
-
-      <div>
-        <label>Entry / 进场</label>
-        <input id="entry" value="2350">
-      </div>
-      <div>
-        <label>Stop Loss / 止损</label>
-        <input id="sl" value="2338">
-      </div>
-      <div>
-        <label>Take Profit / 止盈</label>
-        <input id="tp" value="2375">
-      </div>
-      <div>
-        <label>Date / 日期</label>
-        <input id="date" value="">
-      </div>
-    </div>
-
-    <div class="section-title">MI6 Six-Point Scoring</div>
-
-    <div id="scoreArea"></div>
-
-    <div class="section-title">Trade Note / 交易备注</div>
-    <textarea id="note">Follow SOP. No emotional trade. Wait for structure confirmation.</textarea>
-
-    <div class="actions">
-      <button class="main" onclick="updateCard()">Update Card</button>
-      <button class="main" onclick="exportPNG()">Export PNG</button>
-      <button class="secondary" onclick="resetForm()">Reset</button>
-    </div>
-  </div>
-
-  <div class="panel preview-wrap">
-    <div id="exportCard" class="export-card">
-      <div class="card-content">
-
-        <div class="brand">
-          <div class="logo">MI6 SYSTEM</div>
-          <div class="version">v3.9.4</div>
+    <section class="layout">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>01 · Trade Direction</h2>
+          <span class="mini">选择你要评估的方向</span>
         </div>
-
-        <div id="cardVerdict" class="big-verdict">TRADE</div>
-        <div id="cardDirection" class="direction buy">BUY SETUP</div>
-
-        <div class="market">
-          <div id="cardSetup">MI6 SOP Setup</div>
-          <div id="cardSymbol" class="symbol">XAUUSD · H1</div>
+        <div class="direction-row">
+          <button class="dir-btn buy active" data-direction="BUY">BUY 看多</button>
+          <button class="dir-btn sell" data-direction="SELL">SELL 看空</button>
         </div>
+        <div class="panel-title">
+          <h2>02 · SOP Score</h2>
+          <span class="mini">YES = 1 分 · NO = 0 分</span>
+        </div>
+        <div class="criteria" id="criteriaList"></div>
+      </div>
 
-        <div class="price-box">
-          <div class="price-item">
-            <div class="price-label">ENTRY</div>
-            <div id="cardEntry" class="price-value">2350</div>
-          </div>
-          <div class="price-item">
-            <div class="price-label">SL</div>
-            <div id="cardSL" class="price-value">2338</div>
-          </div>
-          <div class="price-item">
-            <div class="price-label">TP</div>
-            <div id="cardTP" class="price-value">2375</div>
+      <div class="panel score-card">
+        <div class="panel-title">
+          <h2>03 · Result Engine</h2>
+          <span class="mini">实时评分结果</span>
+        </div>
+        <div class="score-ring" id="scoreRing" style="--scorePct:0">
+          <div class="score-inner">
+            <div class="score-number" id="scoreNumber">0</div>
+            <div class="score-total">/ 6 POINTS</div>
           </div>
         </div>
+        <div class="verdict no" id="verdict">NO TRADE</div>
+        <div class="result-grid">
+          <div class="stat"><b>Direction</b><span id="directionText">BUY</span></div>
+          <div class="stat"><b>Confidence</b><span id="confidenceText">LOW</span></div>
+          <div class="stat"><b>Status</b><span id="statusText">BLOCK</span></div>
+        </div>
+        <label for="symbolInput">Symbol / Pair</label>
+        <input id="symbolInput" placeholder="例如：XAUUSD / US500 / BTCUSD" value="XAUUSD" />
+        <label for="entryInput">Entry Zone</label>
+        <input id="entryInput" placeholder="例如：Buy above 4095 / 等回踩 0.618" />
+        <label for="tpInput">TP Plan</label>
+        <input id="tpInput" placeholder="例如：5200" />
+        <label for="slInput">SL Plan</label>
+        <input id="slInput" placeholder="例如：4800 / below structure" />
+        <label for="noteInput">Description / Note</label>
+        <textarea id="noteInput" rows="4" placeholder="写入你的交易理由、结构、波浪、Fibo、BB、入场条件等。"></textarea>
+        <div class="buttons">
+          <button class="action-btn primary" id="downloadBtn">Download IG PNG</button>
+          <button class="action-btn danger" id="resetBtn">Reset</button>
+        </div>
+      </div>
+    </section>
 
-        <div class="score-box">
-          <div class="score-main">
+    <section class="creator-grid">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>04 · IG Caption Generator</h2>
+          <span class="mini">自动生成文案</span>
+        </div>
+        <textarea id="captionBox" class="caption-box" readonly></textarea>
+        <div class="buttons">
+          <button class="action-btn copy" id="copyCaptionBtn">Copy Caption</button>
+          <button class="action-btn primary" id="refreshCaptionBtn">Refresh</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">
+          <h2>05 · Hashtag Bank</h2>
+          <span class="mini">交易账号可直接用</span>
+        </div>
+        <textarea id="hashtagBox" class="caption-box" readonly></textarea>
+        <div class="buttons">
+          <button class="action-btn copy" id="copyHashtagBtn">Copy Hashtag</button>
+          <button class="action-btn primary" id="copyAllBtn">Copy All</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel ig-preview-wrap">
+      <div class="panel-title">
+        <h2>06 · IG Card Preview</h2>
+        <span class="mini">导出尺寸：1080 × 1350 · Premium Card</span>
+      </div>
+      <div id="igCard">
+        <div class="ig-bg-grid"></div>
+        <div class="ig-bg-glow glow-a"></div>
+        <div class="ig-bg-glow glow-b"></div>
+        <div class="ig-content pro-card">
+          <div class="ig-top"><span>MI6 PRO v3.9.4</span><span>PREMIUM JOURNAL CARD</span></div>
+
+          <div class="ig-market-strip">
+            <div class="ig-market-box"><small>Symbol / Pair</small><b id="igSymbol">XAUUSD</b></div>
+            <div class="ig-market-box"><small>Direction</small><b id="igDirectionTop">BUY SETUP</b></div>
+          </div>
+
+          <div class="ig-hero-row">
             <div>
-              <div class="score-text">MI6 SCORE</div>
-              <div id="cardScore" class="score-num">6/6</div>
+              <div class="ig-title">TRADE<br/>DECISION</div>
+              <div class="ig-score"><span id="igScore">0</span><small>/6</small></div>
             </div>
-            <div id="cardStatus" class="score-text">HIGH QUALITY SETUP</div>
+            <div class="ig-summary-box">
+              <div class="ig-summary-label">Setup Summary</div>
+              <div class="ig-verdict" id="igVerdict">NO TRADE</div>
+              <div class="ig-desc" id="igDesc">Structured setup aligned with SOP.</div>
+            </div>
           </div>
 
-          <div id="cardMiniList" class="mini-list"></div>
-        </div>
+          <div class="ig-section-title">SOP ALIGNMENT CHECKLIST</div>
+          <div class="ig-sop-mini" id="igSopMini"></div>
 
-        <div id="cardNote" class="note">
-          Follow SOP. No emotional trade. Wait for structure confirmation.
-        </div>
-
-        <div class="footer">
-          <div class="hashtag">
-            #MI6TradingSystem #TradingJournal<br>
-            #TradingSOP #RiskManagement
+          <div class="ig-plan-grid">
+            <div class="ig-plan-card entry-card">
+              <b>ENTRY PLAN</b>
+              <small>Entry Zone</small>
+              <span id="igEntry">-</span>
+            </div>
+            <div class="ig-plan-card risk-card">
+              <b>RISK MANAGEMENT</b>
+              <div class="risk-row">
+                <div><small>TP</small><span id="igTP">-</span></div>
+                <div><small>SL</small><span id="igSL">-</span></div>
+              </div>
+            </div>
           </div>
-          <div class="watermark">DEAN × BUDDY</div>
+
+          <div class="ig-notes-card">
+            <b>NOTES</b>
+            <span id="igNote">Follow plan. Protect capital. Let the setup work.</span>
+          </div>
+
+          <div class="ig-warning">Trading journal reference only. Control risk first, execution second.</div>
+          <div class="ig-signature">Inspired by VernonTee · Structured by Dean × Buddy</div>
+          <div class="ig-footer"><span id="igDirection">BUY SETUP</span><span>DISCIPLINE · STRUCTURE · EXECUTION</span></div>
         </div>
-
       </div>
-    </div>
-  </div>
+    </section>
 
-</div>
+    <div class="debug-box" id="debugBox">Debug: loading...</div>
+    <p class="footer-note">Reminder: MI6 是交易评分辅助工具，不是保证盈利系统。真正重点是结构、纪律、风险控制。</p>
+  </main>
 
-<script>
-const metrics = [
-  "Candle Pattern",
-  "Chart Pattern",
-  "Wave",
-  "MA",
-  "Bollinger Band",
-  "Fibonacci"
-];
+  <script>
+    window.MI6_DEBUG = false;
 
-let scoreState = {
-  "Candle Pattern": true,
-  "Chart Pattern": true,
-  "Wave": true,
-  "MA": true,
-  "Bollinger Band": true,
-  "Fibonacci": true
-};
+    const criteria = [
+      { key:'candle', name:'1. Candlestick Pattern', desc:'是否出现支持方向的强势蜡烛、吞没、Pin Bar、突破收线或反转确认？' },
+      { key:'chart', name:'2. Chart Pattern', desc:'是否有清晰图表结构，例如趋势通道、三角形、双底/双顶、突破回踩？' },
+      { key:'wave', name:'3. Wave Structure', desc:'波浪结构是否支持当前方向？例如 HH/HL 看多，LH/LL 看空。' },
+      { key:'ma', name:'4. Moving Average', desc:'价格是否站在关键均线方向一侧，或均线排列支持趋势？' },
+      { key:'bb', name:'5. Bollinger Band Zone', desc:'价格是否在合适的布林带区域，例如下轨反弹看多、上轨压制看空？' },
+      { key:'fibo', name:'6. Fibonacci Zone', desc:'价格是否在关键 Fibo 区域，例如 0.382 / 0.5 / 0.618 / 0.786 附近？' }
+    ];
 
-function initDate(){
-  const d = new Date();
-  document.getElementById("date").value =
-    d.getFullYear() + "-" +
-    String(d.getMonth()+1).padStart(2,"0") + "-" +
-    String(d.getDate()).padStart(2,"0");
-}
+    let direction = 'BUY';
+    let state = Object.fromEntries(criteria.map(c=>[c.key,false]));
+    let displayedScore = 0;
 
-function renderScoreRows(){
-  const area = document.getElementById("scoreArea");
-  area.innerHTML = "";
+    function $(id){ return document.getElementById(id); }
+    function safeSetText(el,text){ if(el) el.textContent = text; }
+    function safeSetValue(el,value){ if(el) el.value = value; }
+    function safeAddEvent(el,event,handler){ if(el) el.addEventListener(event,handler); }
+    function logDebug(message){
+      console.log('[MI6]', message);
+      const box = $('debugBox');
+      if(window.MI6_DEBUG && box){ box.classList.add('show'); box.textContent += '\n' + message; }
+    }
+    function guard(name,fn){
+      try{ return fn(); }
+      catch(err){ console.error('[MI6 ERROR]', name, err); logDebug(name + ' failed: ' + err.message); return null; }
+    }
 
-  metrics.forEach(name=>{
-    const row = document.createElement("div");
-    row.className = "score-row";
+    const els = {
+      list:$('criteriaList'),
+      scoreNumber:$('scoreNumber'),
+      scoreRing:$('scoreRing'),
+      verdict:$('verdict'),
+      directionText:$('directionText'),
+      confidenceText:$('confidenceText'),
+      statusText:$('statusText'),
+      symbolInput:$('symbolInput'),
+      entryInput:$('entryInput'),
+      tpInput:$('tpInput'),
+      slInput:$('slInput'),
+      noteInput:$('noteInput'),
+      captionBox:$('captionBox'),
+      hashtagBox:$('hashtagBox'),
+      igSymbol:$('igSymbol'),
+      igScore:$('igScore'),
+      igVerdict:$('igVerdict'),
+      igDirection:$('igDirection'),
+      igDirectionTop:$('igDirectionTop'),
+      igCard:$('igCard'),
+      igSopMini:$('igSopMini'),
+      igDesc:$('igDesc')
+    };
 
-    row.innerHTML = `
-      <span>${name}</span>
-      <div class="toggle">
-        <button class="${scoreState[name] ? "active yes" : ""}" onclick="setScore('${name}', true)">YES</button>
-        <button class="${!scoreState[name] ? "active no" : ""}" onclick="setScore('${name}', false)">NO</button>
-      </div>
-    `;
+    function inputValue(el,fallback=''){
+      return el && typeof el.value === 'string' ? el.value : fallback;
+    }
 
-    area.appendChild(row);
-  });
-}
+    function shortName(name,mode='long'){
+      const cleaned = String(name).replace(/^[0-9][.] /,'');
+      const mapShort = {
+        'Candlestick Pattern':'CANDLE',
+        'Chart Pattern':'CHART',
+        'Wave Structure':'WAVE',
+        'Moving Average':'MA',
+        'Bollinger Band Zone':'BB',
+        'Fibonacci Zone':'FIBO'
+      };
+      const mapLong = {
+        'Candlestick Pattern':'Candle',
+        'Chart Pattern':'Chart',
+        'Wave Structure':'Wave',
+        'Moving Average':'MA',
+        'Bollinger Band Zone':'BB',
+        'Fibonacci Zone':'Fibo'
+      };
+      return mode === 'short' ? (mapShort[cleaned] || cleaned) : (mapLong[cleaned] || cleaned);
+    }
 
-function setScore(name,value){
-  scoreState[name] = value;
-  renderScoreRows();
-  updateCard();
-}
+    function getScore(){ return Object.values(state).filter(Boolean).length; }
 
-function getScore(){
-  return Object.values(scoreState).filter(Boolean).length;
-}
+    function getDecision(score){
+      if(score >= 5) return { text:'TRADE', cls:'trade', confidence:'HIGH', status:'READY', reason:'SOP alignment is strong. Setup is tradeable if risk is controlled.' };
+      if(score === 4) return { text:'WAIT', cls:'wait', confidence:'MEDIUM', status:'WATCH', reason:'Almost ready. Wait for one more confirmation before entry.' };
+      return { text:'NO TRADE', cls:'no', confidence:'LOW', status:'BLOCK', reason:'Score below requirement. Wait for better confirmation.' };
+    }
 
-function getVerdict(score){
-  if(score >= 5) return "TRADE";
-  if(score === 4) return "WAIT";
-  return "NO TRADE";
-}
+    function renderCriteria(){
+      return guard('renderCriteria',()=>{
+        if(!els.list) return;
+        els.list.innerHTML = criteria.map(c=>{
+          return `
+            <div class="criterion ${state[c.key] ? 'yes' : 'no'}" data-key="${c.key}">
+              <div>
+                <div class="c-name">${c.name}</div>
+                <div class="c-desc">${c.desc}</div>
+              </div>
+              <div class="choices">
+                <button class="choice-btn yes ${state[c.key] ? 'active' : ''}" data-key="${c.key}" data-val="true">YES</button>
+                <button class="choice-btn no ${!state[c.key] ? 'active' : ''}" data-key="${c.key}" data-val="false">NO</button>
+              </div>
+            </div>`;
+        }).join('');
 
-function getStatus(score){
-  if(score === 6) return "PREMIUM SETUP";
-  if(score === 5) return "VALID SETUP";
-  if(score === 4) return "WAIT CONFIRMATION";
-  return "SCORE TOO LOW";
-}
+        document.querySelectorAll('.choice-btn').forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            guard('choiceClick',()=>{
+              state[btn.dataset.key] = btn.dataset.val === 'true';
+              renderCriteria();
+              updateResult();
+            });
+          });
+        });
+        logDebug('criteria rendered');
+      });
+    }
 
-function updateCard(){
-  const symbol = document.getElementById("symbol").value || "-";
-  const timeframe = document.getElementById("timeframe").value || "-";
-  const direction = document.getElementById("direction").value;
-  const setup = document.getElementById("setup").value || "MI6 SOP Setup";
-  const entry = document.getElementById("entry").value || "-";
-  const sl = document.getElementById("sl").value || "-";
-  const tp = document.getElementById("tp").value || "-";
-  const note = document.getElementById("note").value || "";
+    function animateScore(target){
+      return guard('animateScore',()=>{
+        const start = displayedScore;
+        const diff = target - start;
+        const startTime = performance.now();
+        const duration = 420;
+        function frame(now){
+          const t = Math.min(1,(now-startTime)/duration);
+          const eased = 1 - Math.pow(1-t,3);
+          const value = start + diff * eased;
+          safeSetText(els.scoreNumber,Math.round(value));
+          if(els.scoreRing) els.scoreRing.style.setProperty('--scorePct', (value/6*100).toFixed(2));
+          if(t < 1) requestAnimationFrame(frame);
+          else displayedScore = target;
+        }
+        requestAnimationFrame(frame);
+      });
+    }
 
-  const score = getScore();
-  const verdict = getVerdict(score);
+    function getActiveSop(){
+      const active = criteria.filter(c=>state[c.key]).map(c=>shortName(c.name,'long'));
+      return active.length ? active.join(', ') : 'No confirmed SOP yet';
+    }
 
-  document.getElementById("cardVerdict").textContent = verdict;
-  document.getElementById("cardDirection").textContent = direction + " SETUP";
-  document.getElementById("cardSetup").textContent = setup;
-  document.getElementById("cardSymbol").textContent = symbol + " · " + timeframe;
-  document.getElementById("cardEntry").textContent = entry;
-  document.getElementById("cardSL").textContent = sl;
-  document.getElementById("cardTP").textContent = tp;
-  document.getElementById("cardScore").textContent = score + "/6";
-  document.getElementById("cardStatus").textContent = getStatus(score);
-  document.getElementById("cardNote").textContent = note;
+    function buildCaption(){
+      const score = getScore();
+      const decision = getDecision(score);
+      const symbol = inputValue(els.symbolInput,'SYMBOL') || 'SYMBOL';
+      const entry = inputValue(els.entryInput,'').trim() || 'Waiting for clean entry zone';
+      const tp = inputValue(els.tpInput,'').trim() || 'Target follows structure.';
+      const sl = inputValue(els.slInput,'').trim() || 'Stop loss follows structure.';
+      const note = inputValue(els.noteInput,'').trim() || decision.reason;
+      const biasLine = direction === 'BUY' ? 'Bias: Looking for bullish continuation / reversal confirmation.' : 'Bias: Looking for bearish continuation / rejection confirmation.';
+      return `MI6 Trading Note · ${symbol}
 
-  const dirEl = document.getElementById("cardDirection");
-  dirEl.className = "direction";
+Direction: ${direction}
+Score: ${score}/6
+Verdict: ${decision.text}
+Confidence: ${decision.confidence}
 
-  if(direction === "BUY") dirEl.classList.add("buy");
-  else if(direction === "SELL") dirEl.classList.add("sell");
-  else dirEl.classList.add("wait");
+${biasLine}
 
-  const mini = document.getElementById("cardMiniList");
-  mini.innerHTML = "";
+Entry Plan:
+${entry}
 
-  metrics.forEach(name=>{
-    const div = document.createElement("div");
-    div.className = "mini " + (scoreState[name] ? "ok" : "bad");
-    div.textContent = (scoreState[name] ? "✓ " : "× ") + name;
-    mini.appendChild(div);
-  });
-}
+TP Plan:
+${tp}
 
-function exportPNG(){
-  const card = document.getElementById("exportCard");
+SL Plan:
+${sl}
 
-  html2canvas(card,{
-    scale:3,
-    backgroundColor:null,
-    useCORS:true
-  }).then(canvas=>{
-    const finalCanvas = document.createElement("canvas");
-    finalCanvas.width = 1080;
-    finalCanvas.height = 1350;
+SOP Confirmed:
+${getActiveSop()}
 
-    const ctx = finalCanvas.getContext("2d");
-    ctx.fillStyle = "#020617";
-    ctx.fillRect(0,0,1080,1350);
+Description:
+${note}
 
-    ctx.drawImage(canvas,0,0,1080,1350);
+Inspired by VernonTee.
+Structured by Dean × Buddy.
 
-    const link = document.createElement("a");
-    link.download = "MI6_v3.9.4_Premium_Export_Card.png";
-    link.href = finalCanvas.toDataURL("image/png");
-    link.click();
-  });
-}
+Disclaimer: This is my trading journal and SOP scoring reference, not financial advice.`;
+    }
 
-function resetForm(){
-  document.getElementById("symbol").value = "XAUUSD";
-  document.getElementById("timeframe").value = "H1";
-  document.getElementById("direction").value = "BUY";
-  document.getElementById("setup").value = "MI6 SOP Setup";
-  document.getElementById("entry").value = "";
-  document.getElementById("sl").value = "";
-  document.getElementById("tp").value = "";
-  document.getElementById("note").value = "Follow SOP. No emotional trade. Wait for structure confirmation.";
+    function buildHashtags(){
+      return `#MI6TradingSystem #VTC #VernonTeetraderpreneur #TradingJournal #TradingSOP #RiskManagement #DisciplineTrading #TraderMindset #TradingPlan`;
+    }
 
-  metrics.forEach(m=>scoreState[m]=true);
-  renderScoreRows();
-  updateCard();
-}
+    function updateCreator(){
+      return guard('updateCreator',()=>{
+        safeSetValue(els.captionBox,buildCaption());
+        safeSetValue(els.hashtagBox,buildHashtags());
+      });
+    }
 
-initDate();
-renderScoreRows();
-updateCard();
-</script>
+    function fitTextToBox(el, maxPx, minPx){
+      if(!el) return;
+      el.style.fontSize = maxPx + 'px';
+      el.style.lineHeight = '1.02';
+      let size = maxPx;
+      while(size > minPx && (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth)){
+        size -= 1;
+        el.style.fontSize = size + 'px';
+      }
+    }
 
+    function clampText(text, max){
+      const clean = String(text || '').replace(/\s+/g,' ').trim();
+      return clean.length > max ? clean.slice(0,max-1) + '…' : clean;
+    }
+
+    function updateIGCard(score,decision){
+      return guard('updateIGCard',()=>{
+        const card = els.igCard || $('igCard');
+        if(card){
+          card.classList.remove('trade-theme','wait-theme','no-theme');
+          card.classList.add(decision.cls === 'trade' ? 'trade-theme' : decision.cls === 'wait' ? 'wait-theme' : 'no-theme');
+        }
+
+        const symbol = inputValue(els.symbolInput,'SYMBOL') || 'SYMBOL';
+        const entry = inputValue(els.entryInput,'').trim() || '-';
+        const tp = inputValue(els.tpInput,'').trim() || '-';
+        const sl = inputValue(els.slInput,'').trim() || '-';
+        const note = inputValue(els.noteInput,'').trim() || 'Follow plan. Protect capital. Let the setup work.';
+
+        safeSetText(els.igSymbol,clampText(symbol,18));
+        safeSetText(els.igScore,score);
+        safeSetText(els.igVerdict,decision.text);
+        if(els.igVerdict) els.igVerdict.style.color = decision.cls === 'trade' ? 'var(--green)' : decision.cls === 'wait' ? 'var(--yellow)' : 'var(--red)';
+        safeSetText(els.igDesc,decision.reason);
+        safeSetText($('igEntry'),clampText(entry,42));
+        safeSetText($('igTP'),clampText(tp,24));
+        safeSetText($('igSL'),clampText(sl,24));
+        safeSetText($('igNote'),clampText(note,120));
+        safeSetText(els.igDirection,direction + ' SETUP');
+        safeSetText(els.igDirectionTop,direction + ' SETUP');
+
+        if(els.igSopMini){
+          els.igSopMini.innerHTML = criteria.map(c=>{
+            return '<div class="ig-pill ' + (state[c.key] ? 'on' : 'off') + '">' + shortName(c.name,'short') + '<br>' + (state[c.key] ? '✓ YES' : '× NO') + '</div>';
+          }).join('');
+        }
+
+        requestAnimationFrame(()=>{
+          fitTextToBox($('igEntry'),17,10);
+          fitTextToBox($('igTP'),17,10);
+          fitTextToBox($('igSL'),17,10);
+        });
+      });
+    }
+
+    function updateResult(){
+      return guard('updateResult',()=>{
+        const score = getScore();
+        const decision = getDecision(score);
+        animateScore(score);
+        if(els.verdict){ els.verdict.className = 'verdict ' + decision.cls; els.verdict.textContent = decision.text; }
+        safeSetText(els.directionText,direction);
+        safeSetText(els.confidenceText,decision.confidence);
+        safeSetText(els.statusText,decision.status);
+        updateIGCard(score,decision);
+        updateCreator();
+      });
+    }
+
+    function bindEvents(){
+      return guard('bindEvents',()=>{
+        document.querySelectorAll('.dir-btn').forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            guard('directionClick',()=>{
+              direction = btn.dataset.direction || 'BUY';
+              document.querySelectorAll('.dir-btn').forEach(b=>b.classList.remove('active'));
+              btn.classList.add('active');
+              updateResult();
+            });
+          });
+        });
+        [els.symbolInput,els.entryInput,els.tpInput,els.slInput,els.noteInput].forEach(el=>safeAddEvent(el,'input',updateResult));
+        safeAddEvent($('resetBtn'),'click',()=>{
+          guard('reset',()=>{
+            state = Object.fromEntries(criteria.map(c=>[c.key,false]));
+            safeSetValue(els.entryInput,'');
+            safeSetValue(els.tpInput,'');
+            safeSetValue(els.slInput,'');
+            safeSetValue(els.noteInput,'');
+            renderCriteria();
+            updateResult();
+          });
+        });
+        safeAddEvent($('downloadBtn'),'click',()=>exportIGCard());
+        safeAddEvent($('refreshCaptionBtn'),'click',updateCreator);
+        safeAddEvent($('copyCaptionBtn'),'click',()=>copyText(inputValue(els.captionBox,''),'Caption copied.'));
+        safeAddEvent($('copyHashtagBtn'),'click',()=>copyText(inputValue(els.hashtagBox,''),'Hashtag copied.'));
+        safeAddEvent($('copyAllBtn'),'click',()=>copyText(inputValue(els.captionBox,'') + '\n\n' + inputValue(els.hashtagBox,''),'Caption + hashtag copied.'));
+        logDebug('events bound');
+      });
+    }
+
+    async function copyText(text,msg){
+      return guard('copyText',async()=>{
+        try{
+          await navigator.clipboard.writeText(text);
+          alert(msg);
+        }catch(err){
+          const temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          document.body.removeChild(temp);
+          alert(msg);
+        }
+      });
+    }
+
+    function scaleExportClone(clone){
+      return guard('scaleExportClone',()=>{
+        const setAll = (selector, styles) => {
+          clone.querySelectorAll(selector).forEach(target=>{
+            Object.entries(styles).forEach(([prop,value])=>target.style[prop] = value);
+          });
+        };
+
+        clone.style.width = '1080px';
+        clone.style.height = '1350px';
+        clone.style.maxWidth = 'none';
+        clone.style.borderRadius = '72px';
+        clone.style.padding = '66px';
+        clone.style.boxShadow = 'none';
+
+        setAll('.ig-content',{gap:'24px'});
+        setAll('.ig-top',{fontSize:'28px'});
+        setAll('.ig-market-strip',{gap:'24px'});
+        setAll('.ig-market-box',{borderRadius:'34px',padding:'22px 28px',minHeight:'104px'});
+        setAll('.ig-market-box small',{fontSize:'20px',marginBottom:'8px'});
+        setAll('.ig-market-box b',{fontSize:'40px'});
+        setAll('.ig-hero-row',{gap:'30px',marginTop:'0'});
+        setAll('.ig-title',{fontSize:'78px'});
+        setAll('.ig-score',{fontSize:'150px',marginTop:'30px'});
+        setAll('.ig-summary-label',{fontSize:'24px',marginBottom:'20px'});
+        setAll('.ig-summary-box',{borderRadius:'44px',padding:'34px',minHeight:'315px'});
+        setAll('.ig-verdict',{fontSize:'66px',marginBottom:'22px'});
+        setAll('.ig-desc',{fontSize:'30px',lineHeight:'1.36',WebkitLineClamp:'4'});
+        setAll('.ig-section-title',{fontSize:'26px',padding:'18px 28px',borderRadius:'32px'});
+        setAll('.ig-sop-mini',{gap:'20px'});
+        setAll('.ig-pill',{fontSize:'24px',padding:'24px 16px',borderRadius:'34px',minHeight:'98px'});
+        setAll('.ig-plan-grid',{gap:'24px'});
+        setAll('.ig-plan-card',{borderRadius:'40px',padding:'28px',minHeight:'215px'});
+        setAll('.ig-notes-card',{borderRadius:'40px',padding:'28px',minHeight:'150px'});
+        setAll('.ig-plan-card b,.ig-notes-card b',{fontSize:'26px',marginBottom:'20px'});
+        setAll('.ig-plan-card small',{fontSize:'20px',marginBottom:'9px'});
+        setAll('.ig-plan-card span',{fontSize:'46px'});
+        setAll('.risk-row',{gap:'24px'});
+        setAll('.ig-notes-card span',{fontSize:'29px',lineHeight:'1.3',WebkitLineClamp:'3'});
+        setAll('.ig-warning',{fontSize:'20px',borderRadius:'30px',padding:'18px 24px'});
+        setAll('.ig-signature',{fontSize:'23px',padding:'18px 0'});
+        setAll('.ig-footer',{fontSize:'22px',marginTop:'14px'});
+
+        const fit = (selector,max,min)=>{
+          clone.querySelectorAll(selector).forEach(el=>{
+            el.style.fontSize = max + 'px';
+            let size = max;
+            while(size > min && (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth)){
+              size -= 2;
+              el.style.fontSize = size + 'px';
+            }
+          });
+        };
+        fit('#igEntry',46,28);
+        fit('#igTP',46,28);
+        fit('#igSL',46,28);
+        fit('#igSymbol',40,26);
+      });
+    }
+
+    async function exportIGCard(){
+      return guard('exportIGCard',async()=>{
+        if(typeof html2canvas === 'undefined'){
+          alert('导出失败：html2canvas 没有成功加载。请检查网络或 CDN。');
+          return;
+        }
+        const original = $('igCard');
+        if(!original){ alert('导出失败：找不到 IG Card。'); return; }
+        const clone = original.cloneNode(true);
+        clone.id = 'igCardExport';
+        clone.style.position = 'fixed';
+        clone.style.left = '-9999px';
+        clone.style.top = '0';
+        clone.style.zIndex = '-1';
+        scaleExportClone(clone);
+        document.body.appendChild(clone);
+        try{
+          const canvas = await html2canvas(clone,{
+            width:1080,
+            height:1350,
+            scale:1,
+            backgroundColor:'#050816',
+            useCORS:true,
+            allowTaint:true,
+            logging:false
+          });
+          const link = document.createElement('a');
+          const safeSymbol = (inputValue(els.symbolInput,'MI6') || 'MI6').replace(/[^a-z0-9]/gi,'_');
+          link.download = `MI6_v3_9_4_${safeSymbol}_${direction}.png`;
+          link.href = canvas.toDataURL('image/png');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }catch(err){
+          alert('导出失败：请使用 Chrome / Edge 再试，或检查 Console 错误。');
+          console.error(err);
+        }finally{
+          if(clone.parentNode) document.body.removeChild(clone);
+        }
+      });
+    }
+
+    function init(){
+      guard('init',()=>{
+        const debugBox = $('debugBox');
+        if(window.MI6_DEBUG && debugBox){ debugBox.classList.add('show'); debugBox.textContent = 'Debug: start'; }
+        renderCriteria();
+        bindEvents();
+        updateResult();
+        logDebug('MI6 v3.9.4 Premium Export Card ready');
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
 </body>
 </html>
