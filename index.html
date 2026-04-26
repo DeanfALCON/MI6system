@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI6 Trading System v3.9.1 Stable</title>
+  <title>MI6 Trading System v3.9.3 PRO Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     :root{
@@ -53,7 +53,7 @@
       overflow:hidden;
     }
     .hero:after{
-      content:"v3.9.1";
+      content:"v3.9.3";
       position:absolute;
       right:20px;
       top:-20px;
@@ -166,19 +166,33 @@
     .glow-a{width:360px;height:360px;left:-120px;top:-120px;background:radial-gradient(circle,rgba(56,244,255,.38),transparent 68%)}
     .glow-b{width:360px;height:360px;right:-110px;top:-80px;background:radial-gradient(circle,rgba(157,78,221,.30),transparent 68%)}
     .ig-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column}
-    .ig-top{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.12em}
-    .ig-title{font-size:32px;font-weight:950;letter-spacing:-.06em;margin:21px 0 8px;line-height:.95}
-    .ig-sub{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:8px}
-    .ig-desc{margin:8px 0 9px;padding:10px 12px;border:1px solid rgba(143,162,208,.22);border-radius:12px;background:rgba(255,255,255,.04);font-size:11px;color:#cfe3ff;line-height:1.42;min-height:64px}
-    .ig-sop-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:6px 0 10px}
-    .ig-pill{border:1px solid rgba(143,162,208,.22);background:rgba(255,255,255,.045);border-radius:999px;padding:6px 8px;font-size:9px;font-weight:950;color:var(--muted);text-align:center;letter-spacing:.06em}
-    .ig-pill.on{color:var(--green);border-color:rgba(53,255,154,.52);box-shadow:0 0 16px rgba(53,255,154,.14)}
-    .ig-pill.off{color:rgba(255,77,109,.88);border-color:rgba(255,77,109,.38)}
-    .ig-score{font-size:68px;font-weight:950;letter-spacing:-.08em;line-height:.86;margin-top:2px}
-    .ig-verdict{font-size:25px;font-weight:950;margin:6px 0;color:var(--green)}
-    .ig-reason{font-size:12px;color:#c8d6ff;line-height:1.38;min-height:32px}
-    .ig-signature{margin-top:auto;border-top:1px solid rgba(143,162,208,.22);border-bottom:1px solid rgba(143,162,208,.22);padding:7px 0;color:var(--cyan);font-size:7.2px;font-weight:950;letter-spacing:.06em;text-align:center}
-    .ig-footer{margin-top:10px;display:flex;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:800}
+    .pro-card{gap:9px}
+    .ig-top{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-size:11px;font-weight:950;letter-spacing:.12em}
+    .ig-hero-row{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;align-items:start;margin-top:8px}
+    .ig-title{font-size:30px;font-weight:950;letter-spacing:-.06em;line-height:.92;color:#eef4ff}
+    .ig-score{font-size:58px;font-weight:950;letter-spacing:-.08em;line-height:.86;margin-top:10px;color:#eaf1ff}
+    .ig-summary-box{border:1px solid rgba(56,244,255,.28);background:rgba(4,8,22,.52);border-radius:18px;padding:12px;min-height:145px;box-shadow:0 0 22px rgba(56,244,255,.08)}
+    .ig-summary-label{font-size:9px;font-weight:950;color:var(--cyan);letter-spacing:.12em;margin-bottom:7px}
+    .ig-verdict{font-size:24px;font-weight:950;margin:4px 0 8px;color:var(--green);line-height:1}
+    .ig-desc{font-size:11px;color:#d7e4ff;line-height:1.45;background:transparent;border:none;padding:0;margin:0;min-height:auto}
+    .ig-section-title{border:1px solid rgba(56,244,255,.25);background:rgba(56,244,255,.055);border-radius:13px;padding:7px 10px;color:var(--cyan);font-size:10px;font-weight:950;letter-spacing:.08em;margin-top:2px}
+    .ig-sop-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0}
+    .ig-pill{border:1px solid rgba(143,162,208,.22);background:rgba(255,255,255,.045);border-radius:14px;padding:9px 7px;font-size:9px;font-weight:950;color:var(--muted);text-align:center;letter-spacing:.04em;min-height:42px;display:grid;place-items:center;line-height:1.1}
+    .ig-pill.on{color:var(--green);border-color:rgba(53,255,154,.65);box-shadow:0 0 16px rgba(53,255,154,.15)}
+    .ig-pill.off{color:rgba(255,77,109,.88);border-color:rgba(255,77,109,.42)}
+    .ig-plan-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:10px;margin-top:2px}
+    .ig-plan-card{border:1px solid rgba(56,244,255,.25);background:rgba(255,255,255,.035);border-radius:16px;padding:11px;min-height:82px}
+    .ig-plan-card b,.ig-notes-card b{display:block;color:var(--cyan);font-size:10px;font-weight:950;letter-spacing:.09em;margin-bottom:8px}
+    .ig-plan-card small{display:block;color:var(--muted);font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px}
+    .ig-plan-card span{display:block;color:#fff;font-size:19px;font-weight:950;line-height:1.05;word-break:break-word}
+    .risk-card{border-color:rgba(157,78,221,.38)}
+    .risk-card b{color:#c77dff}
+    .risk-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .ig-notes-card{border:1px solid rgba(255,209,102,.35);background:rgba(255,209,102,.035);border-radius:16px;padding:11px;margin-top:1px;min-height:62px}
+    .ig-notes-card b{color:var(--yellow);margin-bottom:6px}
+    .ig-notes-card span{display:block;color:#eaf1ff;font-size:11px;line-height:1.35}
+    .ig-signature{margin-top:auto;border-top:1px solid rgba(143,162,208,.22);border-bottom:1px solid rgba(143,162,208,.22);padding:7px 0;color:var(--cyan);font-size:8px;font-weight:950;letter-spacing:.06em;text-align:center}
+    .ig-footer{margin-top:7px;display:flex;justify-content:space-between;color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.04em}
     .debug-box{margin-top:18px;border:1px solid rgba(56,244,255,.18);background:rgba(5,8,22,.55);border-radius:18px;padding:13px;color:var(--muted);font-size:12px;line-height:1.6;display:none}
     .debug-box.show{display:block}
     .footer-note{text-align:center;color:var(--muted);font-size:12px;margin-top:20px;line-height:1.6}
@@ -187,7 +201,7 @@
 <body>
   <main class="app">
     <section class="hero">
-      <div class="badge">MI6 PRO CREATOR · v3.9.1 STABLE</div>
+      <div class="badge">MI6 PRO CREATOR · v3.9.3 PRO DASHBOARD</div>
       <h1>Six-Point Trading Content Engine</h1>
       <p class="subtitle">Dean & Buddy MI6 稳定终极版：评分、导图、Caption、Hashtag 模块互相独立。Inspired by VernonTee — 我只是把老师教的逻辑产品化。</p>
     </section>
@@ -230,8 +244,10 @@
         <input id="symbolInput" placeholder="例如：XAUUSD / US500 / BTCUSD" value="XAUUSD" />
         <label for="entryInput">Entry Zone</label>
         <input id="entryInput" placeholder="例如：Buy above 4095 / 等回踩 0.618" />
-        <label for="tpInput">TP / SL Plan</label>
-        <input id="tpInput" placeholder="例如：TP 4120 / SL below structure" />
+        <label for="tpInput">TP Plan</label>
+        <input id="tpInput" placeholder="例如：5200" />
+        <label for="slInput">SL Plan</label>
+        <input id="slInput" placeholder="例如：4800 / below structure" />
         <label for="noteInput">Description / Note</label>
         <textarea id="noteInput" rows="4" placeholder="写入你的交易理由、结构、波浪、Fibo、BB、入场条件等。"></textarea>
         <div class="buttons">
@@ -275,26 +291,46 @@
         <div class="ig-bg-grid"></div>
         <div class="ig-bg-glow glow-a"></div>
         <div class="ig-bg-glow glow-b"></div>
-        <div class="ig-content">
-          <div class="ig-top"><span>MI6 PRO v3.9.2</span><span id="igSymbol">XAUUSD</span></div>
+        <div class="ig-content pro-card">
+          <div class="ig-top"><span>MI6 PRO v3.9.3</span><span id="igSymbol">XAUUSD</span></div>
 
-          <div class="ig-title">TRADE<br/>DECISION</div>
+          <div class="ig-hero-row">
+            <div>
+              <div class="ig-title">TRADE<br/>DECISION</div>
+              <div class="ig-score"><span id="igScore">0</span>/6</div>
+            </div>
+            <div class="ig-summary-box">
+              <div class="ig-summary-label">SETUP SUMMARY</div>
+              <div class="ig-verdict" id="igVerdict">NO TRADE</div>
+              <div class="ig-desc" id="igDesc">Structured setup aligned with SOP.</div>
+            </div>
+          </div>
 
-          <div class="ig-score"><span id="igScore">0</span>/6</div>
-          <div class="ig-verdict" id="igVerdict">NO TRADE</div>
-
-          <div class="ig-desc" id="igDesc">Structured setup aligned with SOP.</div>
-
+          <div class="ig-section-title">SOP ALIGNMENT CHECKLIST</div>
           <div class="ig-sop-mini" id="igSopMini"></div>
 
-          <div class="ig-plan">
-            <div><b>Entry</b><span id="igEntry">-</span></div>
-            <div><b>TP/SL</b><span id="igTP">-</span></div>
+          <div class="ig-plan-grid">
+            <div class="ig-plan-card entry-card">
+              <b>ENTRY PLAN</b>
+              <small>Entry Zone</small>
+              <span id="igEntry">-</span>
+            </div>
+            <div class="ig-plan-card risk-card">
+              <b>RISK MANAGEMENT</b>
+              <div class="risk-row">
+                <div><small>TP</small><span id="igTP">-</span></div>
+                <div><small>SL</small><span id="igSL">-</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ig-notes-card">
+            <b>NOTES</b>
+            <span id="igNote">Follow plan. Protect capital. Let the setup work.</span>
           </div>
 
           <div class="ig-signature">Inspired by VernonTee · Structured by Dean × Buddy</div>
-
-          <div class="ig-footer"><span id="igDirection">BUY SETUP</span></div>
+          <div class="ig-footer"><span id="igDirection">BUY SETUP</span><span>DISCIPLINE · STRUCTURE · EXECUTION</span></div>
         </div>
       </div>
     </section>
@@ -344,13 +380,13 @@
       symbolInput:$('symbolInput'),
       entryInput:$('entryInput'),
       tpInput:$('tpInput'),
+      slInput:$('slInput'),
       noteInput:$('noteInput'),
       captionBox:$('captionBox'),
       hashtagBox:$('hashtagBox'),
       igSymbol:$('igSymbol'),
       igScore:$('igScore'),
       igVerdict:$('igVerdict'),
-      igReason:$('igReason'),
       igDirection:$('igDirection'),
       igSopMini:$('igSopMini'),
       igDesc:$('igDesc')
@@ -448,7 +484,8 @@
       const decision = getDecision(score);
       const symbol = inputValue(els.symbolInput,'SYMBOL') || 'SYMBOL';
       const entry = inputValue(els.entryInput,'').trim() || 'Waiting for clean entry zone';
-      const tp = inputValue(els.tpInput,'').trim() || 'Risk first. TP/SL must follow structure.';
+      const tp = inputValue(els.tpInput,'').trim() || 'Target follows structure.';
+      const sl = inputValue(els.slInput,'').trim() || 'Stop loss follows structure.';
       const note = inputValue(els.noteInput,'').trim() || decision.reason;
       const biasLine = direction === 'BUY' ? 'Bias: Looking for bullish continuation / reversal confirmation.' : 'Bias: Looking for bearish continuation / rejection confirmation.';
       return `MI6 Trading Note · ${symbol}
@@ -463,8 +500,11 @@ ${biasLine}
 Entry Plan:
 ${entry}
 
-TP / SL Plan:
+TP Plan:
 ${tp}
+
+SL Plan:
+${sl}
 
 SOP Confirmed:
 ${getActiveSop()}
@@ -479,8 +519,6 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
     }
 
     function buildHashtags(){
-      const rawSymbol = inputValue(els.symbolInput,'trading') || 'trading';
-      const symbol = rawSymbol.replace(/[^a-zA-Z0-9]/g,'') || 'trading';
       return `#MI6TradingSystem #VTC #VernonTeetraderpreneur #TradingJournal #TradingSOP #RiskManagement #DisciplineTrading #TraderMindset #TradingPlan`;
     }
 
@@ -497,12 +535,15 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         safeSetText(els.igScore,score);
         safeSetText(els.igVerdict,decision.text);
         if(els.igVerdict) els.igVerdict.style.color = decision.cls === 'trade' ? 'var(--green)' : decision.cls === 'wait' ? 'var(--yellow)' : 'var(--red)';
-        safeSetText(els.igReason,inputValue(els.entryInput,'').trim() || decision.reason);
-        safeSetText(els.igDesc,inputValue(els.noteInput,'').trim() || decision.reason);
+        safeSetText(els.igDesc,decision.reason);
+        safeSetText($('igEntry'),inputValue(els.entryInput,'').trim() || '-');
+        safeSetText($('igTP'),inputValue(els.tpInput,'').trim() || '-');
+        safeSetText($('igSL'),inputValue(els.slInput,'').trim() || '-');
+        safeSetText($('igNote'),inputValue(els.noteInput,'').trim() || 'Follow plan. Protect capital. Let the setup work.');
         safeSetText(els.igDirection,direction + ' SETUP');
         if(els.igSopMini){
           els.igSopMini.innerHTML = criteria.map(c=>{
-            return '<div class="ig-pill ' + (state[c.key] ? 'on' : 'off') + '">' + shortName(c.name,'short') + '</div>';
+            return '<div class="ig-pill ' + (state[c.key] ? 'on' : 'off') + '">' + shortName(c.name,'short') + '<br>' + (state[c.key] ? '✓ YES' : '× NO') + '</div>';
           }).join('');
         }
       });
@@ -534,12 +575,13 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
             });
           });
         });
-        [els.symbolInput,els.entryInput,els.tpInput,els.noteInput].forEach(el=>safeAddEvent(el,'input',updateResult));
+        [els.symbolInput,els.entryInput,els.tpInput,els.slInput,els.noteInput].forEach(el=>safeAddEvent(el,'input',updateResult));
         safeAddEvent($('resetBtn'),'click',()=>{
           guard('reset',()=>{
             state = Object.fromEntries(criteria.map(c=>[c.key,false]));
             safeSetValue(els.entryInput,'');
             safeSetValue(els.tpInput,'');
+            safeSetValue(els.slInput,'');
             safeSetValue(els.noteInput,'');
             renderCriteria();
             updateResult();
@@ -574,25 +616,34 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
     function scaleExportClone(clone){
       return guard('scaleExportClone',()=>{
         const styles = [
-          ['.ig-title','fontSize','96px'],
-          ['.ig-sub','fontSize','34px'],
-          ['.ig-desc','fontSize','31px'],
-          ['.ig-desc','padding','30px 34px'],
-          ['.ig-desc','borderRadius','34px'],
-          ['.ig-desc','minHeight','175px'],
-          ['.ig-score','fontSize','185px'],
-          ['.ig-verdict','fontSize','72px'],
-          ['.ig-reason','fontSize','32px'],
+          ['.ig-title','fontSize','88px'],
+          ['.ig-score','fontSize','150px'],
+          ['.ig-summary-label','fontSize','24px'],
+          ['.ig-summary-box','borderRadius','42px'],
+          ['.ig-summary-box','padding','34px'],
+          ['.ig-verdict','fontSize','66px'],
+          ['.ig-desc','fontSize','30px'],
+          ['.ig-section-title','fontSize','26px'],
+          ['.ig-section-title','padding','18px 28px'],
+          ['.ig-plan-card','borderRadius','38px'],
+          ['.ig-plan-card','padding','30px'],
+          ['.ig-notes-card','borderRadius','38px'],
+          ['.ig-notes-card','padding','30px'],
           ['.ig-top','fontSize','28px'],
-          ['.ig-footer','fontSize','28px'],
-          ['.ig-signature','fontSize','20px'],
-          ['.ig-signature','padding','19px 0']
+          ['.ig-footer','fontSize','24px'],
+          ['.ig-signature','fontSize','24px'],
+          ['.ig-signature','padding','20px 0']
         ];
         styles.forEach(([selector,prop,value])=>{
-          const target = clone.querySelector(selector);
-          if(target) target.style[prop] = value;
+          clone.querySelectorAll(selector).forEach(target=>{
+            if(target) target.style[prop] = value;
+          });
         });
-        clone.querySelectorAll('.ig-pill').forEach(p=>{p.style.fontSize='25px';p.style.padding='16px 18px';});
+        clone.querySelectorAll('.ig-pill').forEach(p=>{p.style.fontSize='24px';p.style.padding='25px 18px';p.style.borderRadius='34px';p.style.minHeight='100px';});
+        clone.querySelectorAll('.ig-plan-card b,.ig-notes-card b').forEach(p=>{p.style.fontSize='26px';});
+        clone.querySelectorAll('.ig-plan-card small').forEach(p=>{p.style.fontSize='21px';});
+        clone.querySelectorAll('.ig-plan-card span').forEach(p=>{p.style.fontSize='48px';});
+        clone.querySelectorAll('.ig-notes-card span').forEach(p=>{p.style.fontSize='30px';});
       });
     }
 
@@ -629,7 +680,7 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
           });
           const link = document.createElement('a');
           const safeSymbol = (inputValue(els.symbolInput,'MI6') || 'MI6').replace(/[^a-z0-9]/gi,'_');
-          link.download = `MI6_v3_9_1_${safeSymbol}_${direction}.png`;
+          link.download = `MI6_v3_9_3_${safeSymbol}_${direction}.png`;
           link.href = canvas.toDataURL('image/png');
           document.body.appendChild(link);
           link.click();
@@ -650,7 +701,7 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         renderCriteria();
         bindEvents();
         updateResult();
-        logDebug('MI6 v3.9.1 stable ready');
+        logDebug('MI6 v3.9.3 PRO Dashboard ready');
       });
     }
 
