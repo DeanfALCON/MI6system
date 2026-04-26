@@ -3,135 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 v3.6.1 六分制交易系统</title>
+<title>MI6 v3.7 商业版</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background: radial-gradient(circle at top,#0f172a,#020617);
-  color:#fff;
-}
+body{margin:0;font-family:Arial;background:#020617;color:#fff}
 .container{max-width:1200px;margin:auto;padding:20px}
-
-.header{
-  background:linear-gradient(135deg,#1e293b,#0f172a);
-  padding:20px;
-  border-radius:16px;
-  margin-bottom:20px;
-  border:1px solid rgba(255,255,255,0.1);
-  box-shadow:0 0 20px rgba(99,102,241,0.2);
-}
-
-h1{margin:0}
-.sub{opacity:.6;margin-top:5px}
-
-.layout{
-  display:grid;
-  grid-template-columns:1fr 380px;
-  gap:20px;
-}
 
 .card{
   background:rgba(255,255,255,0.05);
   padding:20px;
   border-radius:16px;
   border:1px solid rgba(255,255,255,0.1);
-  backdrop-filter:blur(10px);
+  margin-bottom:20px;
 }
 
-.btn{
-  padding:8px 14px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-  font-weight:bold;
-}
+.layout{display:grid;grid-template-columns:1fr 380px;gap:20px}
 
+.btn{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;margin:5px}
 .buy{background:#22c55e}
 .short{background:#ef4444}
 .active{outline:2px solid white}
 
-.score-row{
-  display:grid;
-  grid-template-columns:1fr auto auto;
-  align-items:center;
-  margin:12px 0;
-}
-
+.score-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;margin:10px 0}
 .yes{background:#22c55e}
 .no{background:#ef4444}
 
 .score{
   font-size:60px;
   font-weight:bold;
-  background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-
-.progress{
-  height:10px;
-  background:#1e293b;
-  border-radius:10px;
-  overflow:hidden;
-  margin-top:10px;
-}
-
-.bar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
   transition:0.3s;
 }
 
-.badge{
-  padding:10px 20px;
-  border-radius:20px;
-  display:inline-block;
-  margin-top:10px;
-  font-weight:bold;
+.glow{
+  box-shadow:0 0 20px #22c55e,0 0 40px #22c55e;
 }
 
+.danger{
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  0%{box-shadow:0 0 5px #ef4444}
+  50%{box-shadow:0 0 20px #ef4444}
+  100%{box-shadow:0 0 5px #ef4444}
+}
+
+.badge{padding:10px 20px;border-radius:20px;margin-top:10px;display:inline-block}
 .trade{background:#22c55e}
 .watch{background:#f59e0b}
 .noTrade{background:#ef4444}
 
-.missing{
-  margin-top:10px;
-  opacity:.7;
-  font-size:14px;
+.export{
+  margin-top:20px;
+  padding:10px;
+  background:#6366f1;
+  border-radius:10px;
+  cursor:pointer;
 }
+
 </style>
 </head>
 
 <body>
 <div class="container">
 
-<div class="header">
-<h1>MI6 v3.6.1 六分制交易系统</h1>
-<div class="sub">Based on Vernon Tee · Discipline Execution Tool</div>
+<div class="card">
+<h2>MI6 v3.7 商业级系统</h2>
 </div>
 
 <div class="layout">
 
-<!-- LEFT -->
 <div class="card">
-<h3>方向</h3>
 <button id="buyBtn" class="btn buy active">BUY</button>
 <button id="shortBtn" class="btn short">SHORT</button>
-
-<h3>六分评分</h3>
 <div id="scores"></div>
 </div>
 
-<!-- RIGHT -->
-<div class="card">
-<h3>MI6 Decision</h3>
+<div class="card" id="decisionCard">
 <div class="score" id="score">0/6</div>
-<div class="progress"><div class="bar" id="bar"></div></div>
 <div id="decision"></div>
-<div class="missing" id="missing"></div>
+<div id="missing"></div>
+<div class="export" onclick="exportIG()">导出 IG 字卡</div>
 </div>
 
 </div>
@@ -140,24 +92,11 @@ h1{margin:0}
 
 <script>
 let direction="BUY";
+let currentScore=0;
 
-let scoreData={
- candlestick:0,
- chartpattern:0,
- wave:0,
- ma:0,
- bb:0,
- fibo:0
-};
+let scoreData={candlestick:0,chartpattern:0,wave:0,ma:0,bb:0,fibo:0};
 
-const labels={
- candlestick:"Candlestick",
- chartpattern:"Chart Pattern",
- wave:"Wave",
- ma:"MA",
- bb:"Bollinger Band",
- fibo:"Fibo"
-};
+const labels={candlestick:"Candlestick",chartpattern:"Chart Pattern",wave:"Wave",ma:"MA",bb:"BB",fibo:"Fibo"};
 
 const scoresDiv=document.getElementById("scores");
 
@@ -184,40 +123,47 @@ Object.keys(scoreData).forEach(key=>{
  scoresDiv.appendChild(div);
 });
 
-buyBtn.onclick=()=>{
- direction="BUY";
- buyBtn.classList.add("active");
- shortBtn.classList.remove("active");
- update();
-}
+buyBtn.onclick=()=>{direction="BUY";buyBtn.classList.add("active");shortBtn.classList.remove("active");update();}
+shortBtn.onclick=()=>{direction="SHORT";shortBtn.classList.add("active");buyBtn.classList.remove("active");update();}
 
-shortBtn.onclick=()=>{
- direction="SHORT";
- shortBtn.classList.add("active");
- buyBtn.classList.remove("active");
- update();
+function animateScore(target){
+ let start=currentScore;
+ let step=setInterval(()=>{
+   if(start===target){clearInterval(step);return}
+   start+= start<target?1:-1;
+   score.innerText=start+"/6";
+ },80);
+ currentScore=target;
 }
 
 function update(){
  let total=Object.values(scoreData).reduce((a,b)=>a+b,0);
- score.innerText=total+"/6";
-
- bar.style.width=(total/6*100)+"%";
+ animateScore(total);
 
  let decision="";
  let cls="";
 
- if(total>=5){decision="TRADE";cls="trade"}
- else if(total===4){decision="WATCH";cls="watch"}
- else{decision="NO TRADE";cls="noTrade"}
+ let card=document.getElementById("decisionCard");
+ card.classList.remove("glow","danger");
 
- document.getElementById("decision").innerHTML=
- `<div class="badge ${cls}">${decision} (${direction})</div>`;
+ if(total>=5){decision="TRADE";cls="trade";card.classList.add("glow")}
+ else if(total===4){decision="WATCH";cls="watch"}
+ else{decision="NO TRADE";cls="noTrade";card.classList.add("danger")}
+
+ decisionDiv.innerHTML=`<div class="badge ${cls}">${decision} (${direction})</div>`;
 
  let missing=Object.keys(scoreData).filter(k=>scoreData[k]===0);
- document.getElementById("missing").innerText=
- "缺少: "+missing.map(k=>labels[k]).join(", ");
+ missingDiv.innerText="缺少: "+missing.map(k=>labels[k]).join(", ");
 }
+
+function exportIG(){
+ let text=`MI6 SYSTEM\n方向: ${direction}\n分数: ${currentScore}/6`;
+ navigator.clipboard.writeText(text);
+ alert("已复制 IG 文案");
+}
+
+const decisionDiv=document.getElementById("decision");
+const missingDiv=document.getElementById("missing");
 
 update();
 </script>
