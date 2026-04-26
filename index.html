@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI6 v3.1 Ultra Safe</title>
+  <title>MI6 v3.2 AI Sync</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -15,7 +15,7 @@
     }
 
     .wrap {
-      max-width: 1200px;
+      max-width: 1220px;
       margin: 0 auto;
       padding: 24px 16px 60px;
     }
@@ -96,7 +96,7 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 1fr 390px;
+      grid-template-columns: minmax(0, 1fr) 410px;
       gap: 16px;
     }
 
@@ -173,10 +173,6 @@
       font-size: 15px;
     }
 
-    input[type="file"] {
-      cursor: pointer;
-    }
-
     textarea {
       min-height: 92px;
       resize: vertical;
@@ -211,9 +207,7 @@
       min-height: 48px;
     }
 
-    button:hover {
-      filter: brightness(1.08);
-    }
+    button:hover { filter: brightness(1.08); }
 
     .active-buy {
       background: rgba(25, 195, 125, 0.20) !important;
@@ -245,9 +239,7 @@
       border: none;
     }
 
-    .secondary {
-      background: #1c2538;
-    }
+    .secondary { background: #1c2538; }
 
     .analysis-card {
       border: 1px solid #34415f;
@@ -314,6 +306,12 @@
       border-color: #f5b942;
       background: rgba(245,185,66,.18);
       color: #fff3d6;
+    }
+
+    .badge.block {
+      border-color: #ef4444;
+      background: rgba(239,68,68,.18);
+      color: #ffe7e7;
     }
 
     .terminal-head {
@@ -432,9 +430,7 @@
       margin-bottom: 20px;
     }
 
-    .export-title {
-      font-weight: 900;
-    }
+    .export-title { font-weight: 900; }
 
     .export-sub {
       color: #9fb0d1;
@@ -488,16 +484,16 @@
       <div class="brand">
         <div class="logo">MI6</div>
         <div>
-          <div class="brand-title">MI6 v3.1 Ultra Safe</div>
-          <div class="brand-sub">No overlay · Inline click · Stable upload</div>
+          <div class="brand-title">MI6 v3.2 AI Sync</div>
+          <div class="brand-sub">AI result sync · Manual override · Stable fallback</div>
         </div>
       </div>
       <div class="debug" id="debugBox">DEBUG: READY</div>
     </div>
 
     <div class="hero">
-      <h1>MI6 v3.1 图表上传分析系统</h1>
-      <p class="sub">这是全新修复版：不用复杂点击层，不用隐藏 input，不用事件委托。所有按钮直接用 onclick，确保最稳定。</p>
+      <h1>MI6 v3.2 图表上传分析系统</h1>
+      <p class="sub">这版修复 AI 回传后前端不更新的问题。AI 成功会显示 AI MODE；AI失败会显示 FALLBACK MODE。</p>
     </div>
 
     <div class="layout">
@@ -748,7 +744,7 @@
           <div class="export-card">
             <div class="export-top">
               <div>
-                <div class="export-title">MI6 v3.1</div>
+                <div class="export-title">MI6 v3.2</div>
                 <div class="export-sub">Trading Decision Summary</div>
               </div>
               <div id="exportBadge" class="badge">NO TRADE</div>
@@ -765,523 +761,459 @@
     </div>
   </div>
 
-   <script>
-const API_URL = "https://mi6-backend.onrender.com/api/analyze-chart";
-
-const state = {
-  direction: "BUY",
-  candlestick: 0,
-  chartpattern: 0,
-  wave: 0,
-  ma: 0,
-  bb: 0,
-  fibo: 0
-};
-
-const labels = {
-  candlestick: "Candlestick",
-  chartpattern: "Chart Pattern",
-  wave: "Wave",
-  ma: "MA",
-  bb: "Bollinger Band",
-  fibo: "Fibo"
-};
-
-function el(id) {
-  return document.getElementById(id);
-}
-
-function setDebug(text) {
-  const box = el("debugBox");
-  if (box) box.textContent = "DEBUG: " + text;
-}
-
-function setDirection(direction) {
-  state.direction = direction;
-
-  el("directionChip").textContent = "DIRECTION: " + direction;
-
-  el("buyBtn").className = direction === "BUY" ? "active-buy" : "";
-  el("shortBtn").className = direction === "SHORT" ? "active-short" : "";
-
-  setDebug(direction + " clicked");
-  renderDecision();
-}
-
-function setScore(key, value) {
-  state[key] = Number(value);
-
-  const yesBtn = el(key + "Yes");
-  const noBtn = el(key + "No");
-
-  if (yesBtn && noBtn) {
-    if (Number(value) === 1) {
-      yesBtn.className = "active-yes";
-      noBtn.className = "";
-    } else {
-      yesBtn.className = "";
-      noBtn.className = "active-no";
-    }
-  }
-
-  setDebug(key + " = " + value);
-  renderDecision();
-}
-
-function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function () {
-    el("previewImage").src = reader.result;
-    el("previewImage").style.display = "block";
-    el("stateChip").textContent = "STATE: READY";
-    setDebug("Image uploaded");
-  };
-
-  reader.readAsDataURL(file);
-}
-
-function getTrendText(value) {
-  if (value === "up") return "上升趋势";
-  if (value === "down") return "下跌趋势";
-  return "盘整";
-}
-
-function getSessionText(value) {
-  const map = {
-    asia: "亚洲盘",
-    london: "伦敦盘",
-    newyork: "纽约盘",
-    overlap: "重叠时段"
-  };
-  return map[value] || value;
-}
-
-function getAtrText(value) {
-  const map = {
-    low: "过低",
-    normal: "正常",
-    high: "过高"
-  };
-  return map[value] || value;
-}
-
-function getBadgeClass(result) {
-  if (result === "STRONG TRADE") return "badge strong";
-  if (result === "TRADE") return "badge trade";
-  if (result === "WATCH") return "badge watch";
-  return "badge";
-}
-
-function downgrade(result) {
-  if (result === "STRONG TRADE") return "TRADE";
-  if (result === "TRADE") return "WATCH";
-  if (result === "WATCH") return "NO TRADE";
-  return "NO TRADE";
-}
-
-function readAdvanced() {
-  return {
-    trend: el("trendSelect").value,
-    structural: el("structuralConsistency").value,
-    isolated: el("isolatedPattern").value,
-    session: el("sessionFilter").value,
-    atr: el("atrFilter").value,
-    trigger: el("triggerAudit").value,
-    keyzone: el("keyZoneAudit").value,
-    trapzone: el("trapZoneAudit").value
-  };
-}
-
-function calculateScore() {
-  return Object.keys(labels).reduce(function (sum, key) {
-    return sum + Number(state[key] || 0);
-  }, 0);
-}
-
-function getBaseResult(score) {
-  if (score === 6) return "STRONG TRADE";
-  if (score === 5) return "TRADE";
-  if (score === 4) return "WATCH";
-  return "NO TRADE";
-}
-
-function renderDecision() {
-  const adv = readAdvanced();
-  const score = calculateScore();
-
-  let result = getBaseResult(score);
-  const warnings = [];
-  const fails = [];
-
-  if (adv.trend === "up" && state.direction === "SHORT") {
-    warnings.push("上升趋势选择 SHORT，方向冲突。");
-    result = downgrade(result);
-  }
-
-  if (adv.trend === "down" && state.direction === "BUY") {
-    warnings.push("下跌趋势选择 BUY，方向冲突。");
-    result = downgrade(result);
-  }
-
-  if (adv.trend === "sideways") {
-    warnings.push("盘整市场，系统自动保守。");
-    result = downgrade(result);
-  }
-
-  if (adv.structural === "no") {
-    warnings.push("结构不顺主趋势。");
-    result = downgrade(result);
-  }
-
-  if (adv.isolated === "yes") {
-    warnings.push("形态偏孤立。");
-    result = downgrade(result);
-  }
-
-  if (adv.session === "asia") {
-    warnings.push("亚洲盘流动性偏弱。");
-    result = downgrade(result);
-  }
-
-  if (adv.atr !== "normal") {
-    warnings.push("ATR " + getAtrText(adv.atr) + "。");
-    result = downgrade(result);
-  }
-
-  if (adv.trigger === "no") fails.push("没有明确触发");
-  if (adv.keyzone === "no") fails.push("不在关键区");
-  if (adv.trapzone === "yes") fails.push("接近陷阱区");
-
-  if (fails.length > 0) {
-    result = "BLOCK";
-  }
-
-  const badgeClass = getBadgeClass(result);
-
-  el("resultBadge").textContent = result;
-  el("resultBadge").className = badgeClass;
-
-  el("exportBadge").textContent = result;
-  el("exportBadge").className = badgeClass;
-
-  el("scoreNumber").textContent = score + "/6";
-  el("exportScore").textContent = score + "/6";
-
-  el("scoreSignalText").textContent =
-    score >= 5 ? "HIGH" : score === 4 ? "MEDIUM" : score >= 2 ? "LOW" : "IDLE";
-
-  el("scoreProgressBar").style.width = (score / 6) * 100 + "%";
-
-  const meta =
-    (el("symbol").value || "未填写标的") +
-    (el("timeframe").value ? " · " + el("timeframe").value : "") +
-    " · " +
-    state.direction +
-    " · " +
-    getTrendText(adv.trend);
-
-  el("scoreLabel").textContent = meta;
-  el("exportMeta").textContent = meta;
-
-  const checks = el("checks");
-  checks.innerHTML = "";
-
-  Object.keys(labels).forEach(function (key) {
-    const row = document.createElement("div");
-    row.className = "mini-row";
-    row.innerHTML =
-      "<span>" +
-      labels[key] +
-      "</span><span class='" +
-      (state[key] ? "ok" : "bad") +
-      "'>" +
-      (state[key] ? "YES" : "NO") +
-      "</span>";
-    checks.appendChild(row);
-  });
-
-  const extraRows = [
-    ["趋势", getTrendText(adv.trend), adv.trend === "sideways" ? "warn" : "ok"],
-    ["结构", adv.structural === "yes" ? "顺主趋势" : "逆主趋势", adv.structural === "yes" ? "ok" : "bad"],
-    ["Session", getSessionText(adv.session), adv.session === "asia" ? "warn" : "ok"],
-    ["ATR", getAtrText(adv.atr), adv.atr === "normal" ? "ok" : "warn"],
-    ["总分", score + "/6", score >= 5 ? "ok" : score === 4 ? "warn" : "bad"]
-  ];
-
-  extraRows.forEach(function (item) {
-    const row = document.createElement("div");
-    row.className = "mini-row";
-    row.innerHTML =
-      "<span>" +
-      item[0] +
-      "</span><span class='" +
-      item[2] +
-      "'>" +
-      item[1] +
-      "</span>";
-    checks.appendChild(row);
-  });
-
-  const positives = [];
-  const missing = [];
-
-  Object.keys(labels).forEach(function (key) {
-    if (state[key]) positives.push(labels[key]);
-    else missing.push(labels[key]);
-  });
-
-  let analysis =
-    "当前方向 " +
-    state.direction +
-    "，趋势 " +
-    getTrendText(adv.trend) +
-    "，MI6 得分 " +
-    score +
-    "/6。";
-
-  if (positives.length) analysis += " 已满足：" + positives.join("、") + "。";
-  if (missing.length) analysis += " 欠缺：" + missing.join("、") + "。";
-  if (warnings.length) analysis += " 风险修正：" + warnings.join(" ");
-  if (fails.length) analysis += " 审计失败：" + fails.join("、") + "。";
-  if (el("notes").value) analysis += " 备注：" + el("notes").value;
-
-  el("analysisText").textContent = analysis;
-  el("exportSummary").textContent = analysis;
-
-  let advice = "当前不建议交易。";
-
-  if (result === "STRONG TRADE") {
-    advice = "当前属于高质量 setup，但仍需确认 Entry / SL / TP。";
-  } else if (result === "TRADE") {
-    advice = "条件较好，可以准备交易计划，但不要忽略风险报酬比。";
-  } else if (result === "WATCH") {
-    advice = "建议观察，等待更清晰触发。";
-  } else if (result === "BLOCK") {
-    advice = "系统拦截，先解决触发、关键区或陷阱区问题。";
-  }
-
-  el("adviceText").textContent = advice;
-
-  const riskList = el("riskList");
-  riskList.innerHTML = "";
-
-  const risks = ["分数高不等于必胜。", "必须搭配止损和仓位管理。"]
-    .concat(warnings)
-    .concat(
-      fails.map(function (f) {
-        return "审计失败：" + f;
-      })
-    );
-
-  risks.forEach(function (r) {
-    const li = document.createElement("li");
-    li.textContent = r;
-    riskList.appendChild(li);
-  });
-
-  el("exportRisk").textContent = fails.length
-    ? "重点风险：" + fails.join("、")
-    : "请搭配止损、仓位管理与风险报酬比。";
-}
-
-function applyData(data) {
-  if (!data) return;
-
-  if (data.image_analysis) {
-    el("trendSelect").value = data.image_analysis.trend || "sideways";
-  }
-
-  if (data.filters) {
-    el("structuralConsistency").value = data.filters.structural || "no";
-    el("isolatedPattern").value = data.filters.isolated || "yes";
-    el("sessionFilter").value = data.filters.session || "overlap";
-    el("atrFilter").value = data.filters.atr || "normal";
-  }
-
-  if (data.audit) {
-    el("triggerAudit").value = data.audit.trigger || "no";
-    el("keyZoneAudit").value = data.audit.keyzone || "no";
-    el("trapZoneAudit").value = data.audit.trapzone || "yes";
-  }
-
-  if (data.mi6) {
-    Object.keys(labels).forEach(function (key) {
-      setScore(key, Number(data.mi6[key] || 0));
-    });
-  }
-
-  el("stateChip").textContent = "STATE: REVIEW";
-
-  if (data.fallback) {
-    setDebug("FALLBACK MODE");
-  } else {
-    setDebug("AI MODE");
-  }
-
-  renderDecision();
-
-  if (data.analysis_text) {
-    el("analysisText").textContent = data.analysis_text + (data.fallback ? "（Fallback）" : "（AI）");
-  }
-}
-
-function getFallbackData(reason) {
-  return {
-    success: true,
-    fallback: true,
-    image_analysis: {
-      trend: "sideways",
-      structure_summary: "Fallback mode",
-      pattern_detected: "unknown",
-      notes: reason || "AI unavailable"
-    },
-    mi6: {
+  <script>
+    const API_URL = "https://mi6-backend.onrender.com/api/analyze-chart";
+
+    const state = {
+      direction: "BUY",
       candlestick: 0,
       chartpattern: 0,
       wave: 0,
       ma: 0,
       bb: 0,
       fibo: 0
-    },
-    filters: {
-      structural: "no",
-      isolated: "yes",
-      session: "overlap",
-      atr: "normal"
-    },
-    audit: {
-      trigger: "no",
-      keyzone: "no",
-      trapzone: "yes"
-    },
-    analysis_text: reason || "AI暂时不可用，系统已进入保底模式。",
-    suggested_result: "NO TRADE"
-  };
-}
+    };
 
-async function analyzeChart() {
-  const file = el("chartUpload").files[0];
+    const labels = {
+      candlestick: "Candlestick",
+      chartpattern: "Chart Pattern",
+      wave: "Wave",
+      ma: "MA",
+      bb: "Bollinger Band",
+      fibo: "Fibo"
+    };
 
-  if (!file) {
-    alert("请先选择图表图片");
-    return;
-  }
+    function el(id) {
+      return document.getElementById(id);
+    }
 
-  el("stateChip").textContent = "STATE: ANALYZING";
-  el("analysisText").textContent = "Uploading chart... Running API...";
-  setDebug("Analyze clicked");
+    function setDebug(text) {
+      const box = el("debugBox");
+      if (box) box.textContent = "DEBUG: " + text;
+    }
 
-  const fd = new FormData();
-  fd.append("image", file);
-  fd.append("direction", state.direction);
-  fd.append("symbol", el("symbol").value || "");
-  fd.append("timeframe", el("timeframe").value || "");
+    function setDirection(direction) {
+      state.direction = direction;
+      el("directionChip").textContent = "DIRECTION: " + direction;
+      el("buyBtn").className = direction === "BUY" ? "active-buy" : "";
+      el("shortBtn").className = direction === "SHORT" ? "active-short" : "";
+      setDebug(direction + " clicked");
+      renderDecision();
+    }
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: fd
+    function setScore(key, value) {
+      state[key] = Number(value);
+      const yesBtn = el(key + "Yes");
+      const noBtn = el(key + "No");
+
+      if (yesBtn && noBtn) {
+        if (Number(value) === 1) {
+          yesBtn.className = "active-yes";
+          noBtn.className = "";
+        } else {
+          yesBtn.className = "";
+          noBtn.className = "active-no";
+        }
+      }
+
+      renderDecision();
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        el("previewImage").src = reader.result;
+        el("previewImage").style.display = "block";
+        el("stateChip").textContent = "STATE: READY";
+        setDebug("Image uploaded");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function getTrendText(value) {
+      if (value === "up") return "上升趋势";
+      if (value === "down") return "下跌趋势";
+      return "盘整";
+    }
+
+    function getSessionText(value) {
+      return {
+        asia: "亚洲盘",
+        london: "伦敦盘",
+        newyork: "纽约盘",
+        overlap: "重叠时段"
+      }[value] || value;
+    }
+
+    function getAtrText(value) {
+      return {
+        low: "过低",
+        normal: "正常",
+        high: "过高"
+      }[value] || value;
+    }
+
+    function getBadgeClass(result) {
+      if (result === "STRONG TRADE") return "badge strong";
+      if (result === "TRADE") return "badge trade";
+      if (result === "WATCH") return "badge watch";
+      if (result === "BLOCK") return "badge block";
+      return "badge";
+    }
+
+    function downgrade(result) {
+      if (result === "STRONG TRADE") return "TRADE";
+      if (result === "TRADE") return "WATCH";
+      if (result === "WATCH") return "NO TRADE";
+      return "NO TRADE";
+    }
+
+    function readAdvanced() {
+      return {
+        trend: el("trendSelect").value,
+        structural: el("structuralConsistency").value,
+        isolated: el("isolatedPattern").value,
+        session: el("sessionFilter").value,
+        atr: el("atrFilter").value,
+        trigger: el("triggerAudit").value,
+        keyzone: el("keyZoneAudit").value,
+        trapzone: el("trapZoneAudit").value
+      };
+    }
+
+    function calculateScore() {
+      return Object.keys(labels).reduce(function (sum, key) {
+        return sum + Number(state[key] || 0);
+      }, 0);
+    }
+
+    function getBaseResult(score) {
+      if (score === 6) return "STRONG TRADE";
+      if (score === 5) return "TRADE";
+      if (score === 4) return "WATCH";
+      return "NO TRADE";
+    }
+
+    function renderDecision() {
+      const adv = readAdvanced();
+      const score = calculateScore();
+      let result = getBaseResult(score);
+      const warnings = [];
+      const fails = [];
+
+      if (adv.trend === "up" && state.direction === "SHORT") {
+        warnings.push("上升趋势选择 SHORT，方向冲突。");
+        result = downgrade(result);
+      }
+
+      if (adv.trend === "down" && state.direction === "BUY") {
+        warnings.push("下跌趋势选择 BUY，方向冲突。");
+        result = downgrade(result);
+      }
+
+      if (adv.trend === "sideways") {
+        warnings.push("盘整市场，系统自动保守。");
+        result = downgrade(result);
+      }
+
+      if (adv.structural === "no") {
+        warnings.push("结构不顺主趋势。");
+        result = downgrade(result);
+      }
+
+      if (adv.isolated === "yes") {
+        warnings.push("形态偏孤立。");
+        result = downgrade(result);
+      }
+
+      if (adv.session === "asia") {
+        warnings.push("亚洲盘流动性偏弱。");
+        result = downgrade(result);
+      }
+
+      if (adv.atr !== "normal") {
+        warnings.push("ATR " + getAtrText(adv.atr) + "。");
+        result = downgrade(result);
+      }
+
+      if (adv.trigger === "no") fails.push("没有明确触发");
+      if (adv.keyzone === "no") fails.push("不在关键区");
+      if (adv.trapzone === "yes") fails.push("接近陷阱区");
+
+      if (fails.length > 0) result = "BLOCK";
+
+      const badgeClass = getBadgeClass(result);
+      el("resultBadge").textContent = result;
+      el("resultBadge").className = badgeClass;
+      el("exportBadge").textContent = result;
+      el("exportBadge").className = badgeClass;
+
+      el("scoreNumber").textContent = score + "/6";
+      el("exportScore").textContent = score + "/6";
+      el("scoreSignalText").textContent = score >= 5 ? "HIGH" : score === 4 ? "MEDIUM" : score >= 2 ? "LOW" : "IDLE";
+      el("scoreProgressBar").style.width = (score / 6) * 100 + "%";
+
+      const meta =
+        (el("symbol").value || "未填写标的") +
+        (el("timeframe").value ? " · " + el("timeframe").value : "") +
+        " · " + state.direction +
+        " · " + getTrendText(adv.trend);
+
+      el("scoreLabel").textContent = meta;
+      el("exportMeta").textContent = meta;
+
+      const checks = el("checks");
+      checks.innerHTML = "";
+
+      Object.keys(labels).forEach(function (key) {
+        const row = document.createElement("div");
+        row.className = "mini-row";
+        row.innerHTML =
+          "<span>" + labels[key] + "</span><span class='" +
+          (state[key] ? "ok" : "bad") + "'>" +
+          (state[key] ? "YES" : "NO") + "</span>";
+        checks.appendChild(row);
+      });
+
+      const extraRows = [
+        ["趋势", getTrendText(adv.trend), adv.trend === "sideways" ? "warn" : "ok"],
+        ["结构", adv.structural === "yes" ? "顺主趋势" : "逆主趋势", adv.structural === "yes" ? "ok" : "bad"],
+        ["Session", getSessionText(adv.session), adv.session === "asia" ? "warn" : "ok"],
+        ["ATR", getAtrText(adv.atr), adv.atr === "normal" ? "ok" : "warn"],
+        ["总分", score + "/6", score >= 5 ? "ok" : score === 4 ? "warn" : "bad"]
+      ];
+
+      extraRows.forEach(function (item) {
+        const row = document.createElement("div");
+        row.className = "mini-row";
+        row.innerHTML = "<span>" + item[0] + "</span><span class='" + item[2] + "'>" + item[1] + "</span>";
+        checks.appendChild(row);
+      });
+
+      const positives = [];
+      const missing = [];
+      Object.keys(labels).forEach(function (key) {
+        if (state[key]) positives.push(labels[key]);
+        else missing.push(labels[key]);
+      });
+
+      let analysis = "当前方向 " + state.direction + "，趋势 " + getTrendText(adv.trend) + "，MI6 得分 " + score + "/6。";
+      if (positives.length) analysis += " 已满足：" + positives.join("、") + "。";
+      if (missing.length) analysis += " 欠缺：" + missing.join("、") + "。";
+      if (warnings.length) analysis += " 风险修正：" + warnings.join(" ");
+      if (fails.length) analysis += " 审计失败：" + fails.join("、") + "。";
+      if (el("notes").value) analysis += " 备注：" + el("notes").value;
+
+      el("analysisText").textContent = analysis;
+      el("exportSummary").textContent = analysis;
+
+      let advice = "当前不建议交易。";
+      if (result === "STRONG TRADE") advice = "当前属于高质量 setup，但仍需确认 Entry / SL / TP。";
+      else if (result === "TRADE") advice = "条件较好，可以准备交易计划，但不要忽略风险报酬比。";
+      else if (result === "WATCH") advice = "建议观察，等待更清晰触发。";
+      else if (result === "BLOCK") advice = "系统拦截，先解决触发、关键区或陷阱区问题。";
+
+      el("adviceText").textContent = advice;
+
+      const riskList = el("riskList");
+      riskList.innerHTML = "";
+      const risks = ["分数高不等于必胜。", "必须搭配止损和仓位管理。"]
+        .concat(warnings)
+        .concat(fails.map(function (f) { return "审计失败：" + f; }));
+
+      risks.forEach(function (r) {
+        const li = document.createElement("li");
+        li.textContent = r;
+        riskList.appendChild(li);
+      });
+
+      el("exportRisk").textContent = fails.length ? "重点风险：" + fails.join("、") : "请搭配止损、仓位管理与风险报酬比。";
+    }
+
+    function applyData(data) {
+      console.log("API RESULT:", data);
+
+      if (!data || !data.success) {
+        setDebug("BAD DATA");
+        return;
+      }
+
+      if (data.image_analysis) {
+        el("trendSelect").value = data.image_analysis.trend || "sideways";
+      }
+
+      if (data.filters) {
+        el("structuralConsistency").value = data.filters.structural || "no";
+        el("isolatedPattern").value = data.filters.isolated || "yes";
+        el("sessionFilter").value = data.filters.session || "overlap";
+        el("atrFilter").value = data.filters.atr || "normal";
+      }
+
+      if (data.audit) {
+        el("triggerAudit").value = data.audit.trigger || "no";
+        el("keyZoneAudit").value = data.audit.keyzone || "no";
+        el("trapZoneAudit").value = data.audit.trapzone || "yes";
+      }
+
+      if (data.mi6) {
+        Object.keys(labels).forEach(function (key) {
+          setScore(key, Number(data.mi6[key] || 0));
+        });
+      }
+
+      el("stateChip").textContent = "STATE: REVIEW";
+      setDebug(data.fallback ? "FALLBACK MODE" : "AI MODE");
+      renderDecision();
+
+      if (data.analysis_text) {
+        el("analysisText").textContent = data.analysis_text + (data.fallback ? "（Fallback）" : "（AI）");
+      }
+    }
+
+    function getFallbackData(reason) {
+      return {
+        success: true,
+        fallback: true,
+        image_analysis: {
+          trend: "sideways",
+          structure_summary: "Fallback mode",
+          pattern_detected: "unknown",
+          notes: reason || "AI unavailable"
+        },
+        mi6: {
+          candlestick: 0,
+          chartpattern: 0,
+          wave: 0,
+          ma: 0,
+          bb: 0,
+          fibo: 0
+        },
+        filters: {
+          structural: "no",
+          isolated: "yes",
+          session: "overlap",
+          atr: "normal"
+        },
+        audit: {
+          trigger: "no",
+          keyzone: "no",
+          trapzone: "yes"
+        },
+        analysis_text: reason || "AI暂时不可用，系统已进入保底模式。",
+        suggested_result: "NO TRADE"
+      };
+    }
+
+    async function analyzeChart() {
+      const file = el("chartUpload").files[0];
+
+      if (!file) {
+        alert("请先选择图表图片");
+        return;
+      }
+
+      el("stateChip").textContent = "STATE: ANALYZING";
+      el("analysisText").textContent = "Uploading chart... Running API...";
+      setDebug("Analyze clicked");
+
+      const fd = new FormData();
+      fd.append("image", file);
+      fd.append("direction", state.direction);
+      fd.append("symbol", el("symbol").value || "");
+      fd.append("timeframe", el("timeframe").value || "");
+
+      try {
+        const res = await fetch(API_URL, { method: "POST", body: fd });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          console.warn("API returned error:", data);
+          applyData(getFallbackData("API返回错误，系统进入保底模式。"));
+          return;
+        }
+
+        applyData(data);
+      } catch (err) {
+        console.error("Analyze failed:", err);
+        applyData(getFallbackData("API连接失败，系统进入保底模式。"));
+      }
+    }
+
+    function resetAll() {
+      state.direction = "BUY";
+      Object.keys(labels).forEach(function (key) { state[key] = 0; });
+
+      el("symbol").value = "";
+      el("timeframe").value = "";
+      el("notes").value = "";
+      el("chartUpload").value = "";
+      el("previewImage").style.display = "none";
+      el("previewImage").src = "";
+
+      el("trendSelect").value = "up";
+      el("structuralConsistency").value = "yes";
+      el("isolatedPattern").value = "no";
+      el("sessionFilter").value = "overlap";
+      el("atrFilter").value = "normal";
+      el("triggerAudit").value = "yes";
+      el("keyZoneAudit").value = "yes";
+      el("trapZoneAudit").value = "no";
+
+      el("buyBtn").className = "active-buy";
+      el("shortBtn").className = "";
+      el("directionChip").textContent = "DIRECTION: BUY";
+
+      Object.keys(labels).forEach(function (key) {
+        const yesBtn = el(key + "Yes");
+        const noBtn = el(key + "No");
+        if (yesBtn && noBtn) {
+          yesBtn.className = "";
+          noBtn.className = "active-no";
+        }
+      });
+
+      el("stateChip").textContent = "STATE: IDLE";
+      el("scoreNumber").textContent = "0/6";
+      el("scoreSignalText").textContent = "IDLE";
+      el("scoreProgressBar").style.width = "0%";
+      el("scoreLabel").textContent = "等待上传图表并开始分析";
+      el("resultBadge").textContent = "NO TRADE";
+      el("resultBadge").className = "badge";
+      el("exportBadge").textContent = "NO TRADE";
+      el("exportBadge").className = "badge";
+      el("checks").innerHTML = "";
+      el("analysisText").textContent = "请先上传图表并点击 Analyze Chart。";
+      el("adviceText").textContent = "暂无建议。";
+      el("riskList").innerHTML = "<li>任何结果都必须搭配止损和仓位管理。</li>";
+      el("exportScore").textContent = "0/6";
+      el("exportMeta").textContent = "未生成摘要";
+      el("exportSummary").textContent = "上传图表后生成摘要。";
+      el("exportRisk").textContent = "暂无风险提示。";
+      setDebug("READY");
+    }
+
+    async function copySummary() {
+      const text =
+        "MI6 v3.2" + String.fromCharCode(10) +
+        el("exportMeta").textContent + String.fromCharCode(10) +
+        el("exportSummary").textContent + String.fromCharCode(10) +
+        el("exportRisk").textContent;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        setDebug("Copied");
+      } catch (err) {
+        alert("复制失败");
+      }
+    }
+
+    window.addEventListener("load", function () {
+      resetAll();
+      setDebug("LOADED");
     });
-
-    const data = await res.json();
-
-    if (!res.ok || !data.success) {
-      console.warn("API returned error:", data);
-      applyData(getFallbackData("API返回错误，系统进入保底模式。"));
-      return;
-    }
-
-    applyData(data);
-  } catch (err) {
-    console.error("Analyze failed:", err);
-    applyData(getFallbackData("API连接失败，系统进入保底模式。"));
-  }
-}
-
-function resetAll() {
-  state.direction = "BUY";
-
-  Object.keys(labels).forEach(function (key) {
-    state[key] = 0;
-  });
-
-  el("symbol").value = "";
-  el("timeframe").value = "";
-  el("notes").value = "";
-  el("chartUpload").value = "";
-  el("previewImage").style.display = "none";
-  el("previewImage").src = "";
-
-  el("trendSelect").value = "up";
-  el("structuralConsistency").value = "yes";
-  el("isolatedPattern").value = "no";
-  el("sessionFilter").value = "overlap";
-  el("atrFilter").value = "normal";
-  el("triggerAudit").value = "yes";
-  el("keyZoneAudit").value = "yes";
-  el("trapZoneAudit").value = "no";
-
-  el("buyBtn").className = "active-buy";
-  el("shortBtn").className = "";
-  el("directionChip").textContent = "DIRECTION: BUY";
-
-  Object.keys(labels).forEach(function (key) {
-    const yesBtn = el(key + "Yes");
-    const noBtn = el(key + "No");
-
-    if (yesBtn && noBtn) {
-      yesBtn.className = "";
-      noBtn.className = "active-no";
-    }
-  });
-
-  el("stateChip").textContent = "STATE: IDLE";
-  el("scoreNumber").textContent = "0/6";
-  el("scoreSignalText").textContent = "IDLE";
-  el("scoreProgressBar").style.width = "0%";
-  el("scoreLabel").textContent = "等待上传图表并开始分析";
-  el("resultBadge").textContent = "NO TRADE";
-  el("resultBadge").className = "badge";
-  el("exportBadge").textContent = "NO TRADE";
-  el("exportBadge").className = "badge";
-  el("checks").innerHTML = "";
-  el("analysisText").textContent = "请先上传图表并点击 Analyze Chart。";
-  el("adviceText").textContent = "暂无建议。";
-  el("riskList").innerHTML = "<li>任何结果都必须搭配止损和仓位管理。</li>";
-  el("exportScore").textContent = "0/6";
-  el("exportMeta").textContent = "未生成摘要";
-  el("exportSummary").textContent = "上传图表后生成摘要。";
-  el("exportRisk").textContent = "暂无风险提示。";
-
-  setDebug("READY");
-}
-
-async function copySummary() {
-  const text =
-    "MI6 v3.1" +
-    String.fromCharCode(10) +
-    el("exportMeta").textContent +
-    String.fromCharCode(10) +
-    el("exportSummary").textContent +
-    String.fromCharCode(10) +
-    el("exportRisk").textContent;
-
-  try {
-    await navigator.clipboard.writeText(text);
-    setDebug("Copied");
-  } catch (err) {
-    alert("复制失败");
-  }
-}
-
-window.addEventListener("load", function () {
-  resetAll();
-  setDebug("LOADED");
-});
-</script>
+  </script>
 </body>
 </html>
