@@ -317,7 +317,8 @@
     function logDebug(message){
       console.log('[MI6]', message);
       const box = $('debugBox');
-      if(window.MI6_DEBUG && box){ box.classList.add('show'); box.textContent += '\n' + message; }
+      if(window.MI6_DEBUG && box){ box.classList.add('show'); box.textContent += '
+' + message; }
     }
     function guard(name,fn){
       try{ return fn(); }
@@ -442,13 +443,37 @@
       const tp = inputValue(els.tpInput,'').trim() || 'Risk first. TP/SL must follow structure.';
       const note = inputValue(els.noteInput,'').trim() || decision.reason;
       const biasLine = direction === 'BUY' ? 'Bias: Looking for bullish continuation / reversal confirmation.' : 'Bias: Looking for bearish continuation / rejection confirmation.';
-      return `MI6 Trading Note · ${symbol}\n\nDirection: ${direction}\nScore: ${score}/6\nVerdict: ${decision.text}\nConfidence: ${decision.confidence}\n\n${biasLine}\n\nEntry Plan:\n${entry}\n\nTP / SL Plan:\n${tp}\n\nSOP Confirmed:\n${getActiveSop()}\n\nDescription:\n${note}\n\nInspired by VernonTee.\nStructured by Dean × Buddy.\n\nDisclaimer: This is my trading journal and SOP scoring reference, not financial advice.`;
+      return `MI6 Trading Note · ${symbol}
+
+Direction: ${direction}
+Score: ${score}/6
+Verdict: ${decision.text}
+Confidence: ${decision.confidence}
+
+${biasLine}
+
+Entry Plan:
+${entry}
+
+TP / SL Plan:
+${tp}
+
+SOP Confirmed:
+${getActiveSop()}
+
+Description:
+${note}
+
+Inspired by VernonTee.
+Structured by Dean × Buddy.
+
+Disclaimer: This is my trading journal and SOP scoring reference, not financial advice.`;
     }
 
     function buildHashtags(){
       const rawSymbol = inputValue(els.symbolInput,'trading') || 'trading';
       const symbol = rawSymbol.replace(/[^a-zA-Z0-9]/g,'') || 'trading';
-      return `#MI6TradingSystem #DeanTradingIdea #VernonTee #TradingJournal #TradingSOP #${symbol} #${direction}Setup #PriceAction #TechnicalAnalysis #RiskManagement #DisciplineTrading #TraderMindset #ForexTrading #GoldTrading #IndexTrading #CryptoTrading #SmartMoney #ChartAnalysis #TradingPlan #NotFinancialAdvice`;
+      return `#MI6TradingSystem #VTC #VernonTeetraderpreneur #TradingJournal #TradingSOP #RiskManagement #DisciplineTrading #TraderMindset #TradingPlan`;
     }
 
     function updateCreator(){
@@ -516,7 +541,9 @@
         safeAddEvent($('refreshCaptionBtn'),'click',updateCreator);
         safeAddEvent($('copyCaptionBtn'),'click',()=>copyText(inputValue(els.captionBox,''),'Caption copied.'));
         safeAddEvent($('copyHashtagBtn'),'click',()=>copyText(inputValue(els.hashtagBox,''),'Hashtag copied.'));
-        safeAddEvent($('copyAllBtn'),'click',()=>copyText(inputValue(els.captionBox,'') + '\n\n' + inputValue(els.hashtagBox,''),'Caption + hashtag copied.'));
+        safeAddEvent($('copyAllBtn'),'click',()=>copyText(inputValue(els.captionBox,'') + '
+
+' + inputValue(els.hashtagBox,''),'Caption + hashtag copied.'));
         logDebug('events bound');
       });
     }
