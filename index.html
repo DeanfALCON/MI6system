@@ -175,10 +175,21 @@
     .ig-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column}
     .ig-top{display:flex;justify-content:space-between;align-items:center;color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.12em}
     .ig-title{font-size:32px;font-weight:950;letter-spacing:-.06em;margin:24px 0 8px;line-height:.95}
-    .ig-sub{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:18px}
-    .ig-score{font-size:76px;font-weight:950;letter-spacing:-.08em;line-height:.9;margin-top:auto}
+    .ig-sub{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:10px}
+    .ig-radar{position:relative;width:145px;height:145px;margin:12px auto 8px;border-radius:50%;display:grid;place-items:center}
+    .radar-ring{position:absolute;border-radius:50%;border:1px solid rgba(56,244,255,.34);box-shadow:0 0 22px rgba(56,244,255,.14)}
+    .radar-ring.r1{inset:10px}.radar-ring.r2{inset:34px;border-color:rgba(53,255,154,.30)}
+    .radar-line{position:absolute;width:2px;height:68px;background:linear-gradient(to bottom,rgba(56,244,255,.95),transparent);transform-origin:bottom center;animation:radarSpin 4s linear infinite;bottom:72px;left:71px}
+    .radar-core{width:22px;height:22px;border-radius:50%;background:var(--cyan);box-shadow:0 0 28px rgba(56,244,255,.78)}
+    @keyframes radarSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .ig-sop-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0 10px}
+    .ig-pill{border:1px solid rgba(143,162,208,.22);background:rgba(255,255,255,.045);border-radius:999px;padding:6px 8px;font-size:9px;font-weight:950;color:var(--muted);text-align:center;letter-spacing:.06em}
+    .ig-pill.on{color:var(--green);border-color:rgba(53,255,154,.52);box-shadow:0 0 16px rgba(53,255,154,.14)}
+    .ig-pill.off{color:rgba(255,77,109,.88);border-color:rgba(255,77,109,.38)}
+    .ig-score{font-size:70px;font-weight:950;letter-spacing:-.08em;line-height:.9;margin-top:4px}
     .ig-verdict{font-size:28px;font-weight:950;margin:8px 0;color:var(--green)}
     .ig-reason{font-size:13px;color:#c8d6ff;line-height:1.45;min-height:38px}
+    .ig-signature{margin-top:12px;border-top:1px solid rgba(143,162,208,.22);border-bottom:1px solid rgba(143,162,208,.22);padding:8px 0;color:var(--cyan);font-size:8px;font-weight:950;letter-spacing:.08em;text-align:center}
     .ig-footer{margin-top:18px;display:flex;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:800}
 
     .footer-note{text-align:center;color:var(--muted);font-size:12px;margin-top:20px;line-height:1.6}
@@ -255,9 +266,17 @@
           <div class="ig-top"><span>MI6 PRO v3.8.1</span><span id="igSymbol">XAUUSD</span></div>
           <div class="ig-title">TRADE<br/>DECISION</div>
           <div class="ig-sub">Six-point SOP scoring system for structured trading decisions.</div>
+          <div class="ig-radar">
+            <div class="radar-ring r1"></div>
+            <div class="radar-ring r2"></div>
+            <div class="radar-line"></div>
+            <div class="radar-core"></div>
+          </div>
+          <div class="ig-sop-mini" id="igSopMini"></div>
           <div class="ig-score"><span id="igScore">0</span>/6</div>
           <div class="ig-verdict" id="igVerdict">NO TRADE</div>
           <div class="ig-reason" id="igReason">Score below requirement. Wait for better confirmation.</div>
+          <div class="ig-signature">MI6 STRUCTURE CONFIRMED · RISK FIRST · DISCIPLINE ALWAYS</div>
           <div class="ig-footer"><span id="igDirection">BUY SETUP</span><span>DEAN × BUDDY</span></div>
         </div>
       </div>
@@ -295,6 +314,7 @@
     const igVerdict = document.getElementById('igVerdict');
     const igReason = document.getElementById('igReason');
     const igDirection = document.getElementById('igDirection');
+    const igSopMini = document.getElementById('igSopMini');
 
     function renderCriteria(){
       list.innerHTML = criteria.map(c=>`
@@ -359,7 +379,18 @@
       igVerdict.textContent = decision.text;
       igVerdict.style.color = decision.cls === 'trade' ? 'var(--green)' : decision.cls === 'wait' ? 'var(--yellow)' : 'var(--red)';
       igReason.textContent = noteInput.value.trim() || decision.reason;
-      igDirection.textContent = `${direction} SETUP`;
+      igDirection.textContent = direction + ' SETUP';
+      igSopMini.innerHTML = criteria.map(c=>{
+        const shortName = c.name
+          .replace(/^[0-9][.] /,'')
+          .replace('Candlestick Pattern','CANDLE')
+          .replace('Chart Pattern','CHART')
+          .replace('Wave Structure','WAVE')
+          .replace('Moving Average','MA')
+          .replace('Bollinger Band Zone','BB')
+          .replace('Fibonacci Zone','FIBO');
+        return '<div class="ig-pill ' + (state[c.key] ? 'on' : 'off') + '">' + shortName + '</div>';
+      }).join('');
     }
 
     document.querySelectorAll('.dir-btn').forEach(btn=>{
@@ -402,7 +433,17 @@
 
       clone.querySelector('.ig-title').style.fontSize = '96px';
       clone.querySelector('.ig-sub').style.fontSize = '34px';
-      clone.querySelector('.ig-score').style.fontSize = '220px';
+      clone.querySelector('.ig-score').style.fontSize = '190px';
+      clone.querySelector('.ig-radar').style.width = '390px';
+      clone.querySelector('.ig-radar').style.height = '390px';
+      clone.querySelector('.radar-core').style.width = '64px';
+      clone.querySelector('.radar-core').style.height = '64px';
+      clone.querySelector('.radar-line').style.height = '185px';
+      clone.querySelector('.radar-line').style.bottom = '195px';
+      clone.querySelector('.radar-line').style.left = '194px';
+      clone.querySelectorAll('.ig-pill').forEach(p=>{p.style.fontSize='25px';p.style.padding='16px 18px';});
+      clone.querySelector('.ig-signature').style.fontSize = '21px';
+      clone.querySelector('.ig-signature').style.padding = '20px 0';
       clone.querySelector('.ig-verdict').style.fontSize = '82px';
       clone.querySelector('.ig-reason').style.fontSize = '36px';
       clone.querySelector('.ig-top').style.fontSize = '28px';
