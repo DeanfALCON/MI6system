@@ -276,16 +276,25 @@
         <div class="ig-bg-glow glow-a"></div>
         <div class="ig-bg-glow glow-b"></div>
         <div class="ig-content">
-          <div class="ig-top"><span>MI6 PRO v3.9.1</span><span id="igSymbol">XAUUSD</span></div>
+          <div class="ig-top"><span>MI6 PRO v3.9.2</span><span id="igSymbol">XAUUSD</span></div>
+
           <div class="ig-title">TRADE<br/>DECISION</div>
-          <div class="ig-sub">Six-point SOP scoring system for structured trading decisions.</div>
-          <div class="ig-desc" id="igDesc">Structured setup aligned with SOP. Waiting for confirmation or execution based on score.</div>
-          <div class="ig-sop-mini" id="igSopMini"></div>
+
           <div class="ig-score"><span id="igScore">0</span>/6</div>
           <div class="ig-verdict" id="igVerdict">NO TRADE</div>
-          <div class="ig-reason" id="igReason">Score below requirement. Wait for better confirmation.</div>
-          <div class="ig-signature">MI6 STRUCTURE CONFIRMED · RISK FIRST · DISCIPLINE ALWAYS · Inspired by VernonTee</div>
-          <div class="ig-footer"><span id="igDirection">BUY SETUP</span><span>DEAN × BUDDY</span></div>
+
+          <div class="ig-desc" id="igDesc">Structured setup aligned with SOP.</div>
+
+          <div class="ig-sop-mini" id="igSopMini"></div>
+
+          <div class="ig-plan">
+            <div><b>Entry</b><span id="igEntry">-</span></div>
+            <div><b>TP/SL</b><span id="igTP">-</span></div>
+          </div>
+
+          <div class="ig-signature">Inspired by VernonTee · Structured by Dean × Buddy</div>
+
+          <div class="ig-footer"><span id="igDirection">BUY SETUP</span></div>
         </div>
       </div>
     </section>
@@ -317,7 +326,7 @@
     function logDebug(message){
       console.log('[MI6]', message);
       const box = $('debugBox');
-      if(window.MI6_DEBUG && box){ box.classList.add('show'); box.textContent += '\\n' + message; }
+      if(window.MI6_DEBUG && box){ box.classList.add('show'); box.textContent += '\n' + message; }
     }
     function guard(name,fn){
       try{ return fn(); }
@@ -540,7 +549,7 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         safeAddEvent($('refreshCaptionBtn'),'click',updateCreator);
         safeAddEvent($('copyCaptionBtn'),'click',()=>copyText(inputValue(els.captionBox,''),'Caption copied.'));
         safeAddEvent($('copyHashtagBtn'),'click',()=>copyText(inputValue(els.hashtagBox,''),'Hashtag copied.'));
-        safeAddEvent($('copyAllBtn'),'click',()=>copyText(inputValue(els.captionBox,'') + '\\n\\n' + inputValue(els.hashtagBox,''),'Caption + hashtag copied.'));
+        safeAddEvent($('copyAllBtn'),'click',()=>copyText(inputValue(els.captionBox,'') + '\n\n' + inputValue(els.hashtagBox,''),'Caption + hashtag copied.'));
         logDebug('events bound');
       });
     }
