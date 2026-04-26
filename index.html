@@ -317,8 +317,7 @@
     function logDebug(message){
       console.log('[MI6]', message);
       const box = $('debugBox');
-      if(window.MI6_DEBUG && box){ box.classList.add('show'); box.textContent += '
-' + message; }
+      if(window.MI6_DEBUG && box){ box.classList.add('show'); box.textContent += '\\n' + message; }
     }
     function guard(name,fn){
       try{ return fn(); }
@@ -541,9 +540,7 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         safeAddEvent($('refreshCaptionBtn'),'click',updateCreator);
         safeAddEvent($('copyCaptionBtn'),'click',()=>copyText(inputValue(els.captionBox,''),'Caption copied.'));
         safeAddEvent($('copyHashtagBtn'),'click',()=>copyText(inputValue(els.hashtagBox,''),'Hashtag copied.'));
-        safeAddEvent($('copyAllBtn'),'click',()=>copyText(inputValue(els.captionBox,'') + '
-
-' + inputValue(els.hashtagBox,''),'Caption + hashtag copied.'));
+        safeAddEvent($('copyAllBtn'),'click',()=>copyText(inputValue(els.captionBox,'') + '\\n\\n' + inputValue(els.hashtagBox,''),'Caption + hashtag copied.'));
         logDebug('events bound');
       });
     }
