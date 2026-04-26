@@ -1,97 +1,92 @@
+<!-- MI6 v3.5 PRO UI (Based on v3.3 style, cleaned logic) -->
 <!DOCTYPE html>
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 v3.5 PRO</title>
+<title>MI6 v3.5 六分制交易系统</title>
 
 <style>
-body{
-  margin:0;
-  font-family: "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top,#0f172a,#020617);
-  color:#fff;
-}
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:30px;
-}
-.card{
-  background:rgba(255,255,255,0.05);
-  border-radius:16px;
+body{margin:0;font-family:Arial;background:#0a0f1c;color:#fff}
+.container{max-width:1200px;margin:auto;padding:20px}
+
+.header{
+  background:#111a2e;
   padding:20px;
+  border-radius:14px;
   margin-bottom:20px;
-  backdrop-filter: blur(10px);
-  border:1px solid rgba(255,255,255,0.1);
+  border:1px solid #2a3a5a;
 }
-h1{font-size:32px;margin-bottom:10px}
-p{opacity:.7}
 
-button{
-  padding:12px 20px;
-  border-radius:10px;
-  border:none;
-  cursor:pointer;
-  margin:5px;
-  font-weight:bold;
-}
-.buy{background:#16a34a}
-.short{background:#dc2626}
-.active{outline:2px solid #fff}
+h1{margin:0}
+.sub{opacity:.6;margin-top:5px}
 
-.grid{
+.layout{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:1fr 380px;
   gap:20px;
 }
 
-.score-box{
-  display:flex;
-  justify-content:space-between;
-  margin:10px 0;
+.card{
+  background:#111a2e;
+  padding:20px;
+  border-radius:14px;
+  border:1px solid #2a3a5a;
 }
 
-.score-btn{
-  flex:1;
-  margin:0 5px;
+.btn{
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin:5px;
+  cursor:pointer;
+  font-weight:bold;
 }
+
+.buy{background:#16a34a}
+.short{background:#dc2626}
+.active{outline:2px solid white}
+
+.row{display:flex;justify-content:space-between;margin:10px 0}
 
 .yes{background:#16a34a}
 .no{background:#dc2626}
 
-.result{
-  font-size:40px;
+.score{
+  font-size:50px;
   font-weight:bold;
 }
 
-.tag{
-  display:inline-block;
-  padding:6px 12px;
+.badge{
+  padding:10px;
   border-radius:20px;
+  display:inline-block;
   margin-top:10px;
 }
+
 .trade{background:#16a34a}
 .watch{background:#f59e0b}
 .noTrade{background:#dc2626}
+
+.missing{margin-top:10px;opacity:.7}
 </style>
 </head>
 
 <body>
 <div class="container">
 
-<div class="card">
+<div class="header">
 <h1>MI6 v3.5 六分制交易系统</h1>
-<p>Based on Vernon Tee · Discipline Execution Tool</p>
+<div class="sub">Based on Vernon Tee · Discipline Execution Tool</div>
 </div>
 
-<div class="grid">
+<div class="layout">
 
 <!-- LEFT -->
 <div class="card">
 <h3>方向</h3>
-<button id="buyBtn" class="buy">BUY</button>
-<button id="shortBtn" class="short">SHORT</button>
+<button id="buyBtn" class="btn buy active">BUY</button>
+<button id="shortBtn" class="btn short">SHORT</button>
 
 <h3>六分评分</h3>
 <div id="scores"></div>
@@ -100,9 +95,9 @@ button{
 <!-- RIGHT -->
 <div class="card">
 <h3>MI6 Decision</h3>
-<div class="result" id="score">0/6</div>
+<div class="score" id="score">0/6</div>
 <div id="decision"></div>
-<div id="missing"></div>
+<div class="missing" id="missing"></div>
 </div>
 
 </div>
@@ -110,82 +105,85 @@ button{
 </div>
 
 <script>
-let direction = null;
-let scoreData = {
-  candlestick:0,
-  chartpattern:0,
-  wave:0,
-  ma:0,
-  bb:0,
-  fibo:0
+let direction="BUY";
+
+let scoreData={
+ candlestick:0,
+ chartpattern:0,
+ wave:0,
+ ma:0,
+ bb:0,
+ fibo:0
 };
 
-const labels = {
-  candlestick:"Candlestick",
-  chartpattern:"Chart Pattern",
-  wave:"Wave",
-  ma:"MA",
-  bb:"Bollinger Band",
-  fibo:"Fibo"
+const labels={
+ candlestick:"Candlestick",
+ chartpattern:"Chart Pattern",
+ wave:"Wave",
+ ma:"MA",
+ bb:"Bollinger Band",
+ fibo:"Fibo"
 };
 
-const scoresDiv = document.getElementById("scores");
+const scoresDiv=document.getElementById("scores");
 
 Object.keys(scoreData).forEach(key=>{
-  const div=document.createElement("div");
-  div.className="score-box";
+ let div=document.createElement("div");
+ div.className="row";
 
-  const label=document.createElement("span");
-  label.innerText=labels[key];
+ let label=document.createElement("span");
+ label.innerText=labels[key];
 
-  const yes=document.createElement("button");
-  yes.innerText="YES";
-  yes.className="score-btn yes";
-  yes.onclick=()=>{scoreData[key]=1;update();}
+ let yes=document.createElement("button");
+ yes.innerText="YES";
+ yes.className="btn yes";
+ yes.onclick=()=>{scoreData[key]=1;update();}
 
-  const no=document.createElement("button");
-  no.innerText="NO";
-  no.className="score-btn no";
-  no.onclick=()=>{scoreData[key]=0;update();}
+ let no=document.createElement("button");
+ no.innerText="NO";
+ no.className="btn no";
+ no.onclick=()=>{scoreData[key]=0;update();}
 
-  div.appendChild(label);
-  div.appendChild(yes);
-  div.appendChild(no);
-  scoresDiv.appendChild(div);
+ div.appendChild(label);
+ div.appendChild(yes);
+ div.appendChild(no);
+ scoresDiv.appendChild(div);
 });
 
-// direction
-document.getElementById("buyBtn").onclick=()=>{
-  direction="BUY";
-  buyBtn.classList.add("active");
-  shortBtn.classList.remove("active");
+buyBtn.onclick=()=>{
+ direction="BUY";
+ buyBtn.classList.add("active");
+ shortBtn.classList.remove("active");
+ update();
 }
 
-document.getElementById("shortBtn").onclick=()=>{
-  direction="SHORT";
-  shortBtn.classList.add("active");
-  buyBtn.classList.remove("active");
+shortBtn.onclick=()=>{
+ direction="SHORT";
+ shortBtn.classList.add("active");
+ buyBtn.classList.remove("active");
+ update();
 }
 
 function update(){
-  const total=Object.values(scoreData).reduce((a,b)=>a+b,0);
-  document.getElementById("score").innerText=total+"/6";
+ let total=Object.values(scoreData).reduce((a,b)=>a+b,0);
+ score.innerText=total+"/6";
 
-  let decision="";
-  let className="";
+ let decision="";
+ let cls="";
 
-  if(total>=5){decision="TRADE";className="trade"}
-  else if(total===4){decision="WATCH";className="watch"}
-  else{decision="NO TRADE";className="noTrade"}
+ if(total>=5){decision="TRADE";cls="trade"}
+ else if(total===4){decision="WATCH";cls="watch"}
+ else{decision="NO TRADE";cls="noTrade"}
 
-  document.getElementById("decision").innerHTML=
-    `<div class="tag ${className}">${decision} (${direction||"No Direction"})</div>`;
+ document.getElementById("decision").innerHTML=
+ `<div class="badge ${cls}">${decision} (${direction})</div>`;
 
-  // missing
-  const missing=Object.keys(scoreData).filter(k=>scoreData[k]===0);
-  document.getElementById("missing").innerText=
-    "缺少: "+missing.map(k=>labels[k]).join(", ");
+ let missing=Object.keys(scoreData).filter(k=>scoreData[k]===0);
+ document.getElementById("missing").innerText=
+ "缺少: "+missing.map(k=>labels[k]).join(", ");
 }
+
+update();
 </script>
 
 </body>
