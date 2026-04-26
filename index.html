@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 v3.6 六分制交易系统</title>
+<title>MI6 v3.6.1 六分制交易系统</title>
 
 <style>
 body{
@@ -38,34 +38,25 @@ h1{margin:0}
   border-radius:16px;
   border:1px solid rgba(255,255,255,0.1);
   backdrop-filter:blur(10px);
-  transition:0.3s;
-}
-.card:hover{
-  box-shadow:0 0 20px rgba(99,102,241,0.3);
 }
 
 .btn{
-  padding:10px;
-  border-radius:10px;
+  padding:8px 14px;
+  border-radius:8px;
   border:none;
-  margin:5px;
   cursor:pointer;
   font-weight:bold;
-  transition:0.2s;
 }
 
 .buy{background:#22c55e}
 .short{background:#ef4444}
+.active{outline:2px solid white}
 
-.active{
-  outline:2px solid white;
-  transform:scale(1.05);
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  margin:10px 0;
+.score-row{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  align-items:center;
+  margin:12px 0;
 }
 
 .yes{background:#22c55e}
@@ -77,6 +68,21 @@ h1{margin:0}
   background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
+}
+
+.progress{
+  height:10px;
+  background:#1e293b;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:10px;
+}
+
+.bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
+  transition:0.3s;
 }
 
 .badge{
@@ -92,25 +98,10 @@ h1{margin:0}
 .noTrade{background:#ef4444}
 
 .missing{
-  margin-top:15px;
+  margin-top:10px;
   opacity:.7;
   font-size:14px;
 }
-
-.progress{
-  height:10px;
-  background:#1e293b;
-  border-radius:10px;
-  overflow:hidden;
-  margin-top:10px;
-}
-.bar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
-  transition:0.3s;
-}
-
 </style>
 </head>
 
@@ -118,12 +109,13 @@ h1{margin:0}
 <div class="container">
 
 <div class="header">
-<h1>MI6 v3.6 六分制交易系统</h1>
+<h1>MI6 v3.6.1 六分制交易系统</h1>
 <div class="sub">Based on Vernon Tee · Discipline Execution Tool</div>
 </div>
 
 <div class="layout">
 
+<!-- LEFT -->
 <div class="card">
 <h3>方向</h3>
 <button id="buyBtn" class="btn buy active">BUY</button>
@@ -133,6 +125,7 @@ h1{margin:0}
 <div id="scores"></div>
 </div>
 
+<!-- RIGHT -->
 <div class="card">
 <h3>MI6 Decision</h3>
 <div class="score" id="score">0/6</div>
@@ -170,7 +163,7 @@ const scoresDiv=document.getElementById("scores");
 
 Object.keys(scoreData).forEach(key=>{
  let div=document.createElement("div");
- div.className="row";
+ div.className="score-row";
 
  let label=document.createElement("span");
  label.innerText=labels[key];
