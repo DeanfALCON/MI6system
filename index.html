@@ -378,18 +378,49 @@
       setSuggest("fiboSuggest", adv.isolated === "no" ? "建议：结构完整且接近关键 Fibo 区，才给 Fibo +1。" : "警告：孤立形态不要硬套 Fibo。", adv.isolated === "no" ? "good" : "warn");
     }
 
-    function applyAssistantSuggestions(){
-      const adv = readAdvanced();
-      const aligned = (adv.trend === "up" && state.direction === "BUY") || (adv.trend === "down" && state.direction === "SHORT");
-      if(aligned && adv.structural === "yes" && adv.trend !== "sideways") { setScore("wave",1); setScore("chartpattern",1); setScore("ma",1); }
-      else { setScore("wave",0); setScore("ma",0); }
-      setScore("candlestick", adv.trigger === "yes" ? 1 : 0);
-      setScore("bb", adv.atr === "normal" && aligned ? 1 : 0);
-      setScore("fibo", adv.isolated === "no" && aligned ? 1 : 0);
-      setDebug("AUTO SUGGEST APPLIED");
-      el("stateChip").textContent = "STATE: REVIEW";
-      renderDecision();
-    }
+   function applyAssistantSuggestions(){
+  const adv = readAdvanced();
+  const aligned =
+    (adv.trend === "up" && state.direction === "BUY") ||
+    (adv.trend === "down" && state.direction === "SHORT");
+
+  // 🔹 先全部清零（避免残留）
+  Object.keys(labels).forEach(key => setScore(key, 0));
+
+  // 🔹 Wave（只有趋势明确才给）
+  if (aligned && adv.trend !== "sideways") {
+    setScore("wave", 1);
+  }
+
+  // 🔹 Chart Pattern（需要结构 + 非孤立）
+  if (aligned && adv.structural === "yes" && adv.isolated === "no") {
+    setScore("chartpattern", 1);
+  }
+
+  // 🔹 MA（必须顺趋势 + ATR正常）
+  if (aligned && adv.atr === "normal") {
+    setScore("ma", 1);
+  }
+
+  // 🔹 Candlestick（必须有 trigger）
+  if (adv.trigger === "yes") {
+    setScore("candlestick", 1);
+  }
+
+  // 🔹 Fibo（必须非孤立 + 顺势）
+  if (aligned && adv.isolated === "no") {
+    setScore("fibo", 1);
+  }
+
+  // 🔹 BB（最保守，只在完美条件才给）
+  if (aligned && adv.atr === "normal" && adv.structural === "yes") {
+    setScore("bb", 1);
+  }
+
+  setDebug("SMART SUGGEST APPLIED");
+  el("stateChip").textContent = "STATE: REVIEW";
+  renderDecision();
+}
 
     function renderDecision(){
       const adv=readAdvanced(); const score=calculateScore(); let result=getBaseResult(score); const warnings=[]; const fails=[];
