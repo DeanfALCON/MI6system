@@ -1,21 +1,26 @@
-<!-- MI6 v3.5 PRO UI (Based on v3.3 style, cleaned logic) -->
 <!DOCTYPE html>
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MI6 v3.5 六分制交易系统</title>
+<title>MI6 v3.6 六分制交易系统</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#0a0f1c;color:#fff}
+body{
+  margin:0;
+  font-family:Arial;
+  background: radial-gradient(circle at top,#0f172a,#020617);
+  color:#fff;
+}
 .container{max-width:1200px;margin:auto;padding:20px}
 
 .header{
-  background:#111a2e;
+  background:linear-gradient(135deg,#1e293b,#0f172a);
   padding:20px;
-  border-radius:14px;
+  border-radius:16px;
   margin-bottom:20px;
-  border:1px solid #2a3a5a;
+  border:1px solid rgba(255,255,255,0.1);
+  box-shadow:0 0 20px rgba(99,102,241,0.2);
 }
 
 h1{margin:0}
@@ -28,10 +33,15 @@ h1{margin:0}
 }
 
 .card{
-  background:#111a2e;
+  background:rgba(255,255,255,0.05);
   padding:20px;
-  border-radius:14px;
-  border:1px solid #2a3a5a;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(10px);
+  transition:0.3s;
+}
+.card:hover{
+  box-shadow:0 0 20px rgba(99,102,241,0.3);
 }
 
 .btn{
@@ -41,34 +51,66 @@ h1{margin:0}
   margin:5px;
   cursor:pointer;
   font-weight:bold;
+  transition:0.2s;
 }
 
-.buy{background:#16a34a}
-.short{background:#dc2626}
-.active{outline:2px solid white}
+.buy{background:#22c55e}
+.short{background:#ef4444}
 
-.row{display:flex;justify-content:space-between;margin:10px 0}
+.active{
+  outline:2px solid white;
+  transform:scale(1.05);
+}
 
-.yes{background:#16a34a}
-.no{background:#dc2626}
+.row{
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
+}
+
+.yes{background:#22c55e}
+.no{background:#ef4444}
 
 .score{
-  font-size:50px;
+  font-size:60px;
   font-weight:bold;
+  background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
 .badge{
-  padding:10px;
+  padding:10px 20px;
   border-radius:20px;
   display:inline-block;
   margin-top:10px;
+  font-weight:bold;
 }
 
-.trade{background:#16a34a}
+.trade{background:#22c55e}
 .watch{background:#f59e0b}
-.noTrade{background:#dc2626}
+.noTrade{background:#ef4444}
 
-.missing{margin-top:10px;opacity:.7}
+.missing{
+  margin-top:15px;
+  opacity:.7;
+  font-size:14px;
+}
+
+.progress{
+  height:10px;
+  background:#1e293b;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:10px;
+}
+.bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
+  transition:0.3s;
+}
+
 </style>
 </head>
 
@@ -76,13 +118,12 @@ h1{margin:0}
 <div class="container">
 
 <div class="header">
-<h1>MI6 v3.5 六分制交易系统</h1>
+<h1>MI6 v3.6 六分制交易系统</h1>
 <div class="sub">Based on Vernon Tee · Discipline Execution Tool</div>
 </div>
 
 <div class="layout">
 
-<!-- LEFT -->
 <div class="card">
 <h3>方向</h3>
 <button id="buyBtn" class="btn buy active">BUY</button>
@@ -92,10 +133,10 @@ h1{margin:0}
 <div id="scores"></div>
 </div>
 
-<!-- RIGHT -->
 <div class="card">
 <h3>MI6 Decision</h3>
 <div class="score" id="score">0/6</div>
+<div class="progress"><div class="bar" id="bar"></div></div>
 <div id="decision"></div>
 <div class="missing" id="missing"></div>
 </div>
@@ -167,6 +208,8 @@ shortBtn.onclick=()=>{
 function update(){
  let total=Object.values(scoreData).reduce((a,b)=>a+b,0);
  score.innerText=total+"/6";
+
+ bar.style.width=(total/6*100)+"%";
 
  let decision="";
  let cls="";
