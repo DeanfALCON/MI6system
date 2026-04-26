@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MI6 Trading System v3.8.1 PRO</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     :root{
       --bg:#050816;
@@ -379,15 +380,20 @@
     });
 
     async function exportIGCard(){
-      const card = document.getElementById('igCard');
-      const clone = card.cloneNode(true);
+      const original = document.getElementById('igCard');
+      const clone = original.cloneNode(true);
+
+      clone.id = 'igCardExport';
       clone.style.width = '1080px';
       clone.style.height = '1350px';
+      clone.style.maxWidth = 'none';
       clone.style.borderRadius = '72px';
       clone.style.padding = '72px';
       clone.style.position = 'fixed';
-      clone.style.left = '-9999px';
+      clone.style.left = '-2000px';
       clone.style.top = '0';
+      clone.style.zIndex = '-1';
+
       clone.querySelector('.ig-title').style.fontSize = '96px';
       clone.querySelector('.ig-sub').style.fontSize = '34px';
       clone.querySelector('.ig-score').style.fontSize = '220px';
@@ -395,35 +401,33 @@
       clone.querySelector('.ig-reason').style.fontSize = '36px';
       clone.querySelector('.ig-top').style.fontSize = '28px';
       clone.querySelector('.ig-footer').style.fontSize = '28px';
+
       document.body.appendChild(clone);
 
-      const canvas = await htmlToCanvas(clone,1080,1350);
-      document.body.removeChild(clone);
-      const link = document.createElement('a');
-      const safeSymbol = (symbolInput.value || 'MI6').replace(/[^a-z0-9]/gi,'_');
-      link.download = `MI6_v3_8_1_${safeSymbol}_${direction}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    }
+      try{
+        const canvas = await html2canvas(clone,{
+          width:1080,
+          height:1350,
+          scale:1,
+          backgroundColor:null,
+          useCORS:true,
+          allowTaint:true,
+          logging:false
+        });
 
-    async function htmlToCanvas(element,width,height){
-      const svgData = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-          <foreignObject width="100%" height="100%">
-            ${new XMLSerializer().serializeToString(element)}
-          </foreignObject>
-        </svg>`;
-      const svgBlob = new Blob([svgData],{type:'image/svg+xml;charset=utf-8'});
-      const url = URL.createObjectURL(svgBlob);
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url;});
-      const canvas = document.createElement('canvas');
-      canvas.width = width; canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img,0,0,width,height);
-      URL.revokeObjectURL(url);
-      return canvas;
+        const link = document.createElement('a');
+        const safeSymbol = (symbolInput.value || 'MI6').replace(/[^a-z0-9]/gi,'_');
+        link.download = `MI6_v3_8_1_${safeSymbol}_${direction}.png`;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }catch(err){
+        alert('导出失败：请确认网络可以加载 html2canvas，或使用 Chrome / Edge 再试。');
+        console.error(err);
+      }finally{
+        document.body.removeChild(clone);
+      }
     }
 
     renderCriteria();
