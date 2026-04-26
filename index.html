@@ -648,7 +648,11 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
       });
     }
 
-    document.addEventListener('DOMContentLoaded',init);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   </script>
 </body>
 </html>
