@@ -3,18 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI6 Trading System v3.9 PRO Creator</title>
+  <title>MI6 Trading System v3.9.1 Stable</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     :root{
       --bg:#050816;
       --panel:#0b1024;
       --panel2:#111936;
-      --card:#0f1733cc;
-      --line:#25335f;
       --text:#eaf1ff;
       --muted:#8fa2d0;
-      --blue:#35a7ff;
       --cyan:#38f4ff;
       --green:#35ff9a;
       --yellow:#ffd166;
@@ -22,7 +19,6 @@
       --purple:#9d4edd;
       --shadow:0 0 30px rgba(53,167,255,.22);
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -35,10 +31,10 @@
       min-height:100vh;
       overflow-x:hidden;
     }
-
     body:before{
       content:"";
-      position:fixed;inset:0;
+      position:fixed;
+      inset:0;
       pointer-events:none;
       background-image:
         linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
@@ -46,9 +42,7 @@
       background-size:42px 42px;
       mask-image:linear-gradient(to bottom,rgba(0,0,0,.85),transparent 85%);
     }
-
     .app{max-width:1280px;margin:0 auto;padding:28px 18px 70px;position:relative;z-index:1}
-
     .hero{
       border:1px solid rgba(56,244,255,.18);
       background:linear-gradient(135deg,rgba(13,23,54,.82),rgba(5,8,22,.86));
@@ -59,18 +53,20 @@
       overflow:hidden;
     }
     .hero:after{
-      content:"v3.9";
-      position:absolute;right:20px;top:-20px;
-      font-size:112px;font-weight:950;letter-spacing:-8px;
+      content:"v3.9.1";
+      position:absolute;
+      right:20px;
+      top:-20px;
+      font-size:96px;
+      font-weight:950;
+      letter-spacing:-8px;
       color:rgba(255,255,255,.035);
     }
     .badge{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid rgba(56,244,255,.25);border-radius:999px;color:var(--cyan);font-size:12px;letter-spacing:.14em;text-transform:uppercase;background:rgba(56,244,255,.06)}
     h1{margin:14px 0 8px;font-size:clamp(32px,5vw,58px);line-height:.95;letter-spacing:-.04em}
-    .subtitle{color:var(--muted);max-width:760px;line-height:1.7;margin:0;font-size:15px}
-
+    .subtitle{color:var(--muted);max-width:800px;line-height:1.7;margin:0;font-size:15px}
     .layout{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-top:18px}
-    @media(max-width:920px){.layout{grid-template-columns:1fr}}
-
+    @media(max-width:920px){.layout,.creator-grid{grid-template-columns:1fr!important}}
     .panel{
       border:1px solid rgba(143,162,208,.16);
       background:linear-gradient(180deg,rgba(15,23,51,.8),rgba(8,13,32,.88));
@@ -82,17 +78,25 @@
     .panel-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
     .panel-title h2{margin:0;font-size:18px;letter-spacing:-.02em}
     .mini{font-size:12px;color:var(--muted)}
-
     .direction-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
     .dir-btn,.choice-btn,.action-btn{
       border:1px solid rgba(143,162,208,.22);
       background:linear-gradient(180deg,rgba(17,25,54,.95),rgba(7,12,30,.92));
-      color:var(--text);border-radius:18px;padding:14px 14px;cursor:pointer;
-      transition:.22s ease;position:relative;overflow:hidden;
-      font-weight:800;letter-spacing:.02em;
+      color:var(--text);
+      border-radius:18px;
+      padding:14px;
+      cursor:pointer;
+      transition:.22s ease;
+      position:relative;
+      overflow:hidden;
+      font-weight:800;
+      letter-spacing:.02em;
     }
     .dir-btn:before,.choice-btn:before,.action-btn:before{
-      content:"";position:absolute;inset:0;transform:translateX(-120%);
+      content:"";
+      position:absolute;
+      inset:0;
+      transform:translateX(-120%);
       background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
       transition:.45s ease;
     }
@@ -100,13 +104,16 @@
     .dir-btn:hover,.choice-btn:hover,.action-btn:hover{transform:translateY(-2px);border-color:rgba(56,244,255,.5);box-shadow:0 0 22px rgba(56,244,255,.12)}
     .dir-btn.active.buy{border-color:rgba(53,255,154,.75);box-shadow:0 0 22px rgba(53,255,154,.2);color:var(--green)}
     .dir-btn.active.sell{border-color:rgba(255,77,109,.75);box-shadow:0 0 22px rgba(255,77,109,.2);color:var(--red)}
-
-    .criteria{display:grid;gap:12px}
+    .criteria{display:grid;gap:12px;min-height:200px}
     .criterion{
       border:1px solid rgba(143,162,208,.16);
       background:rgba(5,8,22,.44);
-      border-radius:20px;padding:14px;
-      display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;
+      border-radius:20px;
+      padding:14px;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:14px;
+      align-items:center;
       transition:.25s ease;
     }
     .criterion.yes{border-color:rgba(53,255,154,.5);box-shadow:inset 0 0 22px rgba(53,255,154,.045)}
@@ -118,11 +125,14 @@
     .choice-btn.yes.active{border-color:var(--green);color:var(--green);animation:pop .22s ease}
     .choice-btn.no.active{border-color:var(--red);color:var(--red);animation:pop .22s ease}
     @keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
-
     .score-card{text-align:center;position:relative;overflow:hidden}
     .score-ring{
-      width:260px;height:260px;margin:10px auto 18px;border-radius:50%;
-      display:grid;place-items:center;
+      width:260px;
+      height:260px;
+      margin:10px auto 18px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
       background:conic-gradient(var(--cyan) calc(var(--scorePct)*1%),rgba(143,162,208,.12) 0);
       box-shadow:0 0 42px rgba(56,244,255,.17);
       transition:background .7s cubic-bezier(.22,1,.36,1);
@@ -132,44 +142,25 @@
     .score-inner{position:relative;z-index:2}
     .score-number{font-size:68px;font-weight:950;letter-spacing:-.08em;line-height:1}
     .score-total{color:var(--muted);font-weight:800}
-    .verdict{
-      display:inline-flex;align-items:center;justify-content:center;min-width:210px;
-      padding:12px 18px;border-radius:999px;font-weight:950;letter-spacing:.08em;
-      border:1px solid rgba(143,162,208,.2);background:rgba(255,255,255,.04);
-      transition:.25s ease;
-    }
+    .verdict{display:inline-flex;align-items:center;justify-content:center;min-width:210px;padding:12px 18px;border-radius:999px;font-weight:950;letter-spacing:.08em;border:1px solid rgba(143,162,208,.2);background:rgba(255,255,255,.04);transition:.25s ease}
     .verdict.trade{color:var(--green);border-color:rgba(53,255,154,.65);box-shadow:0 0 28px rgba(53,255,154,.22);animation:shake .35s ease}
     .verdict.wait{color:var(--yellow);border-color:rgba(255,209,102,.5)}
     .verdict.no{color:var(--red);border-color:rgba(255,77,109,.5)}
     @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
-
     .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
     .stat{border:1px solid rgba(143,162,208,.14);background:rgba(255,255,255,.035);border-radius:18px;padding:13px;text-align:left}
     .stat b{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.stat span{font-weight:900}
-
-    textarea,input{
-      width:100%;border:1px solid rgba(143,162,208,.2);background:rgba(5,8,22,.65);color:var(--text);
-      border-radius:18px;padding:13px;outline:none;font:inherit;resize:vertical;
-    }
+    textarea,input{width:100%;border:1px solid rgba(143,162,208,.2);background:rgba(5,8,22,.65);color:var(--text);border-radius:18px;padding:13px;outline:none;font:inherit;resize:vertical}
     textarea:focus,input:focus{border-color:rgba(56,244,255,.6);box-shadow:0 0 0 4px rgba(56,244,255,.08)}
     label{display:block;font-size:12px;color:var(--muted);margin:12px 0 7px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
     .buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
     .action-btn.primary{border-color:rgba(56,244,255,.45);color:var(--cyan)}
     .action-btn.danger{border-color:rgba(255,77,109,.35);color:var(--red)}
     .action-btn.copy{border-color:rgba(53,255,154,.36);color:var(--green)}
-
     .creator-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
-    @media(max-width:920px){.creator-grid{grid-template-columns:1fr}}
     .caption-box{min-height:270px;white-space:pre-wrap;line-height:1.65;font-size:14px}
-
     .ig-preview-wrap{margin-top:18px;display:grid;grid-template-columns:1fr;gap:12px}
-    #igCard{
-      width:360px;height:450px;max-width:100%;margin:0 auto;
-      background:linear-gradient(180deg,#07102a 0%,#050816 100%);
-      border:1px solid rgba(56,244,255,.25);
-      border-radius:24px;padding:24px;position:relative;overflow:hidden;
-      box-shadow:0 18px 50px rgba(0,0,0,.35);
-    }
+    #igCard{width:360px;height:450px;max-width:100%;margin:0 auto;background:linear-gradient(180deg,#07102a 0%,#050816 100%);border:1px solid rgba(56,244,255,.25);border-radius:24px;padding:24px;position:relative;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.35)}
     .ig-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:28px 28px;opacity:.75;z-index:0}
     .ig-bg-glow{position:absolute;border-radius:999px;filter:blur(10px);z-index:0;pointer-events:none}
     .glow-a{width:360px;height:360px;left:-120px;top:-120px;background:radial-gradient(circle,rgba(56,244,255,.38),transparent 68%)}
@@ -188,16 +179,17 @@
     .ig-reason{font-size:12px;color:#c8d6ff;line-height:1.38;min-height:32px}
     .ig-signature{margin-top:auto;border-top:1px solid rgba(143,162,208,.22);border-bottom:1px solid rgba(143,162,208,.22);padding:7px 0;color:var(--cyan);font-size:7.2px;font-weight:950;letter-spacing:.06em;text-align:center}
     .ig-footer{margin-top:10px;display:flex;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:800}
-
+    .debug-box{margin-top:18px;border:1px solid rgba(56,244,255,.18);background:rgba(5,8,22,.55);border-radius:18px;padding:13px;color:var(--muted);font-size:12px;line-height:1.6;display:none}
+    .debug-box.show{display:block}
     .footer-note{text-align:center;color:var(--muted);font-size:12px;margin-top:20px;line-height:1.6}
   </style>
 </head>
 <body>
   <main class="app">
     <section class="hero">
-      <div class="badge">MI6 PRO CREATOR · v3.9</div>
+      <div class="badge">MI6 PRO CREATOR · v3.9.1 STABLE</div>
       <h1>Six-Point Trading Content Engine</h1>
-      <p class="subtitle">Dean & Buddy MI6 内容生产版：先用六项 SOP 评分，再自动生成 IG 交易字卡、Caption 和 Hashtag。Inspired by VernonTee — 我只是把老师教的逻辑产品化。</p>
+      <p class="subtitle">Dean & Buddy MI6 稳定终极版：评分、导图、Caption、Hashtag 模块互相独立。Inspired by VernonTee — 我只是把老师教的逻辑产品化。</p>
     </section>
 
     <section class="layout">
@@ -210,7 +202,6 @@
           <button class="dir-btn buy active" data-direction="BUY">BUY 看多</button>
           <button class="dir-btn sell" data-direction="SELL">SELL 看空</button>
         </div>
-
         <div class="panel-title">
           <h2>02 · SOP Score</h2>
           <span class="mini">YES = 1 分 · NO = 0 分</span>
@@ -230,25 +221,19 @@
           </div>
         </div>
         <div class="verdict no" id="verdict">NO TRADE</div>
-
         <div class="result-grid">
           <div class="stat"><b>Direction</b><span id="directionText">BUY</span></div>
           <div class="stat"><b>Confidence</b><span id="confidenceText">LOW</span></div>
           <div class="stat"><b>Status</b><span id="statusText">BLOCK</span></div>
         </div>
-
         <label for="symbolInput">Symbol / Pair</label>
         <input id="symbolInput" placeholder="例如：XAUUSD / US500 / BTCUSD" value="XAUUSD" />
-
         <label for="entryInput">Entry Zone</label>
         <input id="entryInput" placeholder="例如：Buy above 4095 / 等回踩 0.618" />
-
         <label for="tpInput">TP / SL Plan</label>
         <input id="tpInput" placeholder="例如：TP 4120 / SL below structure" />
-
         <label for="noteInput">Description / Note</label>
         <textarea id="noteInput" rows="4" placeholder="写入你的交易理由、结构、波浪、Fibo、BB、入场条件等。"></textarea>
-
         <div class="buttons">
           <button class="action-btn primary" id="downloadBtn">Download IG PNG</button>
           <button class="action-btn danger" id="resetBtn">Reset</button>
@@ -268,7 +253,6 @@
           <button class="action-btn primary" id="refreshCaptionBtn">Refresh</button>
         </div>
       </div>
-
       <div class="panel">
         <div class="panel-title">
           <h2>05 · Hashtag Bank</h2>
@@ -292,7 +276,7 @@
         <div class="ig-bg-glow glow-a"></div>
         <div class="ig-bg-glow glow-b"></div>
         <div class="ig-content">
-          <div class="ig-top"><span>MI6 PRO v3.9</span><span id="igSymbol">XAUUSD</span></div>
+          <div class="ig-top"><span>MI6 PRO v3.9.1</span><span id="igSymbol">XAUUSD</span></div>
           <div class="ig-title">TRADE<br/>DECISION</div>
           <div class="ig-sub">Six-point SOP scoring system for structured trading decisions.</div>
           <div class="ig-desc" id="igDesc">Structured setup aligned with SOP. Waiting for confirmation or execution based on score.</div>
@@ -306,10 +290,13 @@
       </div>
     </section>
 
+    <div class="debug-box" id="debugBox">Debug: loading...</div>
     <p class="footer-note">Reminder: MI6 是交易评分辅助工具，不是保证盈利系统。真正重点是结构、纪律、风险控制。</p>
   </main>
 
   <script>
+    window.MI6_DEBUG = false;
+
     const criteria = [
       { key:'candle', name:'1. Candlestick Pattern', desc:'是否出现支持方向的强势蜡烛、吞没、Pin Bar、突破收线或反转确认？' },
       { key:'chart', name:'2. Chart Pattern', desc:'是否有清晰图表结构，例如趋势通道、三角形、双底/双顶、突破回踩？' },
@@ -323,49 +310,66 @@
     let state = Object.fromEntries(criteria.map(c=>[c.key,false]));
     let displayedScore = 0;
 
-    const list = document.getElementById('criteriaList');
-    const scoreNumber = document.getElementById('scoreNumber');
-    const scoreRing = document.getElementById('scoreRing');
-    const verdict = document.getElementById('verdict');
-    const directionText = document.getElementById('directionText');
-    const confidenceText = document.getElementById('confidenceText');
-    const statusText = document.getElementById('statusText');
-    const symbolInput = document.getElementById('symbolInput');
-    const entryInput = document.getElementById('entryInput');
-    const tpInput = document.getElementById('tpInput');
-    const noteInput = document.getElementById('noteInput');
-    const captionBox = document.getElementById('captionBox');
-    const hashtagBox = document.getElementById('hashtagBox');
+    function $(id){ return document.getElementById(id); }
+    function safeSetText(el,text){ if(el) el.textContent = text; }
+    function safeSetValue(el,value){ if(el) el.value = value; }
+    function safeAddEvent(el,event,handler){ if(el) el.addEventListener(event,handler); }
+    function logDebug(message){
+      console.log('[MI6]', message);
+      const box = $('debugBox');
+      if(window.MI6_DEBUG && box){ box.classList.add('show'); box.textContent += '\n' + message; }
+    }
+    function guard(name,fn){
+      try{ return fn(); }
+      catch(err){ console.error('[MI6 ERROR]', name, err); logDebug(name + ' failed: ' + err.message); return null; }
+    }
 
-    const igSymbol = document.getElementById('igSymbol');
-    const igScore = document.getElementById('igScore');
-    const igVerdict = document.getElementById('igVerdict');
-    const igReason = document.getElementById('igReason');
-    const igDirection = document.getElementById('igDirection');
-    const igSopMini = document.getElementById('igSopMini');
-    const igDesc = document.getElementById('igDesc');
+    const els = {
+      list:$('criteriaList'),
+      scoreNumber:$('scoreNumber'),
+      scoreRing:$('scoreRing'),
+      verdict:$('verdict'),
+      directionText:$('directionText'),
+      confidenceText:$('confidenceText'),
+      statusText:$('statusText'),
+      symbolInput:$('symbolInput'),
+      entryInput:$('entryInput'),
+      tpInput:$('tpInput'),
+      noteInput:$('noteInput'),
+      captionBox:$('captionBox'),
+      hashtagBox:$('hashtagBox'),
+      igSymbol:$('igSymbol'),
+      igScore:$('igScore'),
+      igVerdict:$('igVerdict'),
+      igReason:$('igReason'),
+      igDirection:$('igDirection'),
+      igSopMini:$('igSopMini'),
+      igDesc:$('igDesc')
+    };
 
-    function renderCriteria(){
-      list.innerHTML = criteria.map(c=>`
-        <div class="criterion ${state[c.key] ? 'yes' : 'no'}" data-key="${c.key}">
-          <div>
-            <div class="c-name">${c.name}</div>
-            <div class="c-desc">${c.desc}</div>
-          </div>
-          <div class="choices">
-            <button class="choice-btn yes ${state[c.key] ? 'active' : ''}" data-key="${c.key}" data-val="true">YES</button>
-            <button class="choice-btn no ${!state[c.key] ? 'active' : ''}" data-key="${c.key}" data-val="false">NO</button>
-          </div>
-        </div>
-      `).join('');
+    function inputValue(el,fallback=''){
+      return el && typeof el.value === 'string' ? el.value : fallback;
+    }
 
-      document.querySelectorAll('.choice-btn').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-          state[btn.dataset.key] = btn.dataset.val === 'true';
-          renderCriteria();
-          updateResult();
-        });
-      });
+    function shortName(name,mode='long'){
+      const cleaned = String(name).replace(/^[0-9][.] /,'');
+      const mapShort = {
+        'Candlestick Pattern':'CANDLE',
+        'Chart Pattern':'CHART',
+        'Wave Structure':'WAVE',
+        'Moving Average':'MA',
+        'Bollinger Band Zone':'BB',
+        'Fibonacci Zone':'FIBO'
+      };
+      const mapLong = {
+        'Candlestick Pattern':'Candle',
+        'Chart Pattern':'Chart',
+        'Wave Structure':'Wave',
+        'Moving Average':'MA',
+        'Bollinger Band Zone':'BB',
+        'Fibonacci Zone':'Fibo'
+      };
+      return mode === 'short' ? (mapShort[cleaned] || cleaned) : (mapLong[cleaned] || cleaned);
     }
 
     function getScore(){ return Object.values(state).filter(Boolean).length; }
@@ -376,225 +380,248 @@
       return { text:'NO TRADE', cls:'no', confidence:'LOW', status:'BLOCK', reason:'Score below requirement. Wait for better confirmation.' };
     }
 
-    function getSopSummary(){
-      return criteria.map(c=>{
-        const shortName = c.name
-          .replace(/^[0-9][.] /,'')
-          .replace('Candlestick Pattern','Candle')
-          .replace('Chart Pattern','Chart')
-          .replace('Wave Structure','Wave')
-          .replace('Moving Average','MA')
-          .replace('Bollinger Band Zone','BB')
-          .replace('Fibonacci Zone','Fibo');
-        return `${shortName}: ${state[c.key] ? 'YES' : 'NO'}`;
-      }).join(' · ');
-    }
+    function renderCriteria(){
+      return guard('renderCriteria',()=>{
+        if(!els.list) return;
+        els.list.innerHTML = criteria.map(c=>{
+          return `
+            <div class="criterion ${state[c.key] ? 'yes' : 'no'}" data-key="${c.key}">
+              <div>
+                <div class="c-name">${c.name}</div>
+                <div class="c-desc">${c.desc}</div>
+              </div>
+              <div class="choices">
+                <button class="choice-btn yes ${state[c.key] ? 'active' : ''}" data-key="${c.key}" data-val="true">YES</button>
+                <button class="choice-btn no ${!state[c.key] ? 'active' : ''}" data-key="${c.key}" data-val="false">NO</button>
+              </div>
+            </div>`;
+        }).join('');
 
-    function getActiveSop(){
-      return criteria.filter(c=>state[c.key]).map(c=>c.name.replace(/^[0-9][.] /,'')).join(', ') || 'No confirmed SOP yet';
+        document.querySelectorAll('.choice-btn').forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            guard('choiceClick',()=>{
+              state[btn.dataset.key] = btn.dataset.val === 'true';
+              renderCriteria();
+              updateResult();
+            });
+          });
+        });
+        logDebug('criteria rendered');
+      });
     }
 
     function animateScore(target){
-      const start = displayedScore;
-      const diff = target - start;
-      const startTime = performance.now();
-      const duration = 420;
-      function frame(now){
-        const t = Math.min(1,(now-startTime)/duration);
-        const eased = 1 - Math.pow(1-t,3);
-        const value = start + diff * eased;
-        scoreNumber.textContent = Math.round(value);
-        scoreRing.style.setProperty('--scorePct', (value/6*100).toFixed(2));
-        if(t < 1) requestAnimationFrame(frame);
-        else displayedScore = target;
-      }
-      requestAnimationFrame(frame);
+      return guard('animateScore',()=>{
+        const start = displayedScore;
+        const diff = target - start;
+        const startTime = performance.now();
+        const duration = 420;
+        function frame(now){
+          const t = Math.min(1,(now-startTime)/duration);
+          const eased = 1 - Math.pow(1-t,3);
+          const value = start + diff * eased;
+          safeSetText(els.scoreNumber,Math.round(value));
+          if(els.scoreRing) els.scoreRing.style.setProperty('--scorePct', (value/6*100).toFixed(2));
+          if(t < 1) requestAnimationFrame(frame);
+          else displayedScore = target;
+        }
+        requestAnimationFrame(frame);
+      });
+    }
+
+    function getActiveSop(){
+      const active = criteria.filter(c=>state[c.key]).map(c=>shortName(c.name,'long'));
+      return active.length ? active.join(', ') : 'No confirmed SOP yet';
     }
 
     function buildCaption(){
       const score = getScore();
       const decision = getDecision(score);
-      const symbol = symbolInput.value || 'SYMBOL';
-      const entry = entryInput.value.trim() || 'Waiting for clean entry zone';
-      const tp = tpInput.value.trim() || 'Risk first. TP/SL must follow structure.';
-      const note = noteInput.value.trim() || decision.reason;
+      const symbol = inputValue(els.symbolInput,'SYMBOL') || 'SYMBOL';
+      const entry = inputValue(els.entryInput,'').trim() || 'Waiting for clean entry zone';
+      const tp = inputValue(els.tpInput,'').trim() || 'Risk first. TP/SL must follow structure.';
+      const note = inputValue(els.noteInput,'').trim() || decision.reason;
       const biasLine = direction === 'BUY' ? 'Bias: Looking for bullish continuation / reversal confirmation.' : 'Bias: Looking for bearish continuation / rejection confirmation.';
-
-      return `MI6 Trading Note · ${symbol}
-
-Direction: ${direction}
-Score: ${score}/6
-Verdict: ${decision.text}
-Confidence: ${decision.confidence}
-
-${biasLine}
-
-Entry Plan:
-${entry}
-
-TP / SL Plan:
-${tp}
-
-SOP Confirmed:
-${getActiveSop()}
-
-Description:
-${note}
-
-Inspired by VernonTee.
-Structured by Dean × Buddy.
-
-Disclaimer: This is my trading journal and SOP scoring reference, not financial advice.`;
+      return `MI6 Trading Note · ${symbol}\n\nDirection: ${direction}\nScore: ${score}/6\nVerdict: ${decision.text}\nConfidence: ${decision.confidence}\n\n${biasLine}\n\nEntry Plan:\n${entry}\n\nTP / SL Plan:\n${tp}\n\nSOP Confirmed:\n${getActiveSop()}\n\nDescription:\n${note}\n\nInspired by VernonTee.\nStructured by Dean × Buddy.\n\nDisclaimer: This is my trading journal and SOP scoring reference, not financial advice.`;
     }
 
     function buildHashtags(){
-      const symbol = (symbolInput.value || 'trading').replace(/[^a-zA-Z0-9]/g,'');
+      const rawSymbol = inputValue(els.symbolInput,'trading') || 'trading';
+      const symbol = rawSymbol.replace(/[^a-zA-Z0-9]/g,'') || 'trading';
       return `#MI6TradingSystem #DeanTradingIdea #VernonTee #TradingJournal #TradingSOP #${symbol} #${direction}Setup #PriceAction #TechnicalAnalysis #RiskManagement #DisciplineTrading #TraderMindset #ForexTrading #GoldTrading #IndexTrading #CryptoTrading #SmartMoney #ChartAnalysis #TradingPlan #NotFinancialAdvice`;
     }
 
     function updateCreator(){
-      captionBox.value = buildCaption();
-      hashtagBox.value = buildHashtags();
+      return guard('updateCreator',()=>{
+        safeSetValue(els.captionBox,buildCaption());
+        safeSetValue(els.hashtagBox,buildHashtags());
+      });
+    }
+
+    function updateIGCard(score,decision){
+      return guard('updateIGCard',()=>{
+        safeSetText(els.igSymbol,inputValue(els.symbolInput,'SYMBOL') || 'SYMBOL');
+        safeSetText(els.igScore,score);
+        safeSetText(els.igVerdict,decision.text);
+        if(els.igVerdict) els.igVerdict.style.color = decision.cls === 'trade' ? 'var(--green)' : decision.cls === 'wait' ? 'var(--yellow)' : 'var(--red)';
+        safeSetText(els.igReason,inputValue(els.entryInput,'').trim() || decision.reason);
+        safeSetText(els.igDesc,inputValue(els.noteInput,'').trim() || decision.reason);
+        safeSetText(els.igDirection,direction + ' SETUP');
+        if(els.igSopMini){
+          els.igSopMini.innerHTML = criteria.map(c=>{
+            return '<div class="ig-pill ' + (state[c.key] ? 'on' : 'off') + '">' + shortName(c.name,'short') + '</div>';
+          }).join('');
+        }
+      });
     }
 
     function updateResult(){
-      const score = getScore();
-      const decision = getDecision(score);
-      animateScore(score);
-      verdict.className = `verdict ${decision.cls}`;
-      verdict.textContent = decision.text;
-      directionText.textContent = direction;
-      confidenceText.textContent = decision.confidence;
-      statusText.textContent = decision.status;
-
-      igSymbol.textContent = symbolInput.value || 'SYMBOL';
-      igScore.textContent = score;
-      igVerdict.textContent = decision.text;
-      igVerdict.style.color = decision.cls === 'trade' ? 'var(--green)' : decision.cls === 'wait' ? 'var(--yellow)' : 'var(--red)';
-      igReason.textContent = entryInput.value.trim() || decision.reason;
-      igDesc.textContent = noteInput.value.trim() || decision.reason;
-      igDirection.textContent = direction + ' SETUP';
-      igSopMini.innerHTML = criteria.map(c=>{
-        const shortName = c.name
-          .replace(/^[0-9][.] /,'')
-          .replace('Candlestick Pattern','CANDLE')
-          .replace('Chart Pattern','CHART')
-          .replace('Wave Structure','WAVE')
-          .replace('Moving Average','MA')
-          .replace('Bollinger Band Zone','BB')
-          .replace('Fibonacci Zone','FIBO');
-        return '<div class="ig-pill ' + (state[c.key] ? 'on' : 'off') + '">' + shortName + '</div>';
-      }).join('');
-
-      updateCreator();
+      return guard('updateResult',()=>{
+        const score = getScore();
+        const decision = getDecision(score);
+        animateScore(score);
+        if(els.verdict){ els.verdict.className = 'verdict ' + decision.cls; els.verdict.textContent = decision.text; }
+        safeSetText(els.directionText,direction);
+        safeSetText(els.confidenceText,decision.confidence);
+        safeSetText(els.statusText,decision.status);
+        updateIGCard(score,decision);
+        updateCreator();
+      });
     }
 
-    document.querySelectorAll('.dir-btn').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        direction = btn.dataset.direction;
-        document.querySelectorAll('.dir-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        updateResult();
+    function bindEvents(){
+      return guard('bindEvents',()=>{
+        document.querySelectorAll('.dir-btn').forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            guard('directionClick',()=>{
+              direction = btn.dataset.direction || 'BUY';
+              document.querySelectorAll('.dir-btn').forEach(b=>b.classList.remove('active'));
+              btn.classList.add('active');
+              updateResult();
+            });
+          });
+        });
+        [els.symbolInput,els.entryInput,els.tpInput,els.noteInput].forEach(el=>safeAddEvent(el,'input',updateResult));
+        safeAddEvent($('resetBtn'),'click',()=>{
+          guard('reset',()=>{
+            state = Object.fromEntries(criteria.map(c=>[c.key,false]));
+            safeSetValue(els.entryInput,'');
+            safeSetValue(els.tpInput,'');
+            safeSetValue(els.noteInput,'');
+            renderCriteria();
+            updateResult();
+          });
+        });
+        safeAddEvent($('downloadBtn'),'click',()=>exportIGCard());
+        safeAddEvent($('refreshCaptionBtn'),'click',updateCreator);
+        safeAddEvent($('copyCaptionBtn'),'click',()=>copyText(inputValue(els.captionBox,''),'Caption copied.'));
+        safeAddEvent($('copyHashtagBtn'),'click',()=>copyText(inputValue(els.hashtagBox,''),'Hashtag copied.'));
+        safeAddEvent($('copyAllBtn'),'click',()=>copyText(inputValue(els.captionBox,'') + '\n\n' + inputValue(els.hashtagBox,''),'Caption + hashtag copied.'));
+        logDebug('events bound');
       });
-    });
-
-    [symbolInput, entryInput, tpInput, noteInput].forEach(el=>el.addEventListener('input',updateResult));
-
-    document.getElementById('resetBtn').addEventListener('click',()=>{
-      state = Object.fromEntries(criteria.map(c=>[c.key,false]));
-      entryInput.value = '';
-      tpInput.value = '';
-      noteInput.value = '';
-      renderCriteria();
-      updateResult();
-    });
-
-    document.getElementById('downloadBtn').addEventListener('click',async()=>{
-      await exportIGCard();
-    });
-
-    document.getElementById('refreshCaptionBtn').addEventListener('click',updateCreator);
-    document.getElementById('copyCaptionBtn').addEventListener('click',()=>copyText(captionBox.value,'Caption copied.'));
-    document.getElementById('copyHashtagBtn').addEventListener('click',()=>copyText(hashtagBox.value,'Hashtag copied.'));
-    document.getElementById('copyAllBtn').addEventListener('click',()=>copyText(captionBox.value + '
-
-' + hashtagBox.value,'Caption + hashtag copied.'));
+    }
 
     async function copyText(text,msg){
-      try{
-        await navigator.clipboard.writeText(text);
-        alert(msg);
-      }catch(err){
-        const temp = document.createElement('textarea');
-        temp.value = text;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-        alert(msg);
-      }
+      return guard('copyText',async()=>{
+        try{
+          await navigator.clipboard.writeText(text);
+          alert(msg);
+        }catch(err){
+          const temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          document.body.removeChild(temp);
+          alert(msg);
+        }
+      });
+    }
+
+    function scaleExportClone(clone){
+      return guard('scaleExportClone',()=>{
+        const styles = [
+          ['.ig-title','fontSize','96px'],
+          ['.ig-sub','fontSize','34px'],
+          ['.ig-desc','fontSize','31px'],
+          ['.ig-desc','padding','30px 34px'],
+          ['.ig-desc','borderRadius','34px'],
+          ['.ig-desc','minHeight','175px'],
+          ['.ig-score','fontSize','185px'],
+          ['.ig-verdict','fontSize','72px'],
+          ['.ig-reason','fontSize','32px'],
+          ['.ig-top','fontSize','28px'],
+          ['.ig-footer','fontSize','28px'],
+          ['.ig-signature','fontSize','20px'],
+          ['.ig-signature','padding','19px 0']
+        ];
+        styles.forEach(([selector,prop,value])=>{
+          const target = clone.querySelector(selector);
+          if(target) target.style[prop] = value;
+        });
+        clone.querySelectorAll('.ig-pill').forEach(p=>{p.style.fontSize='25px';p.style.padding='16px 18px';});
+      });
     }
 
     async function exportIGCard(){
-      const original = document.getElementById('igCard');
-      const clone = original.cloneNode(true);
-
-      clone.id = 'igCardExport';
-      clone.style.width = '1080px';
-      clone.style.height = '1350px';
-      clone.style.maxWidth = 'none';
-      clone.style.borderRadius = '72px';
-      clone.style.padding = '72px';
-      clone.style.position = 'fixed';
-      clone.style.left = '-2000px';
-      clone.style.top = '0';
-      clone.style.zIndex = '-1';
-
-      clone.querySelector('.ig-title').style.fontSize = '96px';
-      clone.querySelector('.ig-sub').style.fontSize = '34px';
-      clone.querySelector('.ig-desc').style.fontSize = '31px';
-      clone.querySelector('.ig-desc').style.padding = '30px 34px';
-      clone.querySelector('.ig-desc').style.borderRadius = '34px';
-      clone.querySelector('.ig-desc').style.minHeight = '175px';
-      clone.querySelector('.ig-score').style.fontSize = '185px';
-      clone.querySelector('.ig-verdict').style.fontSize = '72px';
-      clone.querySelector('.ig-reason').style.fontSize = '32px';
-      clone.querySelector('.ig-top').style.fontSize = '28px';
-      clone.querySelector('.ig-footer').style.fontSize = '28px';
-      clone.querySelectorAll('.ig-pill').forEach(p=>{p.style.fontSize='25px';p.style.padding='16px 18px';});
-      clone.querySelector('.ig-signature').style.fontSize = '20px';
-      clone.querySelector('.ig-signature').style.padding = '19px 0';
-
-      document.body.appendChild(clone);
-
-      try{
-        const canvas = await html2canvas(clone,{
-          width:1080,
-          height:1350,
-          scale:1,
-          backgroundColor:'#050816',
-          useCORS:true,
-          allowTaint:true,
-          logging:false
-        });
-
-        const link = document.createElement('a');
-        const safeSymbol = (symbolInput.value || 'MI6').replace(/[^a-z0-9]/gi,'_');
-        link.download = `MI6_v3_9_${safeSymbol}_${direction}.png`;
-        link.href = canvas.toDataURL('image/png');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }catch(err){
-        alert('导出失败：请确认网络可以加载 html2canvas，或使用 Chrome / Edge 再试。');
-        console.error(err);
-      }finally{
-        document.body.removeChild(clone);
-      }
+      return guard('exportIGCard',async()=>{
+        if(typeof html2canvas === 'undefined'){
+          alert('导出失败：html2canvas 没有成功加载。请检查网络或 CDN。');
+          return;
+        }
+        const original = $('igCard');
+        if(!original){ alert('导出失败：找不到 IG Card。'); return; }
+        const clone = original.cloneNode(true);
+        clone.id = 'igCardExport';
+        clone.style.width = '1080px';
+        clone.style.height = '1350px';
+        clone.style.maxWidth = 'none';
+        clone.style.borderRadius = '72px';
+        clone.style.padding = '72px';
+        clone.style.position = 'fixed';
+        clone.style.left = '-2000px';
+        clone.style.top = '0';
+        clone.style.zIndex = '-1';
+        scaleExportClone(clone);
+        document.body.appendChild(clone);
+        try{
+          const canvas = await html2canvas(clone,{
+            width:1080,
+            height:1350,
+            scale:1,
+            backgroundColor:'#050816',
+            useCORS:true,
+            allowTaint:true,
+            logging:false
+          });
+          const link = document.createElement('a');
+          const safeSymbol = (inputValue(els.symbolInput,'MI6') || 'MI6').replace(/[^a-z0-9]/gi,'_');
+          link.download = `MI6_v3_9_1_${safeSymbol}_${direction}.png`;
+          link.href = canvas.toDataURL('image/png');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }catch(err){
+          alert('导出失败：请使用 Chrome / Edge 再试，或检查 Console 错误。');
+          console.error(err);
+        }finally{
+          if(clone.parentNode) document.body.removeChild(clone);
+        }
+      });
     }
 
-    renderCriteria();
-    updateResult();
+    function init(){
+      guard('init',()=>{
+        const debugBox = $('debugBox');
+        if(window.MI6_DEBUG && debugBox){ debugBox.classList.add('show'); debugBox.textContent = 'Debug: start'; }
+        renderCriteria();
+        bindEvents();
+        updateResult();
+        logDebug('MI6 v3.9.1 stable ready');
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded',init);
   </script>
 </body>
 </html>
