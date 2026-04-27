@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI6 Trading System v4.0 Commercial Export Studio</title>
+  <title>MI6 Trading System v4.2 Mobile Optimized Export Studio</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     :root{
@@ -53,7 +53,7 @@
       overflow:hidden;
     }
     .hero:after{
-      content:"v4.0";
+      content:"v4.2";
       position:absolute;
       right:20px;
       top:-20px;
@@ -244,20 +244,38 @@
     .ig-warning{border:1px solid rgba(143,162,208,.16);background:rgba(255,255,255,.025);border-radius:12px;padding:6px 8px;color:var(--muted);font-size:7px;line-height:1.25;font-weight:700;text-align:center;margin-top:0}
     .ig-signature{margin-top:auto;border-top:1px solid rgba(143,162,208,.22);border-bottom:1px solid rgba(143,162,208,.22);padding:6px 0;color:var(--cyan);font-size:7px;font-weight:950;letter-spacing:.07em;text-align:center;text-transform:uppercase}
     .ig-footer{margin-top:6px;display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+
+
+    /* ===== v4.1 Premium Feel: trade glow + safer fitting ===== */
+    .verdict.trade{animation:tradePulse 1.15s ease-in-out infinite alternate}
+    #igCard.trade-theme .ig-verdict{animation:igTradePulse 1.15s ease-in-out infinite alternate;text-shadow:0 0 26px rgba(53,255,154,.42)}
+    #igCard.trade-theme{animation:cardGlowPulse 1.4s ease-in-out infinite alternate}
+    @keyframes tradePulse{
+      from{box-shadow:0 0 14px rgba(53,255,154,.22);transform:translateY(0)}
+      to{box-shadow:0 0 34px rgba(53,255,154,.58);transform:translateY(-1px)}
+    }
+    @keyframes igTradePulse{
+      from{filter:drop-shadow(0 0 4px rgba(53,255,154,.18))}
+      to{filter:drop-shadow(0 0 18px rgba(53,255,154,.55))}
+    }
+    @keyframes cardGlowPulse{
+      from{box-shadow:0 40px 120px rgba(0,0,0,.52),0 0 70px rgba(53,255,154,.12)!important}
+      to{box-shadow:0 42px 130px rgba(0,0,0,.55),0 0 100px rgba(53,255,154,.24)!important}
+    }
     .debug-box{margin-top:18px;border:1px solid rgba(56,244,255,.18);background:rgba(5,8,22,.55);border-radius:18px;padding:13px;color:var(--muted);font-size:12px;line-height:1.6;display:none}
     .debug-box.show{display:block}
     .footer-note{text-align:center;color:var(--muted);font-size:12px;margin-top:20px;line-height:1.6}
   
 
-    /* ===== v4.0 Commercial Preview Engine: real 1080x1350 card, scaled only for screen preview ===== */
+    /* ===== v4.2 Mobile Preview Engine: real 1080x1350 card, scaled only for screen preview ===== */
     .panel.ig-preview-wrap{overflow:visible}
     .preview-toolbar{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:0 20px 4px}
-    .zoom-control{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:800}
+    .zoom-control{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:800;min-width:0}
     .zoom-control input{width:180px;padding:0;accent-color:#38f4ff}
-    .preview-size-badge{border:1px solid rgba(56,244,255,.25);color:var(--cyan);border-radius:999px;padding:8px 12px;font-size:12px;background:rgba(56,244,255,.06);font-weight:900}
-    .ig-preview-container{width:100%;display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:18px 20px 34px;min-height:520px}
+    .preview-size-badge{border:1px solid rgba(56,244,255,.25);color:var(--cyan);border-radius:999px;padding:8px 12px;font-size:12px;background:rgba(56,244,255,.06);font-weight:900;white-space:nowrap}
+    .ig-preview-container{width:100%;display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:18px 20px 34px;min-height:520px;scrollbar-gutter:stable both-edges;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
     .ig-card-stage{position:relative;width:calc(1080px * var(--previewScale,.33));height:calc(1350px * var(--previewScale,.33));flex:0 0 auto;margin:0 auto}
-    .ig-card-stage #igCard{position:absolute;left:0;top:0;transform:scale(var(--previewScale,.33));transform-origin:top left}
+    .ig-card-stage #igCard{position:absolute;left:0;top:0;transform:scale(var(--previewScale,.33));transform-origin:top left;will-change:transform}
     .ig-card-stage #igCard:hover{transform:scale(var(--previewScale,.33));}
     #igCard{width:1080px!important;height:1350px!important;max-width:none!important;aspect-ratio:auto!important;border-radius:72px!important;padding:66px!important;overflow:hidden!important;box-shadow:0 40px 120px rgba(0,0,0,.52),0 0 70px rgba(56,244,255,.12)!important}
     #igCard:before{inset:36px!important;border-radius:60px!important}
@@ -292,12 +310,40 @@
     #igCard .ig-signature{font-size:20px!important;padding:12px 0!important}
     #igCard .ig-footer{font-size:18px!important;margin-top:8px!important}
 
+
+    /* ===== v4.2 Mobile UX: auto scale + smooth horizontal preview + readable controls ===== */
+    @media (max-width: 768px){
+      .app{padding:18px 10px 54px}
+      .hero{border-radius:22px;padding:20px}
+      .hero:after{font-size:58px;right:12px;top:-8px;letter-spacing:-5px}
+      h1{font-size:36px;line-height:.98}
+      .subtitle{font-size:14px}
+      .panel{border-radius:20px;padding:14px}
+      .direction-row,.buttons,.result-grid{grid-template-columns:1fr!important}
+      .score-ring{width:210px;height:210px}
+      .score-number{font-size:58px}
+      textarea,input{font-size:16px;border-radius:16px;padding:12px}
+      .preview-toolbar{grid-template-columns:1fr;gap:10px;margin:0 0 8px}
+      .zoom-control{justify-content:space-between;border:1px solid rgba(143,162,208,.16);background:rgba(5,8,22,.45);border-radius:16px;padding:10px 12px}
+      .zoom-control input{width:min(52vw,220px)}
+      .preview-size-badge{text-align:center;font-size:11px;padding:7px 10px}
+      .ig-preview-container{justify-content:flex-start;padding:12px 8px 24px;min-height:calc(1350px * var(--previewScale,.36) + 28px);border-radius:18px}
+      .ig-card-stage{margin:0 auto}
+    }
+
+    @media (max-width: 420px){
+      .ig-preview-container{padding-left:6px;padding-right:6px}
+      .preview-size-badge{font-size:10px}
+      .zoom-control{font-size:11px}
+      .zoom-control input{width:50vw}
+    }
+
   </style>
 </head>
 <body>
   <main class="app">
     <section class="hero">
-      <div class="badge">MI6 PRO CREATOR · v4.0.1 COMMERCIAL EXPORT STUDIO</div>
+      <div class="badge">MI6 PRO CREATOR · v4.2 MOBILE OPTIMIZED STUDIO</div>
       <h1>Six-Point Trading Content Engine</h1>
       <p class="subtitle">Dean & Buddy MI6 商业级版本：评分核心稳定，预览与导出完全同步，加入缩放预览、商业卡片排版与IG导出优化。Inspired by VernonTee — 我只是把老师教的逻辑产品化。</p>
     </section>
@@ -382,12 +428,12 @@
     <section class="panel ig-preview-wrap">
       <div class="panel-title">
         <h2>06 · IG Card Preview</h2>
-        <span class="mini">导出尺寸：1080 × 1350 · Commercial Card</span>
+        <span class="mini">导出尺寸：1080 × 1350 · v4.2 Mobile Optimized</span>
       </div>
       <div class="preview-toolbar">
         <div class="zoom-control">
           <span>Preview Zoom</span>
-          <input id="previewZoom" type="range" min="24" max="45" value="33" />
+          <input id="previewZoom" type="range" min="24" max="65" value="33" />
           <b id="zoomValue">33%</b>
         </div>
         <div class="preview-size-badge">REAL SIZE ENGINE · 1080×1350</div>
@@ -399,7 +445,7 @@
         <div class="ig-bg-glow glow-a"></div>
         <div class="ig-bg-glow glow-b"></div>
         <div class="ig-content pro-card">
-          <div class="ig-top"><span>MI6 PRO v4.0.1</span><span>PREMIUM JOURNAL CARD</span></div>
+          <div class="ig-top"><span>MI6 PRO v4.2</span><span>PREMIUM JOURNAL CARD</span></div>
 
           <div class="ig-market-strip">
             <div class="ig-market-box"><small>Symbol / Pair</small><b id="igSymbol">XAUUSD</b></div>
@@ -516,11 +562,25 @@
 
     function setPreviewScale(value){
       return guard('setPreviewScale',()=>{
-        const pct = Math.max(24, Math.min(45, Number(value) || 33));
+        const pct = Math.max(24, Math.min(65, Number(value) || 33));
         const scale = pct / 100;
         const stage = els.igCardStage || $('igCardStage');
+        const zoom = els.previewZoom || $('previewZoom');
         if(stage) stage.style.setProperty('--previewScale', scale);
-        safeSetText(els.zoomValue, pct + '%');
+        if(zoom && String(zoom.value) !== String(Math.round(pct))) zoom.value = Math.round(pct);
+        safeSetText(els.zoomValue, Math.round(pct) + '%');
+      });
+    }
+
+    function autoPreviewScale(){
+      return guard('autoPreviewScale',()=>{
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        let pct = 33;
+        if(vw <= 390) pct = 34;
+        else if(vw <= 480) pct = 36;
+        else if(vw <= 768) pct = 40;
+        else if(vw <= 1100) pct = 32;
+        setPreviewScale(pct);
       });
     }
 
@@ -661,15 +721,29 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
       });
     }
 
-    function fitTextToBox(el, maxPx, minPx){
+    function fitTextToBox(el, maxPx, minPx, lineHeight='1.02'){
       if(!el) return;
-      el.style.fontSize = maxPx + 'px';
-      el.style.lineHeight = '1.02';
+      el.style.setProperty('font-size', maxPx + 'px', 'important');
+      el.style.setProperty('line-height', lineHeight, 'important');
       let size = maxPx;
-      while(size > minPx && (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth)){
+      let guardCount = 0;
+      while(size > minPx && guardCount < 80 && (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth)){
         size -= 1;
-        el.style.fontSize = size + 'px';
+        el.style.setProperty('font-size', size + 'px', 'important');
+        guardCount++;
       }
+    }
+
+    function smartFitIGCard(){
+      return guard('smartFitIGCard',()=>{
+        fitTextToBox($('igSymbol'),36,22,'1.0');
+        fitTextToBox($('igVerdict'),58,34,'.96');
+        fitTextToBox($('igEntry'),38,22,'1.02');
+        fitTextToBox($('igTP'),38,22,'1.02');
+        fitTextToBox($('igSL'),38,22,'1.02');
+        fitTextToBox($('igNote'),24,16,'1.22');
+        fitTextToBox($('igDesc'),27,18,'1.28');
+      });
     }
 
     function clampText(text, max){
@@ -696,10 +770,10 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         safeSetText(els.igVerdict,decision.text);
         if(els.igVerdict) els.igVerdict.style.color = decision.cls === 'trade' ? 'var(--green)' : decision.cls === 'wait' ? 'var(--yellow)' : 'var(--red)';
         safeSetText(els.igDesc,decision.reason);
-        safeSetText($('igEntry'),clampText(entry,42));
-        safeSetText($('igTP'),clampText(tp,24));
-        safeSetText($('igSL'),clampText(sl,24));
-        safeSetText($('igNote'),clampText(note,120));
+        safeSetText($('igEntry'),clampText(entry,58));
+        safeSetText($('igTP'),clampText(tp,36));
+        safeSetText($('igSL'),clampText(sl,36));
+        safeSetText($('igNote'),clampText(note,150));
         safeSetText(els.igDirection,direction + ' SETUP');
         safeSetText(els.igDirectionTop,direction + ' SETUP');
 
@@ -710,9 +784,7 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         }
 
         requestAnimationFrame(()=>{
-          fitTextToBox($('igEntry'),17,10);
-          fitTextToBox($('igTP'),17,10);
-          fitTextToBox($('igSL'),17,10);
+          smartFitIGCard();
         });
       });
     }
@@ -745,6 +817,7 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         });
         [els.symbolInput,els.entryInput,els.tpInput,els.slInput,els.noteInput].forEach(el=>safeAddEvent(el,'input',updateResult));
         safeAddEvent(els.previewZoom,'input',()=>setPreviewScale(inputValue(els.previewZoom,'33')));
+        safeAddEvent(window,'resize',()=>{ if(!els.previewZoom || !els.previewZoom.matches(':active')) autoPreviewScale(); });
         safeAddEvent($('resetBtn'),'click',()=>{
           guard('reset',()=>{
             state = Object.fromEntries(criteria.map(c=>[c.key,false]));
@@ -827,20 +900,26 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         setAll('.ig-signature',{fontSize:'20px',padding:'12px 0'});
         setAll('.ig-footer',{fontSize:'18px',marginTop:'8px'});
 
-        const fit = (selector,max,min)=>{
+        const fit = (selector,max,min,lineHeight='1.02')=>{
           clone.querySelectorAll(selector).forEach(el=>{
-            el.style.fontSize = max + 'px';
+            el.style.setProperty('font-size', max + 'px', 'important');
+            el.style.setProperty('line-height', lineHeight, 'important');
             let size = max;
-            while(size > min && (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth)){
+            let guardCount = 0;
+            while(size > min && guardCount < 80 && (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth)){
               size -= 2;
-              el.style.fontSize = size + 'px';
+              el.style.setProperty('font-size', size + 'px', 'important');
+              guardCount++;
             }
           });
         };
-        fit('#igEntry',38,24);
-        fit('#igTP',38,24);
-        fit('#igSL',38,24);
-        fit('#igSymbol',36,24);
+        fit('#igEntry',38,22,'1.02');
+        fit('#igTP',38,22,'1.02');
+        fit('#igSL',38,22,'1.02');
+        fit('#igSymbol',36,22,'1.0');
+        fit('#igVerdict',58,34,'.96');
+        fit('#igDesc',27,18,'1.28');
+        fit('#igNote',24,16,'1.22');
       });
     }
 
@@ -872,7 +951,7 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
           });
           const link = document.createElement('a');
           const safeSymbol = (inputValue(els.symbolInput,'MI6') || 'MI6').replace(/[^a-z0-9]/gi,'_');
-          link.download = `MI6_v4_0_1_${safeSymbol}_${direction}.png`;
+          link.download = `MI6_v4_2_${safeSymbol}_${direction}.png`;
           link.href = canvas.toDataURL('image/png');
           document.body.appendChild(link);
           link.click();
@@ -892,9 +971,9 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         if(window.MI6_DEBUG && debugBox){ debugBox.classList.add('show'); debugBox.textContent = 'Debug: start'; }
         renderCriteria();
         bindEvents();
-        setPreviewScale(inputValue(els.previewZoom,'33'));
+        autoPreviewScale();
         updateResult();
-        logDebug('MI6 v4.0 Commercial Export Studio ready');
+        logDebug('MI6 v4.2 Mobile Optimized Export Studio ready');
       });
     }
 
