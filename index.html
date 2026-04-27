@@ -160,10 +160,19 @@
     .creator-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
     .caption-box{min-height:270px;white-space:pre-wrap;line-height:1.65;font-size:14px}
     .ig-preview-wrap{margin-top:18px;display:grid;grid-template-columns:1fr;gap:12px}
+    .ig-preview-container{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+      overflow:visible;
+    }
     #igCard{
-      width:360px;
-      height:450px;
-      max-width:100%;
+      width:100%;
+      max-width:360px;
+      aspect-ratio:4 / 5;
+      height:auto;
       margin:0 auto;
       background:
         radial-gradient(circle at 8% 8%,rgba(56,244,255,.28),transparent 30%),
@@ -174,7 +183,15 @@
       padding:22px;
       position:relative;
       overflow:hidden;
+      transform:scale(1);
+      transform-origin:top center;
+      transition:transform .28s ease, box-shadow .28s ease, border-color .28s ease;
       box-shadow:0 18px 50px rgba(0,0,0,.38),0 0 28px rgba(56,244,255,.08);
+    }
+    #igCard:hover{
+      transform:scale(1.03);
+      border-color:rgba(56,244,255,.48);
+      box-shadow:0 24px 62px rgba(0,0,0,.48),0 0 42px rgba(56,244,255,.16);
     }
     #igCard:before{
       content:"";
@@ -321,6 +338,7 @@
         <h2>06 · IG Card Preview</h2>
         <span class="mini">导出尺寸：1080 × 1350 · Premium Card</span>
       </div>
+      <div class="ig-preview-container">
       <div id="igCard">
         <div class="ig-bg-grid"></div>
         <div class="ig-bg-glow glow-a"></div>
@@ -372,6 +390,7 @@
           <div class="ig-signature">Inspired by VernonTee · Structured by Dean × Buddy</div>
           <div class="ig-footer"><span id="igDirection">BUY SETUP</span><span>DISCIPLINE · STRUCTURE · EXECUTION</span></div>
         </div>
+      </div>
       </div>
     </section>
 
