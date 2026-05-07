@@ -389,11 +389,12 @@
           </div>
         </div>
         <div class="verdict no" id="verdict">NO TRADE</div>
-        <div class="result-grid">
-          <div class="stat"><b>Direction</b><span id="directionText">BUY</span></div>
-          <div class="stat"><b>Confidence</b><span id="confidenceText">LOW</span></div>
-          <div class="stat"><b>Status</b><span id="statusText">BLOCK</span></div>
-        </div>
+       <div class="result-grid">
+  <div class="stat"><b>Direction</b><span id="directionText">BUY</span></div>
+  <div class="stat"><b>Confidence</b><span id="confidenceText">LOW</span></div>
+  <div class="stat"><b>Status</b><span id="statusText">BLOCK</span></div>
+  <div class="stat"><b>RR Ratio</b><span id="rrText">-</span></div>
+</div>
         <label for="symbolInput">Symbol / Pair</label>
         <input id="symbolInput" placeholder="例如：XAUUSD / US500 / BTCUSD"  />
         <label for="entryInput">Entry Zone</label>
@@ -488,9 +489,14 @@
             <div class="ig-plan-card risk-card">
               <b>RISK MANAGEMENT</b>
               <div class="risk-row">
-                <div><small>TP</small><span id="igTP">-</span></div>
-                <div><small>SL</small><span id="igSL">-</span></div>
-              </div>
+  <div><small>TP</small><span id="igTP">-</span></div>
+  <div><small>SL</small><span id="igSL">-</span></div>
+</div>
+
+<div style="margin-top:10px;">
+  <small>RR RATIO</small>
+  <span id="igRR">-</span>
+</div>
             </div>
           </div>
 
@@ -623,6 +629,34 @@
     }
 
     function getScore(){ return Object.values(state).filter(Boolean).length; }
+
+    function calculateRR(){
+
+  const entry = parseFloat(inputValue(els.entryInput,'').replace(/[^0-9.-]/g,''));
+  const tp = parseFloat(inputValue(els.tpInput,'').replace(/[^0-9.-]/g,''));
+  const sl = parseFloat(inputValue(els.slInput,'').replace(/[^0-9.-]/g,''));
+
+  if(isNaN(entry) || isNaN(tp) || isNaN(sl)) return '-';
+
+  let risk = 0;
+  let reward = 0;
+
+  if(direction === 'BUY'){
+    risk = entry - sl;
+    reward = tp - entry;
+  }else{
+    risk = sl - entry;
+    reward = entry - tp;
+  }
+
+  if(risk <= 0 || reward <= 0){
+    return 'Invalid';
+  }
+
+  const rr = (reward / risk).toFixed(2);
+
+  return `1 : ${rr}`;
+}
 
     function getDecision(score){
       if(score >= 5) return { text:'TRADE', cls:'trade', confidence:'HIGH', status:'READY', reason:'SOP alignment is strong. Setup is tradeable if risk is controlled.' };
@@ -810,6 +844,8 @@ Disclaimer: This is my trading journal and SOP scoring reference, not financial 
         safeSetText(els.directionText,direction);
         safeSetText(els.confidenceText,decision.confidence);
         safeSetText(els.statusText,decision.status);
+        safeSetText($('rrText'), calculateRR());
+        safeSetText($('igRR'), calculateRR());
         updateIGCard(score,decision);
         updateCreator();
       });
